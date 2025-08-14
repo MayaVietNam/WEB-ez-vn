@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đăng Ký Thuê Wifi - MayaVietNam</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        /* Custom class to ensure cards have the same height */
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        /* Animation for fade-in effect */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-10">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo" class="h-12 w-auto mr-4">
+                    <h1 class="text-2xl font-bold text-gray-800 hidden sm:block">Dịch Vụ Thuê Wifi</h1>
+                </div>
+                <div>
+                    <img src="https://i.postimg.cc/WbnQTChx/LOGO-MAYA-VIETNAM.png" alt="Maya Vietnam Logo" class="h-10 w-auto">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12 flex-grow">
+
+        <!-- Login Section -->
+        <div id="login-section" class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg transition-all duration-500 fade-in">
+            <h2 class="text-2xl font-bold text-center mb-6">Đăng nhập tài khoản</h2>
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Tên tài khoản:</label>
+                <input type="text" id="username" name="username" placeholder="Nhập tài khoản của đơn vị bạn"
+                       class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-transform transform hover:scale-105">
+                Đăng nhập
+            </button>
+            <p id="error-message" class="text-red-500 text-xs italic mt-4 text-center h-4"></p>
+        </div>
+
+        <!-- Registration Forms Grid - Hidden by default -->
+        <div id="cards-section" class="hidden" style="display: none;">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: HIS - Hidden by default -->
+                <div id="card-his" class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-2xl transition-all duration-300" style="display: none;">
+                    <div class="p-6 card-content">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-wifi text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">HIS</h3>
+                        </div>
+                        <a href="/HIS/" class="block w-full mt-6 text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                            Thuê ngay
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: TOYOTA - Hidden by default -->
+                <div id="card-toyota" class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-2xl transition-all duration-300" style="display: none;">
+                    <div class="p-6 card-content">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-wifi text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">TOYOTA</h3>
+                        </div>
+                        <a href="/TOYOTA/" class="block w-full mt-6 text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                            Thuê ngay
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: YAMAHA - Hidden by default -->
+                <div id="card-yamaha" class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-2xl transition-all duration-300" style="display: none;">
+                    <div class="p-6 card-content">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-wifi text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">YAMAHA</h3>
+                        </div>
+                        <a href="/YAMAHA/" class="block w-full mt-6 text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                            Thuê ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 backdrop-blur-sm mt-12">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-500">
+            <p>&copy; 2025 MayaVietNam. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- JavaScript Logic for Login ---
+
+        // 1. Định nghĩa các tài khoản và thẻ tương ứng
+        // Bạn có thể thay đổi tên tài khoản ở đây
+        const accounts = {
+            'his_user': 'card-his',
+            'toyota_user': 'card-toyota',
+            'yamaha_user': 'card-yamaha'
+        };
+
+        // 2. Lấy các phần tử HTML cần thiết
+        const loginSection = document.getElementById('login-section');
+        const cardsSection = document.getElementById('cards-section');
+        const loginButton = document.getElementById('login-button');
+        const usernameInput = document.getElementById('username');
+        const errorMessage = document.getElementById('error-message');
+
+        // 3. Thêm sự kiện khi nhấn nút "Đăng nhập"
+        loginButton.addEventListener('click', function() {
+            const username = usernameInput.value.trim().toLowerCase(); // Chuyển về chữ thường để không phân biệt hoa/thường
+
+            // Kiểm tra xem tài khoản có tồn tại không
+            if (accounts[username]) {
+                // Nếu có:
+                // - Ẩn form đăng nhập
+                loginSection.style.display = 'none';
+
+                // - Lấy ID của thẻ cần hiển thị
+                const cardIdToShow = accounts[username];
+                const cardToShow = document.getElementById(cardIdToShow);
+
+                // - Hiển thị thẻ đó và khu vực chứa thẻ
+                if (cardToShow) {
+                    cardsSection.style.display = 'block'; // Hiển thị khu vực chứa
+                    cardToShow.style.display = 'block'; // Hiển thị thẻ
+                    cardToShow.classList.add('fade-in'); // Thêm hiệu ứng fade-in
+                }
+                
+                // Xóa thông báo lỗi nếu có
+                errorMessage.textContent = '';
+
+            } else {
+                // Nếu không có:
+                // - Hiển thị thông báo lỗi
+                errorMessage.textContent = 'Tài khoản không hợp lệ. Vui lòng thử lại.';
+                // Rung nhẹ form đăng nhập để báo lỗi
+                loginSection.classList.add('animate-shake');
+                setTimeout(() => {
+                    loginSection.classList.remove('animate-shake');
+                }, 500);
+            }
+        });
+
+        // Thêm sự kiện nhấn Enter trên ô input
+        usernameInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+        
+        // Thêm một chút animation cho lỗi
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shake {
+                10%, 90% { transform: translate3d(-1px, 0, 0); }
+                20%, 80% { transform: translate3d(2px, 0, 0); }
+                30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                40%, 60% { transform: translate3d(4px, 0, 0); }
+            }
+            .animate-shake {
+                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            }
+        `;
+        document.head.appendChild(style);
+
+    </script>
+
+</body>
+</html>
