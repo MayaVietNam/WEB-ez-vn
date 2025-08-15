@@ -1,3 +1,4 @@
+// [SỬA LỖI] Đổi tên biến thành PRICE_TABLE để trang chủ có thể đọc được
 const PRICE_TABLE = {
   "UAE": { "500MB/ngày": 300000, "1GB/ngày": 370000, "5GB/ngày": null },
   "Antigua và Barbuda": { "500MB/ngày": 440000, "1GB/ngày": 640000, "5GB/ngày": null },
