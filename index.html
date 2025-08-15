@@ -13,10 +13,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            /* [THAY ĐỔI] Nền giống form HIS */
             background-color: #e5eefb; 
         }
-        /* [MỚI] CSS cho nền logo lặp lại */
+        /* CSS cho nền logo lặp lại */
         .bg-logo-bg { pointer-events: none; position: fixed; z-index: 0; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
         .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.07; will-change: transform; }
 
@@ -41,7 +40,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* [MỚI] CSS cho footer giống form HIS */
+        /* CSS cho footer giống form HIS */
         .footer-company-info { font-size: 0.95em; background: linear-gradient(90deg, #fbeff0 0%, #dbeafe 100%); color: #0c2245; border-radius: 10px 10px 0 0; box-shadow: 0 0 8px 0 #0002; padding: 0.7rem 1.1rem 0.8rem 1.1rem; margin: 2.2rem auto 0 auto; text-align: center; max-width: 600px; border-top: 3px solid #da1a32; border-left: 1.5px solid #c7e0fb; border-right: 1.5px solid #c7e0fb; }
         .footer-company-info h2 { font-size: 1.18rem; font-weight: bold; color: #da1a32; margin-bottom: 0.12rem; letter-spacing: 0.03em; text-transform: uppercase; }
         .footer-company-info .en { color: #2563eb; font-weight: 500; font-size: 0.98em; margin-bottom: 0.2em; letter-spacing: 0.01em; }
@@ -52,7 +51,7 @@
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
 
-    <!-- [MỚI] Nền logo lặp lại -->
+    <!-- Nền logo lặp lại -->
     <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
 
     <!-- Header -->
@@ -137,7 +136,7 @@
         </div>
     </div>
 
-    <!-- [THAY ĐỔI] Footer giống form HIS -->
+    <!-- Footer giống form HIS -->
     <footer class="relative z-10">
         <div class="footer-company-info">
             <h2>CÔNG TY TNHH MAYA VIETNAM</h2>
@@ -153,17 +152,20 @@
         // --- CONFIG ---
         const accounts = {
             'his_user': { 
-                path: './HIS-FORM.html', // Thay đổi đường dẫn nếu cần
+                // [SỬA LỖI] Đường dẫn đúng phải bao gồm thư mục
+                path: './HIS/index.html', 
                 unit: 'HIS',
                 scriptUrl: 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec'
             },
             'toyota_user': { 
-                path: './TOYOTA-FORM.html', // Thay đổi đường dẫn nếu cần
+                // [SỬA LỖI] Đường dẫn đúng phải bao gồm thư mục
+                path: './TOYOTA/index.html', 
                 unit: 'TOYOTA',
                 scriptUrl: 'https://script.google.com/macros/s/AKfycbw3aJxuzREpHk9hKveY1qpXDQgWZ-xek-sVu13eu_upzM7SlGOACSGzIbauSX1JIT0ewA/exec'
             },
             'yamaha_user': { 
-                path: './YAMAHA-FORM.html', // Thay đổi đường dẫn nếu cần
+                // [SỬA LỖI] Đường dẫn đúng phải bao gồm thư mục
+                path: './YAMAHA/index.html', 
                 unit: 'YAMAHA',
                 scriptUrl: 'https://script.google.com/macros/s/AKfycbxfVMV90z_1KosHf83kOFU3NelA8auVoVstflIDuXVlI-RT2LVfOkoeJs7o4rx13f_kww/exec'
             }
@@ -246,9 +248,8 @@
                     const formatDate = (dateString) => {
                         if (!dateString || dateString === '-') return '-';
                         const date = new Date(dateString);
-                        if (isNaN(date)) return dateString; // Trả về chuỗi gốc nếu không hợp lệ
+                        if (isNaN(date)) return dateString;
                         
-                        // Định dạng ngày/tháng/năm
                         const day = String(date.getDate()).padStart(2, '0');
                         const month = String(date.getMonth() + 1).padStart(2, '0');
                         const year = date.getFullYear();
