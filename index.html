@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Đăng Ký Thuê Wifi - MayaVietNam</title>
+    <title>Cổng Dịch Vụ Thuê Wifi - MayaVietNam</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for Icons -->
@@ -15,28 +15,39 @@
             font-family: 'Be Vietnam Pro', sans-serif;
             background-color: #f0f4f8;
             background-image: 
-                radial-gradient(circle at 100% 0%, rgba(199, 210, 254, 0.3) 0%, rgba(199, 210, 254, 0) 50%),
-                radial-gradient(circle at 0% 100%, rgba(165, 180, 252, 0.3) 0%, rgba(165, 180, 252, 0) 50%);
+                radial-gradient(circle at 100% 0%, rgba(224, 231, 255, 0.5) 0%, rgba(224, 231, 255, 0) 40%),
+                radial-gradient(circle at 10% 100%, rgba(219, 234, 254, 0.5) 0%, rgba(219, 234, 254, 0) 40%);
         }
-        /* Animation for fade-in effect */
-        .fade-in {
-            animation: fadeIn 0.8s ease-in-out;
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        /* Modal styles */
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-10">
+    <header class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-20">
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo" class="h-12 w-auto mr-4">
-                    <h1 class="text-2xl font-bold text-gray-800 hidden sm:block">Dịch Vụ Thuê Wifi</h1>
                 </div>
                 <div>
                     <img src="https://i.postimg.cc/WbnQTChx/LOGO-MAYA-VIETNAM.png" alt="Maya Vietnam Logo" class="h-10 w-auto">
@@ -45,28 +56,73 @@
         </div>
     </header>
 
-    <!-- Main Content: Centered Login Form -->
-    <main class="container mx-auto px-6 py-12 flex-grow flex items-center justify-center">
-        <div id="login-section" class="w-full max-w-md bg-white p-8 md:p-10 rounded-xl shadow-2xl transition-all duration-500 fade-in">
-            <div class="text-center mb-8">
-                <i class="fas fa-wifi text-4xl text-blue-600"></i>
-                <h2 class="text-3xl font-bold text-gray-900 mt-4">Đăng Nhập Hệ Thống</h2>
-                <p class="text-gray-500 mt-2">Nhập tài khoản được cấp để truy cập trang đăng ký.</p>
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12 md:py-20 flex-grow flex items-center justify-center">
+        <div class="w-full">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 fade-in-up">Cổng Dịch Vụ Wifi</h1>
+                <p class="text-gray-600 mt-4 text-lg max-w-2xl mx-auto fade-in-up" style="animation-delay: 0.2s;">Đăng nhập để tạo đơn thuê mới hoặc tra cứu lịch sử các đơn đã đăng ký.</p>
             </div>
-            <div class="space-y-6">
-                <div>
-                    <label for="username" class="sr-only">Tên tài khoản</label>
-                    <input type="text" id="username" name="username" placeholder="Tên tài khoản của bạn"
-                           class="shadow-inner appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Login Card -->
+                <div id="login-card" class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-sign-in-alt text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Tạo Đơn Mới</h2>
+                            <p class="text-gray-500">Đăng nhập để truy cập form đăng ký.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="login-username" placeholder="Nhập tài khoản" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div class="flex items-center">
+                            <input id="login-remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="login-remember-me" class="ml-2 block text-sm text-gray-900">Ghi nhớ tài khoản</label>
+                        </div>
+                        <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105">Truy cập Form Đăng Ký</button>
+                    </div>
+                    <p id="login-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
                 </div>
-                <button id="login-button" class="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-transform transform hover:scale-105">
-                    <span>Truy cập</span>
-                    <i class="fas fa-arrow-right ml-2"></i>
-                </button>
+
+                <!-- History Search Card -->
+                <div id="history-card" class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 0.6s;">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 text-green-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-history text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Tra Cứu Lịch Sử</h2>
+                            <p class="text-gray-500">Xem lại các đơn hàng đã đăng ký.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="history-username" placeholder="Nhập tài khoản để tra cứu" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <button id="history-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105">Tra cứu ngay</button>
+                    </div>
+                     <p id="history-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
+                </div>
+
             </div>
-            <p id="error-message" class="text-red-500 text-sm mt-4 text-center h-5"></p>
         </div>
     </main>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60"></div>
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 p-6 z-10 fade-in-up">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 id="history-title" class="text-2xl font-bold">Lịch sử đặt đơn</h3>
+                <button id="close-modal-button" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <div id="history-content" class="max-h-[70vh] overflow-y-auto">
+                <!-- History table will be inserted here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-transparent mt-12">
@@ -76,76 +132,142 @@
     </footer>
 
     <script>
-        // --- JavaScript Logic for Login ---
-
-        // 1. Định nghĩa các tài khoản và đường dẫn tương ứng
-        // Bạn có thể thay đổi tên tài khoản ở đây
+        // --- CONFIG ---
         const accounts = {
-            'his_user': '/HIS/',
-            'toyota_user': '/TOYOTA/',
-            'yamaha_user': '/YAMAHA/'
+            'his_user': { 
+                path: '/HIS/', 
+                unit: 'HIS',
+                scriptUrl: 'https://script.google.com/macros/s/AKfycbxeuci5uqWf1arJ1KuKW_e8ihFABjDupjZPBlmkaRg/dev' // <-- Dán URL script của HIS vào đây
+            },
+            'toyota_user': { 
+                path: '/TOYOTA/', 
+                unit: 'TOYOTA',
+                scriptUrl: 'https://script.google.com/macros/s/AKfycbys5G9gPIwuullV25Djqw40BWLzYhr3cxe8WS0EEuAD/dev' // <-- Dán URL script của TOYOTA vào đây
+            },
+            'yamaha_user': { 
+                path: '/YAMAHA/', 
+                unit: 'YAMAHA',
+                scriptUrl: 'https://script.google.com/macros/s/AKfycbxfVMV90z_1KosHf83kOFU3NelA8auVoVstflIDuXVlI-RT2LVfOkoeJs7o4rx13f_kww/exec' // <-- Dán URL script của YAMAHA vào đây
+            }
         };
 
-        // 2. Lấy các phần tử HTML cần thiết
-        const loginSection = document.getElementById('login-section');
+        // --- ELEMENTS ---
+        const loginUsernameInput = document.getElementById('login-username');
         const loginButton = document.getElementById('login-button');
-        const usernameInput = document.getElementById('username');
-        const errorMessage = document.getElementById('error-message');
+        const loginError = document.getElementById('login-error');
+        const loginRememberMe = document.getElementById('login-remember-me');
+        
+        const historyUsernameInput = document.getElementById('history-username');
+        const historyButton = document.getElementById('history-button');
+        const historyError = document.getElementById('history-error');
 
-        // 3. Hàm xử lý đăng nhập
+        const historyModal = document.getElementById('history-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const historyContent = document.getElementById('history-content');
+        const historyTitle = document.getElementById('history-title');
+
+        // --- FUNCTIONS ---
         function handleLogin() {
-            const username = usernameInput.value.trim().toLowerCase(); // Chuyển về chữ thường để không phân biệt hoa/thường
-
-            // Kiểm tra xem tài khoản có tồn tại không
+            const username = loginUsernameInput.value.trim().toLowerCase();
             if (accounts[username]) {
-                // Nếu có, chuyển hướng người dùng
-                errorMessage.textContent = 'Đăng nhập thành công, đang chuyển hướng...';
-                errorMessage.classList.remove('text-red-500');
-                errorMessage.classList.add('text-green-500');
-                
-                // Chuyển hướng sau một khoảng trễ nhỏ để người dùng thấy thông báo
-                setTimeout(() => {
-                    window.location.href = accounts[username];
-                }, 500);
+                // Handle remember me
+                if (loginRememberMe.checked) {
+                    localStorage.setItem('savedLoginUsername', username);
+                } else {
+                    localStorage.removeItem('savedLoginUsername');
+                }
 
-            } else {
-                // Nếu không có, hiển thị thông báo lỗi
-                errorMessage.textContent = 'Tài khoản không hợp lệ. Vui lòng thử lại.';
-                errorMessage.classList.add('text-red-500');
-                errorMessage.classList.remove('text-green-500');
-                
-                // Rung nhẹ form đăng nhập để báo lỗi
-                loginSection.classList.add('animate-shake');
+                loginError.textContent = 'Đăng nhập thành công, đang chuyển hướng...';
+                loginError.classList.remove('text-red-500');
+                loginError.classList.add('text-green-500');
                 setTimeout(() => {
-                    loginSection.classList.remove('animate-shake');
+                    window.location.href = accounts[username].path;
                 }, 500);
+            } else {
+                loginError.textContent = 'Tài khoản không hợp lệ.';
+                loginError.classList.add('text-red-500');
+                loginError.classList.remove('text-green-500');
             }
         }
 
-        // 4. Thêm sự kiện khi nhấn nút "Truy cập"
-        loginButton.addEventListener('click', handleLogin);
+        async function handleHistorySearch() {
+            const username = historyUsernameInput.value.trim().toLowerCase();
+            if (!accounts[username]) {
+                historyError.textContent = 'Tài khoản không hợp lệ.';
+                return;
+            }
+            historyError.textContent = ''; 
 
-        // 5. Thêm sự kiện nhấn Enter trên ô input
-        usernameInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                handleLogin();
+            const accountInfo = accounts[username];
+            const unit = accountInfo.unit;
+            const scriptUrl = accountInfo.scriptUrl;
+
+            if (!scriptUrl || scriptUrl.includes('URL_SCRIPT_CUA_')) {
+                historyError.textContent = 'Lỗi cấu hình: URL script chưa được thiết lập.';
+                return;
+            }
+            
+            historyTitle.textContent = `Lịch sử đặt đơn - ${unit}`;
+            historyContent.innerHTML = '<p class="text-center p-8 text-lg">Đang tải dữ liệu, vui lòng chờ...</p>';
+            historyModal.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${scriptUrl}?unit=${unit}`);
+                const result = await response.json();
+
+                if (result.result === 'success' && result.data) {
+                    if (result.data.length === 0) {
+                        historyContent.innerHTML = `<p class="text-gray-500 text-center p-8 text-lg">Không có đơn đặt nào cho đơn vị ${unit}.</p>`;
+                        return;
+                    }
+
+                    const headers = Object.keys(result.data[0]);
+                    let tableHTML = '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead><tr>';
+                    headers.forEach(header => {
+                        tableHTML += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
+                    });
+                    tableHTML += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+                    
+                    result.data.forEach(row => {
+                        tableHTML += '<tr>';
+                        headers.forEach(header => {
+                            let cellData = row[header] || '-';
+                            if (header.toLowerCase().includes('time') && cellData !== '-') {
+                                cellData = new Date(cellData).toLocaleString('vi-VN');
+                            }
+                            tableHTML += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${cellData}</td>`;
+                        });
+                        tableHTML += '</tr>';
+                    });
+
+                    tableHTML += '</tbody></table></div>';
+                    historyContent.innerHTML = tableHTML;
+                } else {
+                    throw new Error(result.error || 'Lỗi không xác định');
+                }
+            } catch (error) {
+                historyContent.innerHTML = `<p class="text-red-500 text-center p-8 text-lg">Lỗi khi tải dữ liệu: ${error.message}</p>`;
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        loginButton.addEventListener('click', handleLogin);
+        loginUsernameInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleLogin(); });
+
+        historyButton.addEventListener('click', handleHistorySearch);
+        historyUsernameInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleHistorySearch(); });
+
+        closeModalButton.addEventListener('click', () => historyModal.classList.add('hidden'));
+        historyModal.querySelector('.modal-backdrop').addEventListener('click', () => historyModal.classList.add('hidden'));
+
+        // Load saved username on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUsername = localStorage.getItem('savedLoginUsername');
+            if (savedUsername) {
+                loginUsernameInput.value = savedUsername;
+                loginRememberMe.checked = true;
             }
         });
-        
-        // 6. Thêm style cho animation lỗi
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                10%, 90% { transform: translate3d(-1px, 0, 0); }
-                20%, 80% { transform: translate3d(2px, 0, 0); }
-                30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-                40%, 60% { transform: translate3d(4px, 0, 0); }
-            }
-            .animate-shake {
-                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 
 </body>
