@@ -222,7 +222,6 @@
             }
         };
 
-        // Bảng dịch
         const translations = {
             vi: {
                 mainTitle: "Cổng Dịch Vụ Wifi",
@@ -295,10 +294,118 @@
                 langJP_en: "",
             }
         };
-        
+
         // --- SCRIPT LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
-            // ... (Toàn bộ phần script logic giữ nguyên không thay đổi) ...
+            const CURRENT_PRICE_TABLE = typeof PRICE_TABLE !== 'undefined' ? PRICE_TABLE : {};
+            const COUNTRY_LIST = Object.keys(CURRENT_PRICE_TABLE).sort();
+
+            const langViBtn = document.getElementById('lang-vi-btn');
+            const langEnBtn = document.getElementById('lang-en-btn');
+            
+            const quickQuoteCountryEl = document.getElementById('quick-quote-country');
+            const quickQuotePackageEl = document.getElementById('quick-quote-package');
+            const quickQuoteFromEl = document.getElementById('quick-quote-from');
+            const quickQuoteToEl = document.getElementById('quick-quote-to');
+            const quickQuoteResultEl = document.getElementById('quick-quote-result');
+            
+            let countryChoices;
+
+            // --- FUNCTIONS ---
+            function setLanguage(lang) {
+                document.documentElement.lang = lang;
+                const translation = translations[lang];
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if (translation[key]) {
+                        el.textContent = translation[key];
+                    }
+                });
+                 document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-key-placeholder');
+                    if (translation[key]) {
+                        el.placeholder = translation[key];
+                    }
+                });
+
+                if (lang === 'en') {
+                    langEnBtn.classList.remove('opacity-50', 'text-gray-500');
+                    langEnBtn.classList.add('opacity-100', 'text-blue-600');
+                    langViBtn.classList.add('opacity-50', 'text-gray-500');
+                    langViBtn.classList.remove('opacity-100', 'text-blue-600');
+                    document.querySelectorAll('.en').forEach(el => el.style.display = 'block');
+                } else {
+                    langViBtn.classList.remove('opacity-50', 'text-gray-500');
+                    langViBtn.classList.add('opacity-100', 'text-blue-600');
+                    langEnBtn.classList.add('opacity-50', 'text-gray-500');
+                    langEnBtn.classList.remove('opacity-100', 'text-blue-600');
+                    document.querySelectorAll('.en').forEach(el => el.style.display = 'none');
+                }
+            }
+
+            function calcDays(from, to) {
+                if (!from || !to) return 1;
+                const d1 = new Date(from);
+                const d2 = new Date(to);
+                const ms = d2.getTime() - d1.getTime();
+                if (ms < 0) return 1;
+                return Math.round(ms / 86400000) + 1;
+            };
+
+            function calcPrice(country, pkg, days) {
+                if (!CURRENT_PRICE_TABLE[country] || !pkg || !days) return null;
+                const unit = CURRENT_PRICE_TABLE[country][pkg];
+                if (unit === null || typeof unit === 'undefined') return null;
+                const total = unit * days;
+                const vat = Math.round(total * 0.1);
+                const grandTotal = total + vat;
+                return { total, vat, grandTotal };
+            };
+
+            function updateQuickQuote() {
+                const country = quickQuoteCountryEl.value;
+                const pkg = quickQuotePackageEl.value;
+                const from = quickQuoteFromEl.value;
+                const to = quickQuoteToEl.value;
+
+                if (!country || !pkg || !from || !to) {
+                    quickQuoteResultEl.textContent = '';
+                    return;
+                }
+
+                const days = calcDays(from, to);
+                const result = calcPrice(country, pkg, days);
+
+                if (result) {
+                    const formattedTotal = result.grandTotal.toLocaleString('vi-VN');
+                    quickQuoteResultEl.textContent = `Tổng chi phí (gồm VAT): ${formattedTotal} VND`;
+                } else {
+                    quickQuoteResultEl.textContent = `Gói cước không áp dụng cho quốc gia này.`;
+                }
+            }
+            
+            function initializeQuickQuote() {
+                countryChoices = new Choices(quickQuoteCountryEl, {
+                    searchEnabled: true,
+                    itemSelectText: 'Chọn',
+                    shouldSort: false,
+                    choices: COUNTRY_LIST.map(c => ({ value: c, label: c }))
+                });
+
+                [quickQuoteCountryEl, quickQuotePackageEl, quickQuoteFromEl, quickQuoteToEl].forEach(el => {
+                    el.addEventListener('change', updateQuickQuote);
+                });
+            }
+
+            // --- INITIALIZE ---
+            setLanguage('vi');
+            initializeQuickQuote();
+            
+            // --- EVENT LISTENERS ---
+            langViBtn.addEventListener('click', () => setLanguage('vi'));
+            langEnBtn.addEventListener('click', () => setLanguage('en'));
+
+            // ... (Phần Event Listeners cho Login và History giữ nguyên) ...
         });
     </script>
 
