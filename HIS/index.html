@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- [QUAN TRỌNG] Đảm bảo đường dẫn này đúng với file giá của bạn -->
     <script src="price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
@@ -45,26 +44,29 @@
                 <span class="text-lg font-bold label-en uppercase">WIFI DEVICE RENTAL REGISTRATION FORM</span>
             </h1>
             <form id="wifi-form" autocomplete="on" novalidate>
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Thông tin người gửi <span class="label-en">Sender Information</span>
+                </h2>
                 <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Họ tên người gửi <span class="label-en">Sender's Name</span></label>
-                        <input type="text" id="sender-name" name="sender-name" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                        <input type="text" id="sender-name" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                     </div>
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Email <span class="label-en">Email</span></label>
-                        <input type="email" id="sender-email" name="sender-email" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                        <input type="email" id="sender-email" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                     </div>
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Số điện thoại <span class="label-en">Phone Number</span></label>
-                        <input type="tel" id="sender-phone" name="sender-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                        <input type="tel" id="sender-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                     </div>
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Công ty <span class="label-en">Company</span></label>
-                        <input type="text" id="sender-company" name="sender-company" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                        <input type="text" id="sender-company" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
                     </div>
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Khu vực <span class="label-en">Region</span></label>
-                        <select id="sender-region" name="sender-region" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                        <select id="sender-region" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                             <option value="">-- Chọn khu vực --</option>
                             <option value="HN">HN</option>
                             <option value="HCM">HCM</option>
@@ -72,15 +74,45 @@
                     </div>
                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Mã số thuế <span class="label-en">Tax Code</span></label>
-                        <input type="text" id="sender-taxcode" name="sender-taxcode" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                        <input type="text" id="sender-taxcode" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
                     </div>
                 </div>
+
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Chi tiết các đơn thuê <span class="label-en">Rental Request Details</span>
+                </h2>
                 <div id="rental-requests-container" class="space-y-8 mb-8"></div>
                 <div class="flex justify-center mb-8">
-                    <button id="add-request-btn" type="button" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 text-md">
+                    <button id="add-request-btn" type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 text-md">
                         + Thêm đơn đăng ký mới
                         <span class="label-en text-white/90">+ Add new rental request</span>
                     </button>
+                </div>
+                
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Thông tin Vận chuyển <span class="label-en">Shipping Information</span>
+                </h2>
+                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Tên người nhận <span class="label-en">Recipient's Name</span></label>
+                        <input type="text" id="shipping-recipient" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">SĐT người nhận <span class="label-en">Recipient's Phone</span></label>
+                        <input type="tel" id="shipping-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Địa chỉ nhận hàng <span class="label-en">Shipping Address</span></label>
+                        <textarea id="shipping-address" rows="3" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required></textarea>
+                    </div>
+                     <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Hình thức vận chuyển <span class="label-en">Shipping Method</span></label>
+                        <select id="shipping-method" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                            <option value="">-- Chọn hình thức --</option>
+                            <option value="Chuyển phát nhanh">Chuyển phát nhanh (50,000 VND)</option>
+                            <option value="Hỏa tốc">Hỏa tốc (Phí báo sau)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex justify-center">
                     <button id="submit-form-btn" type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 text-lg flex items-center gap-2">
@@ -108,9 +140,6 @@
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
         
-        // [QUAN TRỌNG] Thay đổi giá trị này cho từng trang (HIS, TOYOTA, YAMAHA)
-        const UNIT_NAME = "HIS";
-
         // --- ELEMENTS ---
         const form = document.getElementById('wifi-form');
         const container = document.getElementById('rental-requests-container');
@@ -118,7 +147,6 @@
         const submitBtn = document.getElementById('submit-form-btn');
         const submitText = document.getElementById('submit-text');
         const loadingSpinner = document.getElementById('loading-spinner');
-        const senderRegionSelect = document.getElementById('sender-region');
 
         let requestCounter = 0;
 
@@ -156,7 +184,7 @@
                 <option value="">-- Chọn gói data --</option>
                 <option value="500MB/ngày">500MB/ngày / 500MB/day</option>
                 <option value="1GB/ngày">1GB/ngày / 1GB/day</option>
-                <option value="5GB/ngày">5GB/ngày / 5GB/ngày</option>
+                <option value="5GB/ngày">5GB/ngày / 5GB/day</option>
             </select>`;
 
         // --- CORE LOGIC ---
@@ -241,27 +269,11 @@
                         ${createPackageSelect(`data-package-${n}`)}
                     </div>
                     <div class="price-info col-span-1 md:col-span-2 mt-2 text-blue-900 font-semibold"></div>
-                    
-                    <div class="col-span-1 md:col-span-2">
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Sử dụng Mã Thanh Toán? <span class="label-en">Use Budget Code?</span></label>
-                        <div class="flex items-center space-x-6 mt-1">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="use-budget-code-${n}" value="no" class="budget-code-toggle" checked>
-                                <span class="ml-2 text-blue-900">Không</span>
-                                <span class="ml-1 text-gray-500 text-sm">/ No</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="use-budget-code-${n}" value="yes" class="budget-code-toggle">
-                                <span class="ml-2 text-blue-900">Có</span>
-                                <span class="ml-1 text-gray-500 text-sm">/ Yes</span>
-                            </label>
-                        </div>
-                    </div>
                     <div class="budget-code-input-container col-span-1 md:col-span-2 hidden">
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Nhập Mã Thanh Toán <span class="label-en">Enter Budget Code</span></label>
                         <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
                     </div>
-                    </div>`;
+                </div>`;
             
             container.appendChild(section);
             
@@ -281,17 +293,6 @@
             const section = e.target.closest('section.rental-request');
             if (!section) return;
 
-            if (e.target.matches('.budget-code-toggle')) {
-                const budgetCodeContainer = section.querySelector('.budget-code-input-container');
-                const budgetCodeInput = section.querySelector('.budget-code-input');
-                if (e.target.value === 'yes') {
-                    budgetCodeContainer.classList.remove('hidden');
-                } else {
-                    budgetCodeContainer.classList.add('hidden');
-                    budgetCodeInput.value = '';
-                }
-            }
-            
             if (e.target.matches('.choices-country, .package-select, .date-from, .date-to')) {
                 updatePriceForSection(section);
             }
@@ -323,12 +324,28 @@
                 email: document.getElementById('sender-email').value.trim(),
                 phone: document.getElementById('sender-phone').value.trim(),
                 company: document.getElementById('sender-company').value.trim(),
-                region: senderRegionSelect.value.trim(),
+                region: document.getElementById('sender-region').value.trim(),
                 taxCode: document.getElementById('sender-taxcode').value.trim()
             };
 
+            // [MỚI] Thu thập thông tin vận chuyển
+            const shippingInfo = {
+                recipient: document.getElementById('shipping-recipient').value.trim(),
+                phone: document.getElementById('shipping-phone').value.trim(),
+                address: document.getElementById('shipping-address').value.trim(),
+                method: document.getElementById('shipping-method').value.trim()
+            };
+
+            // --- VALIDATION ---
             if (!senderInfo.name || !senderInfo.email || !senderInfo.phone || !senderInfo.region) {
-                Swal.fire("Thiếu thông tin", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại và Khu vực của người gửi.", "warning");
+                Swal.fire("Thiếu thông tin người gửi", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại và Khu vực của người gửi.", "warning");
+                setSubmitState(true);
+                return;
+            }
+
+            // [MỚI] Validate thông tin vận chuyển
+            if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.method) {
+                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng và chọn hình thức vận chuyển.", "warning");
                 setSubmitState(true);
                 return;
             }
@@ -359,7 +376,7 @@
                     days: days,
                     country: country,
                     dataPackage: pkg,
-                    budgetCode: section.querySelector('.budget-code-input').value.trim(),
+                    budgetCode: section.querySelector('.budget-code-input')?.value.trim() || "",
                     unitPrice: price ? price.unitPrice : "",
                     total: price ? price.total : "",
                     vat: price ? price.vat : "",
@@ -372,26 +389,26 @@
             });
 
             if (!isFormValid) {
-                Swal.fire("Thiếu thông tin", "Vui lòng điền đầy đủ thông tin cho tất cả các đơn đăng ký.", "warning");
+                Swal.fire("Thiếu thông tin đơn thuê", "Vui lòng điền đầy đủ thông tin cho tất cả các đơn đăng ký.", "warning");
                 setSubmitState(true);
                 return;
             }
 
-            // [CẬP NHẬT] Thêm 'unit' vào payload để gửi lên script tổng
+            // [CẬP NHẬT] Thêm 'shippingInfo' vào payload
             const payload = {
-                unit: UNIT_NAME,
                 globalSenderInfo: senderInfo,
+                shippingInfo: shippingInfo, // Dữ liệu vận chuyển mới
                 rentalRequests,
                 submissionTime: new Date().toISOString()
             };
             
             try {
-                // Sử dụng script tổng để gửi dữ liệu
+                // Không cần gửi 'unit' nữa nếu script backend đã được chuyên biệt hóa
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Gửi dưới dạng text để tương thích tốt hơn
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
                 
@@ -418,4 +435,4 @@
     });
     </script>
 </body>
-</ht
+</html>
