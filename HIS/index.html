@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script src="price-table.js"></script>
+    <!-- [QUAN TRỌNG] Đảm bảo đường dẫn này đúng với file giá của bạn -->
+    <script src="../price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
         body { background: #e5eefb; min-height: 100vh; position: relative; box-sizing: border-box; overflow-x: hidden; }
@@ -106,6 +107,9 @@
         const PACKAGE_LIST = ["500MB/ngày", "1GB/ngày", "5GB/ngày"];
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
+        
+        // [QUAN TRỌNG] Thay đổi giá trị này cho từng trang (HIS, TOYOTA, YAMAHA)
+        const UNIT_NAME = "HIS";
 
         // --- ELEMENTS ---
         const form = document.getElementById('wifi-form');
@@ -131,7 +135,7 @@
         };
 
         const calcPrice = (country, pkg, days) => {
-            if (!PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
+            if (typeof PRICE_TABLE === 'undefined' || !PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
             const unit = PRICE_TABLE[country][pkg];
             if (!unit) return null;
             const total = unit * days;
@@ -202,7 +206,6 @@
             section.className = 'rental-request bg-blue-50 p-6 rounded-lg shadow-sm border border-blue-200';
             section.dataset.requestNumber = n;
 
-            // START: Sửa đổi cho Budget Code
             section.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="request-title text-xl font-bold text-blue-800">Đơn ${n} <span class="label-en">Request ${n}</span></h2>
@@ -259,7 +262,6 @@
                         <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
                     </div>
                     </div>`;
-            // END: Sửa đổi cho Budget Code
             
             container.appendChild(section);
             
@@ -279,7 +281,6 @@
             const section = e.target.closest('section.rental-request');
             if (!section) return;
 
-            // Listener cho việc hiện/ẩn Budget Code
             if (e.target.matches('.budget-code-toggle')) {
                 const budgetCodeContainer = section.querySelector('.budget-code-input-container');
                 const budgetCodeInput = section.querySelector('.budget-code-input');
@@ -287,11 +288,10 @@
                     budgetCodeContainer.classList.remove('hidden');
                 } else {
                     budgetCodeContainer.classList.add('hidden');
-                    budgetCodeInput.value = ''; // Xóa giá trị khi ẩn đi
+                    budgetCodeInput.value = '';
                 }
             }
             
-            // Listener cho việc cập nhật giá
             if (e.target.matches('.choices-country, .package-select, .date-from, .date-to')) {
                 updatePriceForSection(section);
             }
@@ -377,18 +377,21 @@
                 return;
             }
 
+            // [CẬP NHẬT] Thêm 'unit' vào payload để gửi lên script tổng
             const payload = {
+                unit: UNIT_NAME,
                 globalSenderInfo: senderInfo,
                 rentalRequests,
                 submissionTime: new Date().toISOString()
             };
             
             try {
+                // Sử dụng script tổng để gửi dữ liệu
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Gửi dưới dạng text để tương thích tốt hơn
                     body: JSON.stringify(payload)
                 });
                 
@@ -415,4 +418,4 @@
     });
     </script>
 </body>
-</html>
+</ht
