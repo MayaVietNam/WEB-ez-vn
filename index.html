@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cổng Dịch Vụ Thuê Wifi - MayaVietNam</title>
+    <!-- [MỚI] Thêm logo cho tab trình duyệt (favicon) -->
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for Icons -->
@@ -39,14 +41,14 @@
         .modal-backdrop { transition: opacity 0.3s ease; }
 
         /* Footer styles */
-        .footer-company-info { font-size: 0.95em; background: linear-gradient(90deg, #fbeff0 0%, #dbeafe 100%); color: #0c2245; border-radius: 10px 10px 0 0; box-shadow: 0 0 8px 0 #0002; padding: 0.7rem 1.1rem 0.8rem 1.1rem; margin: 2.2rem auto 0 auto; text-align: center; max-width: 600px; border-top: 3px solid #da1a32; border-left: 1.5px solid #c7e0fb; border-right: 1.5px solid #c7e0fb; }
+        .footer-company-info { font-size: 0.95em; background: linear-gradient(90deg, #fbeff0 0%, #dbeafe 100%); color: #0c2245; border-radius: 10px 10px 0 0; box-shadow: 0 0 8px 0 #0002; padding: 1.5rem 1.1rem 0.8rem 1.1rem; margin: 2.2rem auto 0 auto; text-align: center; max-width: 600px; border-top: 3px solid #da1a32; border-left: 1.5px solid #c7e0fb; border-right: 1.5px solid #c7e0fb; }
         .footer-company-info h2 { font-size: 1.18rem; font-weight: bold; color: #da1a32; margin-bottom: 0.12rem; letter-spacing: 0.03em; text-transform: uppercase; }
         .footer-company-info .en { color: #2563eb; font-weight: 500; font-size: 0.98em; margin-bottom: 0.2em; letter-spacing: 0.01em; }
         .footer-company-info .line { font-size: 1em; margin-bottom: 2px;}
         .footer-company-info .label { font-weight: 600; }
         .lang-en-text { display: none; } /* Ẩn tiếng Anh mặc định */
 
-        /* [SỬA LỖI] Đảm bảo dropdown của Choices.js hiển thị trên các phần tử khác */
+        /* Đảm bảo dropdown của Choices.js hiển thị trên các phần tử khác */
         .choices__list--dropdown {
             z-index: 50;
         }
@@ -75,15 +77,73 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-12 md:py-16 flex-grow flex items-center justify-center relative z-10">
+    <main class="container mx-auto px-6 py-16 md:py-24 flex-grow flex flex-col items-center justify-center relative z-10">
         <div class="w-full">
-            <div class="text-center mb-12">
+            
+            <div class="text-center mb-16">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-900 fade-in-up" data-key="mainTitle">Cổng Dịch Vụ Wifi</h1>
                 <p class="text-gray-600 mt-4 text-lg max-w-2xl mx-auto fade-in-up" style="animation-delay: 0.2s;" data-key="mainSubtitle">Vui lòng chọn loại dịch vụ bạn muốn sử dụng.</p>
             </div>
 
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+                
+                <!-- Card 1: Đơn Hàng Thường (Login) -->
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-user-check text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900" data-key="regularOrderTitle">Đơn Hàng Thường</h2>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="login-username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" data-key-placeholder="loginPlaceholder">
+                        <div class="flex items-center">
+                            <input id="login-remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="login-remember-me" class="ml-2 block text-sm text-gray-900" data-key="rememberMeLabel">Ghi nhớ tài khoản</label>
+                        </div>
+                        <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105" data-key="loginButton">Truy Cập Form</button>
+                    </div>
+                    <p id="login-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
+                </div>
+
+                <!-- Card 2: Đơn Hàng Doanh Nghiệp (Direct Link) -->
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up flex flex-col justify-center items-center" style="animation-delay: 0.6s;">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-purple-100 text-purple-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-building text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900" data-key="corporateOrderTitle">Đơn Hàng Doanh Nghiệp</h2>
+                        </div>
+                    </div>
+                    <a href="./corporate-form.html" class="w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105 mt-4" data-key="corporateButton">
+                        Tạo Đơn Hàng Mới
+                    </a>
+                </div>
+
+                <!-- Card 3: Tra Cứu Lịch Sử -->
+                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 0.8s;">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-green-100 text-green-600 p-3 rounded-full mr-4">
+                            <i class="fas fa-history text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900" data-key="historyTitle">Tra Cứu Lịch Sử</h2>
+                            <p class="text-gray-500" data-key="historySubtitle">Xem lại các đơn hàng đã đăng ký.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="history-query" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" data-key-placeholder="historyPlaceholder">
+                        <button id="history-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105" data-key="historyButton">Tra Cứu Ngay</button>
+                    </div>
+                     <p id="history-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
+                </div>
+            </div>
+
             <!-- Quick Price Calculator -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg card-hover fade-in-up mb-8 max-w-4xl mx-auto" style="animation-delay: 0.4s;">
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg card-hover fade-in-up mt-16 max-w-5xl mx-auto" style="animation-delay: 1s;">
                 <div class="flex items-center mb-6">
                     <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full mr-4">
                         <i class="fas fa-calculator text-2xl"></i>
@@ -118,64 +178,6 @@
                 <div id="quick-quote-result" class="mt-6 text-center text-xl font-bold text-blue-700 h-8"></div>
             </div>
 
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mt-12">
-                
-                <!-- Card 1: Đơn Hàng Thường (Login) -->
-                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 0.6s;">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
-                            <i class="fas fa-user-check text-2xl"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-900" data-key="regularOrderTitle">Đơn Hàng Thường</h2>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <input type="text" id="login-username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" data-key-placeholder="loginPlaceholder">
-                        <div class="flex items-center">
-                            <input id="login-remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="login-remember-me" class="ml-2 block text-sm text-gray-900" data-key="rememberMeLabel">Ghi nhớ tài khoản</label>
-                        </div>
-                        <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105" data-key="loginButton">Truy Cập Form</button>
-                    </div>
-                    <p id="login-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
-                </div>
-
-                <!-- Card 2: Đơn Hàng Doanh Nghiệp (Direct Link) -->
-                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up flex flex-col justify-center items-center" style="animation-delay: 0.8s;">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-purple-100 text-purple-600 p-3 rounded-full mr-4">
-                            <i class="fas fa-building text-2xl"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-900" data-key="corporateOrderTitle">Đơn Hàng Doanh Nghiệp</h2>
-                        </div>
-                    </div>
-                    <a href="./corporate-form.html" class="w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105 mt-4" data-key="corporateButton">
-                        Tạo Đơn Hàng Mới
-                    </a>
-                </div>
-
-                <!-- Card 3: Tra Cứu Lịch Sử -->
-                <div class="bg-white p-8 rounded-xl shadow-lg card-hover fade-in-up" style="animation-delay: 1s;">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-green-100 text-green-600 p-3 rounded-full mr-4">
-                            <i class="fas fa-history text-2xl"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-900" data-key="historyTitle">Tra Cứu Lịch Sử</h2>
-                            <p class="text-gray-500" data-key="historySubtitle">Xem lại các đơn hàng đã đăng ký.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <input type="text" id="history-query" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" data-key-placeholder="historyPlaceholder">
-                        <button id="history-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105" data-key="historyButton">Tra Cứu Ngay</button>
-                    </div>
-                     <p id="history-error" class="text-red-500 text-sm mt-2 text-center h-5"></p>
-                </div>
-
-            </div>
         </div>
     </main>
 
@@ -194,6 +196,7 @@
     <!-- Footer -->
     <footer class="relative z-10">
         <div class="footer-company-info">
+            <img src="https://i.postimg.cc/WbnQTChx/LOGO-MAYA-VIETNAM.png" alt="Maya Vietnam Logo" class="h-10 w-auto mx-auto mb-4">
             <h2 data-key="companyNameVI">CÔNG TY TNHH MAYA VIETNAM</h2>
             <div class="en" data-key="companyNameEN">MAYA VIETNAM CO., LTD</div>
             <div class="line"><span class="label" data-key="addressLabel">Địa chỉ:</span> <span data-key="addressVI">Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam</span></div>
