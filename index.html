@@ -45,6 +45,11 @@
         .footer-company-info .line { font-size: 1em; margin-bottom: 2px;}
         .footer-company-info .label { font-weight: 600; }
         .lang-en-text { display: none; } /* Ẩn tiếng Anh mặc định */
+
+        /* [SỬA LỖI] Đảm bảo dropdown của Choices.js hiển thị trên các phần tử khác */
+        .choices__list--dropdown {
+            z-index: 50;
+        }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
