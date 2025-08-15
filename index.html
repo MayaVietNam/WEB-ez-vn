@@ -170,7 +170,6 @@
         function handleLogin() {
             const username = loginUsernameInput.value.trim().toLowerCase();
             if (accounts[username]) {
-                // Handle remember me
                 if (loginRememberMe.checked) {
                     localStorage.setItem('savedLoginUsername', username);
                 } else {
@@ -221,27 +220,66 @@
                         return;
                     }
 
+                    // [NÂNG CẤP] Bắt đầu xử lý dữ liệu mới
+                    const formatCurrency = (val) => {
+                        const num = Number(val);
+                        return !isNaN(num) && val !== '' ? num.toLocaleString("vi-VN") + " VND" : (val || '-');
+                    };
+
+                    const groupedData = result.data.reduce((acc, row) => {
+                        const toDate = row.toDate ? new Date(row.toDate) : null;
+                        if (toDate && !isNaN(toDate)) {
+                            const monthYear = `Tháng ${toDate.getMonth() + 1}, năm ${toDate.getFullYear()}`;
+                            if (!acc[monthYear]) acc[monthYear] = [];
+                            acc[monthYear].push(row);
+                        } else {
+                            const noDateKey = "Chưa xác định ngày kết thúc";
+                            if (!acc[noDateKey]) acc[noDateKey] = [];
+                            acc[noDateKey].push(row);
+                        }
+                        return acc;
+                    }, {});
+
+                    let finalHTML = '';
                     const headers = Object.keys(result.data[0]);
-                    let tableHTML = '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead><tr>';
-                    headers.forEach(header => {
-                        tableHTML += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
-                    });
-                    tableHTML += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
-                    
-                    result.data.forEach(row => {
-                        tableHTML += '<tr>';
-                        headers.forEach(header => {
-                            let cellData = row[header] || '-';
-                            if (header.toLowerCase().includes('time') && cellData !== '-') {
-                                cellData = new Date(cellData).toLocaleString('vi-VN');
-                            }
-                            tableHTML += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${cellData}</td>`;
-                        });
-                        tableHTML += '</tr>';
+                    const priceColumns = ['unitprice', 'total', 'vat', 'grandtotal'];
+
+                    // Sắp xếp các tháng theo thứ tự mới nhất trước
+                    const sortedMonths = Object.keys(groupedData).sort((a, b) => {
+                        const dateA = new Date(a.replace('Tháng ', '').replace(', năm ', '/1/'));
+                        const dateB = new Date(b.replace('Tháng ', '').replace(', năm ', '/1/'));
+                        return dateB - dateA;
                     });
 
-                    tableHTML += '</tbody></table></div>';
-                    historyContent.innerHTML = tableHTML;
+                    for (const monthYear of sortedMonths) {
+                        finalHTML += `<h4 class="text-xl font-bold mt-6 mb-3 text-gray-800">${monthYear}</h4>`;
+                        finalHTML += '<div class="overflow-x-auto border rounded-lg"><table class="min-w-full divide-y divide-gray-200"><thead><tr>';
+                        headers.forEach(header => {
+                            finalHTML += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`;
+                        });
+                        finalHTML += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+                        
+                        groupedData[monthYear].forEach(row => {
+                            finalHTML += '<tr>';
+                            headers.forEach(header => {
+                                let cellData = row[header] || '-';
+                                
+                                if (priceColumns.includes(header.toLowerCase())) {
+                                    cellData = formatCurrency(cellData);
+                                } else if ((header.toLowerCase().includes('time') || header.toLowerCase().includes('date')) && cellData !== '-') {
+                                    cellData = new Date(cellData).toLocaleString('vi-VN');
+                                }
+                                
+                                finalHTML += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${cellData}</td>`;
+                            });
+                            finalHTML += '</tr>';
+                        });
+                        finalHTML += '</tbody></table></div>';
+                    }
+
+                    historyContent.innerHTML = finalHTML;
+                    // [KẾT THÚC NÂNG CẤP]
+
                 } else {
                     throw new Error(result.error || 'Lỗi không xác định');
                 }
@@ -272,4 +310,3 @@
 
 </body>
 </html>
-
