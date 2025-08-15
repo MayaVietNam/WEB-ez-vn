@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <!-- [QUAN TRỌNG] Đảm bảo đường dẫn này đúng với file giá của bạn -->
     <script src="price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
@@ -44,6 +45,7 @@
                 <span class="text-lg font-bold label-en uppercase">WIFI DEVICE RENTAL REGISTRATION FORM</span>
             </h1>
             <form id="wifi-form" autocomplete="on" novalidate>
+                <!-- THÔNG TIN NGƯỜI GỬI -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Thông tin người gửi <span class="label-en">Sender Information</span>
                 </h2>
@@ -78,6 +80,7 @@
                     </div>
                 </div>
 
+                <!-- DANH SÁCH ĐƠN ĐĂNG KÝ -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Chi tiết các đơn thuê <span class="label-en">Rental Request Details</span>
                 </h2>
@@ -89,6 +92,7 @@
                     </button>
                 </div>
                 
+                <!-- Phần thông tin vận chuyển -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Thông tin Vận chuyển <span class="label-en">Shipping Information</span>
                 </h2>
@@ -106,6 +110,10 @@
                         <textarea id="shipping-address" rows="3" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required></textarea>
                     </div>
                      <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Ngày giao hàng mong muốn <span class="label-en">Desired Delivery Date</span></label>
+                        <input type="date" id="shipping-date" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                     <div>
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Hình thức vận chuyển <span class="label-en">Shipping Method</span></label>
                         <select id="shipping-method" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                             <option value="">-- Chọn hình thức --</option>
@@ -114,6 +122,8 @@
                         </select>
                     </div>
                 </div>
+                <!-- Kết thúc phần thông tin vận chuyển -->
+
                 <div class="flex justify-center">
                     <button id="submit-form-btn" type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 text-lg flex items-center gap-2">
                         <span id="submit-text">Gửi Yêu Cầu <span class="label-en text-white/90">Submit Request</span></span>
@@ -328,11 +338,11 @@
                 taxCode: document.getElementById('sender-taxcode').value.trim()
             };
 
-            // [MỚI] Thu thập thông tin vận chuyển
             const shippingInfo = {
                 recipient: document.getElementById('shipping-recipient').value.trim(),
                 phone: document.getElementById('shipping-phone').value.trim(),
                 address: document.getElementById('shipping-address').value.trim(),
+                date: document.getElementById('shipping-date').value,
                 method: document.getElementById('shipping-method').value.trim()
             };
 
@@ -343,9 +353,8 @@
                 return;
             }
 
-            // [MỚI] Validate thông tin vận chuyển
-            if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.method) {
-                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng và chọn hình thức vận chuyển.", "warning");
+            if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.method || !shippingInfo.date) {
+                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng, bao gồm cả ngày giao hàng mong muốn.", "warning");
                 setSubmitState(true);
                 return;
             }
@@ -394,16 +403,14 @@
                 return;
             }
 
-            // [CẬP NHẬT] Thêm 'shippingInfo' vào payload
             const payload = {
                 globalSenderInfo: senderInfo,
-                shippingInfo: shippingInfo, // Dữ liệu vận chuyển mới
+                shippingInfo: shippingInfo,
                 rentalRequests,
                 submissionTime: new Date().toISOString()
             };
             
             try {
-                // Không cần gửi 'unit' nữa nếu script backend đã được chuyên biệt hóa
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
