@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>ĐƠN ĐĂNG KÝ (CHIẾT KHẤU DOANH NGHIỆP)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    // Security Redirect: Block direct access to this form
+    (function() {
+        // URL của trang chủ mà bạn cho phép truy cập từ đó
+        const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
+
+        // Kiểm tra xem người dùng có đến từ trang chủ không
+        // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
+        if (!document.referrer || !document.referrer.startsWith(allowedReferrer)) {
+            // Nếu không, chuyển hướng họ về trang chủ
+            window.location.href = allowedReferrer;
+        }
+    })();
+</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
@@ -156,4 +170,5 @@
     </script>
 </body>
 </html>
+
 
