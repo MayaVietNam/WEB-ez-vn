@@ -244,21 +244,30 @@
             const langViBtn = document.getElementById('lang-vi-btn');
             const langEnBtn = document.getElementById('lang-en-btn');
             
-            // --- FUNCTIONS ---
+            const loginUsernameInput = document.getElementById('login-username');
+            const loginButton = document.getElementById('login-button');
+            const loginError = document.getElementById('login-error');
+            const loginRememberMe = document.getElementById('login-remember-me');
+            
+            const historyQueryInput = document.getElementById('history-query');
+            const historyButton = document.getElementById('history-button');
+            const historyError = document.getElementById('history-error');
+
+            const historyModal = document.getElementById('history-modal');
+            const closeModalButton = document.getElementById('close-modal-button');
+            const historyContent = document.getElementById('history-content');
+            const historyModalTitle = document.getElementById('history-modal-title');
+
             function setLanguage(lang) {
                 document.documentElement.lang = lang;
                 const translation = translations[lang];
                 document.querySelectorAll('[data-key]').forEach(el => {
                     const key = el.getAttribute('data-key');
-                    if (translation[key]) {
-                        el.textContent = translation[key];
-                    }
+                    if (translation[key]) el.textContent = translation[key];
                 });
-                 document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+                document.querySelectorAll('[data-key-placeholder]').forEach(el => {
                     const key = el.getAttribute('data-key-placeholder');
-                    if (translation[key]) {
-                        el.placeholder = translation[key];
-                    }
+                    if (translation[key]) el.placeholder = translation[key];
                 });
 
                 if (lang === 'en') {
@@ -276,14 +285,139 @@
                 }
             }
 
+            function handleLogin() {
+                const username = loginUsernameInput.value.trim().toLowerCase();
+                if (accounts[username]) {
+                    if (loginRememberMe.checked) {
+                        localStorage.setItem('savedLoginUsername', username);
+                    } else {
+                        localStorage.removeItem('savedLoginUsername');
+                    }
+                    loginError.textContent = 'Đăng nhập thành công, đang chuyển hướng...';
+                    loginError.classList.remove('text-red-500');
+                    loginError.classList.add('text-green-500');
+                    setTimeout(() => { window.location.href = accounts[username].path; }, 500);
+                } else {
+                    loginError.textContent = 'Tài khoản không hợp lệ.';
+                    loginError.classList.add('text-red-500');
+                    loginError.classList.remove('text-green-500');
+                }
+            }
+
+            async function handleHistorySearch() {
+                const query = historyQueryInput.value.trim();
+                if (!query) {
+                    historyError.textContent = 'Vui lòng nhập thông tin tra cứu.';
+                    return;
+                }
+                historyError.textContent = ''; 
+
+                let accountInfo;
+                let searchParam;
+                const knownUsers = ['his_user', 'toyota_user', 'yamaha_user'];
+
+                if (knownUsers.includes(query.toLowerCase())) {
+                    accountInfo = accounts[query.toLowerCase()];
+                    searchParam = `unit=${accountInfo.unit}`;
+                } else {
+                    accountInfo = accounts['corporate_search'];
+                    searchParam = `taxCode=${encodeURIComponent(query)}`;
+                }
+
+                if (!accountInfo) {
+                    historyError.textContent = 'Thông tin tra cứu không hợp lệ.';
+                    return;
+                }
+                
+                const scriptUrl = accountInfo.scriptUrl;
+                if (!scriptUrl || scriptUrl.includes('URL_SCRIPT')) {
+                    historyError.textContent = 'Lỗi cấu hình: URL script chưa được thiết lập.';
+                    return;
+                }
+                
+                historyModalTitle.textContent = `Kết quả tra cứu cho: ${query}`;
+                historyContent.innerHTML = '<p class="text-center p-8 text-lg">Đang tải dữ liệu, vui lòng chờ...</p>';
+                historyModal.classList.remove('hidden');
+
+                try {
+                    const response = await fetch(`${scriptUrl}?${searchParam}`);
+                    const result = await response.json();
+                    if (result.result === 'success' && result.data) {
+                        if (result.data.length === 0) {
+                            historyContent.innerHTML = `<p class="text-gray-500 text-center p-8 text-lg">Không tìm thấy đơn hàng nào khớp với thông tin tra cứu.</p>`;
+                            return;
+                        }
+                        
+                        const formatCurrency = (val) => val != null && !isNaN(Number(val)) ? Number(val).toLocaleString("vi-VN") + " VND" : (val || '-');
+                        const formatDate = (dateString) => {
+                            if (!dateString || dateString === '-') return '-';
+                            const date = new Date(dateString);
+                            if (isNaN(date)) return dateString;
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${day}/${month}/${year}`;
+                        };
+                        const groupedData = result.data.reduce((acc, row) => {
+                            const toDate = row.toDate ? new Date(row.toDate) : null;
+                            const monthYear = (toDate && !isNaN(toDate)) ? `Tháng ${toDate.getMonth() + 1}, năm ${toDate.getFullYear()}` : "Chưa xác định ngày";
+                            if (!acc[monthYear]) acc[monthYear] = [];
+                            acc[monthYear].push(row);
+                            return acc;
+                        }, {});
+                        let finalHTML = '';
+                        const headers = Object.keys(result.data[0]);
+                        const priceColumns = ['unitPrice', 'total', 'vat', 'grandTotal', 'shippingFee', 'discountAmount'];
+                        const dateColumns = ['recordTime', 'submissionTime', 'fromDate', 'toDate', 'shippingDate', 'actionTimestamp'];
+                        const sortedMonths = Object.keys(groupedData).sort((a, b) => {
+                             if (a.startsWith("Chưa")) return 1; if (b.startsWith("Chưa")) return -1;
+                             const dateA = new Date(a.replace('Tháng ', '').replace(', năm ', '/1/'));
+                             const dateB = new Date(b.replace('Tháng ', '').replace(', năm ', '/1/'));
+                             return dateB - dateA;
+                        });
+                        for (const monthYear of sortedMonths) {
+                            finalHTML += `<h4 class="text-xl font-bold mt-6 mb-3 text-gray-800">${monthYear}</h4><div class="overflow-x-auto border rounded-lg"><table class="min-w-full divide-y divide-gray-200"><thead><tr>`;
+                            headers.forEach(header => { finalHTML += `<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header}</th>`; });
+                            finalHTML += '</tr></thead><tbody class="bg-white divide-y divide-gray-200">';
+                            groupedData[monthYear].forEach(row => {
+                                finalHTML += '<tr>';
+                                headers.forEach(header => {
+                                    let cellData = row[header] == null ? '-' : row[header];
+                                    if (priceColumns.includes(header)) cellData = formatCurrency(cellData);
+                                    else if (dateColumns.includes(header)) cellData = formatDate(cellData);
+                                    finalHTML += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${cellData}</td>`;
+                                });
+                                finalHTML += '</tr>';
+                            });
+                            finalHTML += '</tbody></table></div>';
+                        }
+                        historyContent.innerHTML = finalHTML;
+                    } else {
+                        throw new Error(result.error || 'Lỗi không xác định');
+                    }
+                } catch (error) {
+                    historyContent.innerHTML = `<p class="text-red-500 text-center p-8 text-lg">Lỗi khi tải dữ liệu: ${error.message}</p>`;
+                }
+            }
+
             // --- INITIALIZE ---
             setLanguage('vi');
             
             // --- EVENT LISTENERS ---
             langViBtn.addEventListener('click', () => setLanguage('vi'));
             langEnBtn.addEventListener('click', () => setLanguage('en'));
-
-            // ... (Phần Event Listeners cho Login và History giữ nguyên) ...
+            loginButton.addEventListener('click', handleLogin);
+            loginUsernameInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleLogin(); });
+            historyButton.addEventListener('click', handleHistorySearch);
+            historyQueryInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleHistorySearch(); });
+            closeModalButton.addEventListener('click', () => historyModal.classList.add('hidden'));
+            historyModal.querySelector('.modal-backdrop').addEventListener('click', () => historyModal.classList.add('hidden'));
+            
+            const savedUsername = localStorage.getItem('savedLoginUsername');
+            if (savedUsername) {
+                loginUsernameInput.value = savedUsername;
+                loginRememberMe.checked = true;
+            }
         });
     </script>
 
