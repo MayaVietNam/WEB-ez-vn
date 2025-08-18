@@ -4,25 +4,29 @@
     <meta charset="UTF-8">
     <title>ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- [SỬA LỖI] Đặt mã bảo mật vào đúng thẻ script -->
     <script>
-    // Security Redirect: Block direct access to this form
-    (function() {
-        // URL của trang chủ mà bạn cho phép truy cập từ đó
-        const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
+        // Security Redirect: Block direct access to this form
+        (function() {
+            // URL của trang chủ mà bạn cho phép truy cập từ đó
+            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
 
-        // Kiểm tra xem người dùng có đến từ trang chủ không
-        // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
-        if (!document.referrer || !document.referrer.startsWith(allowedReferrer)) {
-            // Nếu không, chuyển hướng họ về trang chủ
-            window.location.href = allowedReferrer;
-        }
-    })();
+            // Kiểm tra xem người dùng có đến từ trang chủ không
+            // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
+            if (!document.referrer || !document.referrer.startsWith(allowedReferrer)) {
+                // Nếu không, chuyển hướng họ về trang chủ
+                window.location.href = allowedReferrer;
+            }
+        })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <!-- [QUAN TRỌNG] Đảm bảo đường dẫn này đúng với file giá của bạn -->
-    <script src="price-table.js"></script> 
+    <script src="../price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
         body { background: #e5eefb; min-height: 100vh; position: relative; box-sizing: border-box; overflow-x: hidden; }
@@ -169,7 +173,7 @@
                 <option value="">-- Chọn gói data --</option>
                 <option value="500MB/ngày">500MB/ngày / 500MB/day</option>
                 <option value="1GB/ngày">1GB/ngày / 1GB/day</option>
-                <option value="5GB/ngày">5GB/ngày / 5GB/ngày</option>
+                <option value="5GB/ngày">5GB/ngày / 5GB/day</option>
             </select>`;
 
         // --- CORE LOGIC ---
@@ -274,7 +278,7 @@
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Nhập Mã Thanh Toán <span class="label-en">Enter Budget Code</span></label>
                         <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
                     </div>
-                    </div>`;
+                </div>`;
             
             container.appendChild(section);
             
@@ -390,7 +394,6 @@
                 return;
             }
 
-            // [CẬP NHẬT] Thêm 'unit' vào payload để gửi lên script tổng
             const payload = {
                 unit: UNIT_NAME,
                 globalSenderInfo: senderInfo,
@@ -399,12 +402,11 @@
             };
             
             try {
-                // Sử dụng script tổng để gửi dữ liệu
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Gửi dưới dạng text để tương thích tốt hơn
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
                 
@@ -431,4 +433,4 @@
     });
     </script>
 </body>
-</ht
+</html>
