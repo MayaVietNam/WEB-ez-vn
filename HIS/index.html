@@ -4,29 +4,34 @@
     <meta charset="UTF-8">
     <title>ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <script>
-    // Security Redirect: Block direct access to this form
-    (function() {
-        // URL của trang chủ mà bạn cho phép truy cập từ đó
-        const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
+    
+    <script>
+        // Security Redirect: Block direct access to this form
+        (function() {
+            // URL của trang chủ mà bạn cho phép truy cập từ đó
+            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
 
-        // Kiểm tra xem người dùng có đến từ trang chủ không
-        // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
-        if (!document.referrer || !document.referrer.startsWith(allowedReferrer)) {
-            // Nếu không, chuyển hướng họ về trang chủ
-            window.location.href = allowedReferrer;
-        }
-    })();
+            // Kiểm tra xem người dùng có đến từ trang chủ không
+            // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
+            if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
+                // Hợp lệ, không làm gì cả
+            } else {
+                // Nếu không, chuyển hướng họ về trang chủ
+                // window.location.href = allowedReferrer;
+            }
+        })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- [QUAN TRỌNG] Đảm bảo đường dẫn này đúng với file giá của bạn -->
-    <script src="price-table.js"></script> 
+    <!-- [QUAN TRỌNG] Đường dẫn đúng đến file price-table.js ở thư mục cha -->
+    <script src="../price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
         body { background: #e5eefb; min-height: 100vh; position: relative; box-sizing: border-box; overflow-x: hidden; }
-        .bg-logo-bg { pointer-events: none; position: fixed; z-index: 0; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
+        .bg-logo-bg { pointer-events: none; position: fixed; z-index: -1; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
         .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.07; will-change: transform; }
         .logo-on-top { display: flex; justify-content: center; margin-bottom: 0.7rem; position: relative; z-index: 2; }
         .logo-on-top img { height: 56px; width: auto; opacity: 0.96; }
@@ -38,18 +43,11 @@
         .footer-company-info .en { color: #2563eb; font-weight: 500; font-size: 0.98em; margin-bottom: 0.2em; letter-spacing: 0.01em; }
         .footer-company-info .line { font-size: 1em; margin-bottom: 2px;}
         .footer-company-info .label { font-weight: 600; }
-        .banner-left, .banner-right { position: fixed; top: 50%; transform: translateY(-50%); z-index: 10; display: none; }
-        .banner-left { left: 200px; }
-        .banner-right { right: 200px; }
-        .banner-left img, .banner-right img { width: 300px; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        @media (min-width: 1200px) { .banner-left, .banner-right { display: block; } }
         @media (max-width: 520px) { .form-container, .footer-company-info { padding: 1.25rem !important; border-radius: 8px; } .footer-company-info { font-size: 0.89em; } }
     </style>
 </head>
 <body class="p-4 sm:p-8">
     <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
-    <div class="banner-left"><a href="https://global-ez.com/" target="_blank"><img src="https://i.postimg.cc/wBQkK8WG/Portal-Tech-Co.gif" alt="Left Advertisement"></a></div>
-    <div class="banner-right"><a href="https://global-ez.com/" target="_blank"><img src="https://i.postimg.cc/7bvfKbyJ/Modern-Fashion-Sale-Retractable-Banner.png" alt="Right Advertisement"></a></div>
     <div class="logo-on-top"><img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo"></div>
     <main>
         <div class="form-container max-w-3xl mx-auto mt-2">
@@ -58,7 +56,6 @@
                 <span class="text-lg font-bold label-en uppercase">WIFI DEVICE RENTAL REGISTRATION FORM</span>
             </h1>
             <form id="wifi-form" autocomplete="on" novalidate>
-                <!-- THÔNG TIN NGƯỜI GỬI -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Thông tin người gửi <span class="label-en">Sender Information</span>
                 </h2>
@@ -93,7 +90,6 @@
                     </div>
                 </div>
 
-                <!-- DANH SÁCH ĐƠN ĐĂNG KÝ -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Chi tiết các đơn thuê <span class="label-en">Rental Request Details</span>
                 </h2>
@@ -105,7 +101,6 @@
                     </button>
                 </div>
                 
-                <!-- Phần thông tin vận chuyển -->
                 <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
                     Thông tin Vận chuyển <span class="label-en">Shipping Information</span>
                 </h2>
@@ -135,7 +130,6 @@
                         </select>
                     </div>
                 </div>
-                <!-- Kết thúc phần thông tin vận chuyển -->
 
                 <div class="flex justify-center">
                     <button id="submit-form-btn" type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 text-lg flex items-center gap-2">
@@ -161,8 +155,10 @@
         // --- CONFIG ---
         const PACKAGE_LIST = ["500MB/ngày", "1GB/ngày", "5GB/ngày"];
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqKgCKJune5u9ezFieKBaTY-P78jOiWExBBgLB7SD-0Yr5svIUn3gsGs-DVHsNvnuf/exec';
         
+        const UNIT_NAME = "HIS";
+
         // --- ELEMENTS ---
         const form = document.getElementById('wifi-form');
         const container = document.getElementById('rental-requests-container');
@@ -174,7 +170,7 @@
         let requestCounter = 0;
 
         // --- HELPERS ---
-        const currency = (val) => val ? Number(val).toLocaleString("vi-VN") + " VND" : "-";
+        const currency = (val) => val != null ? Number(val).toLocaleString("vi-VN") + " VND" : "-";
         
         const calcDays = (from, to) => {
             if (!from || !to) return 1;
@@ -188,7 +184,7 @@
         const calcPrice = (country, pkg, days) => {
             if (typeof PRICE_TABLE === 'undefined' || !PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
             const unit = PRICE_TABLE[country][pkg];
-            if (!unit) return null;
+            if (unit === null || typeof unit === 'undefined') return null;
             const total = unit * days;
             const vat = Math.round(total * 0.1);
             const grandTotal = total + vat;
@@ -234,7 +230,7 @@
                     <span style="color:#2563eb;">Tổng cộng: ${currency(result.grandTotal)}</span>
                 </span>`;
             } else {
-                priceInfo.innerHTML = '<span class="text-red-700 font-semibold">Chưa có giá cho lựa chọn này.</span>';
+                priceInfo.innerHTML = '<span class="text-red-700 font-semibold">Gói cước không áp dụng cho quốc gia này.</span>';
             }
         }
         
@@ -361,13 +357,13 @@
 
             // --- VALIDATION ---
             if (!senderInfo.name || !senderInfo.email || !senderInfo.phone || !senderInfo.region) {
-                Swal.fire("Thiếu thông tin người gửi", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại và Khu vực của người gửi.", "warning");
+                Swal.fire("Thiếu thông tin người gửi", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại và Khu vực.", "warning");
                 setSubmitState(true);
                 return;
             }
 
             if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.method || !shippingInfo.date) {
-                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng, bao gồm cả ngày giao hàng mong muốn.", "warning");
+                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng, bao gồm cả ngày giao hàng.", "warning");
                 setSubmitState(true);
                 return;
             }
@@ -417,6 +413,7 @@
             }
 
             const payload = {
+                unit: UNIT_NAME,
                 globalSenderInfo: senderInfo,
                 shippingInfo: shippingInfo,
                 rentalRequests,
