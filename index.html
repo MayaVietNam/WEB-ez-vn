@@ -84,6 +84,7 @@
                         </div>
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900" data-key="regularOrderTitle">Đơn Hàng Thường</h2>
+                            <p class="text-gray-500" data-key="regularOrderSubtitle">Dành cho khách hàng HIS, Toyota, Yamaha.</p>
                         </div>
                     </div>
                     <div class="space-y-4">
@@ -105,6 +106,7 @@
                         </div>
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900" data-key="corporateOrderTitle">Đơn Hàng Doanh Nghiệp</h2>
+                            <p class="text-gray-500" data-key="corporateOrderSubtitle">Dành cho khách hàng có mã giảm giá.</p>
                         </div>
                     </div>
                     <a href="./corporate-form.html" class="w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-transform transform hover:scale-105 mt-4" data-key="corporateButton">
@@ -163,34 +165,35 @@
         const accounts = {
             'his_user': { 
                 path: './HIS/index.html', 
-                unit: 'HIS',
-                scriptUrl: 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec'
+                unit: 'HIS'
             },
             'toyota_user': { 
                 path: './TOYOTA/index.html', 
-                unit: 'TOYOTA',
-                scriptUrl: 'https://script.google.com/macros/s/AKfycbw3aJxuzREpHk9hKveY1qpXDQgWZ-xek-sVu13eu_upzM7SlGOACSGzIbauSX1JIT0ewA/exec'
+                unit: 'TOYOTA'
             },
             'yamaha_user': { 
                 path: './YAMAHA/index.html', 
-                unit: 'YAMAHA',
-                scriptUrl: 'https://script.google.com/macros/s/AKfycbxfVMV90z_1KosHf83kOFU3NelA8auVoVstflIDuXVlI-RT2LVfOkoeJs7o4rx13f_kww/exec'
+                unit: 'YAMAHA'
             },
             'corporate_search': {
-                unit: 'CorporateOrders',
-                scriptUrl: 'https://script.google.com/a/macros/ez-vn.com/s/AKfycbwVw7Xy1zoyQZUdGoHNy5ux6piCKnGBhCxIzWyDeAuKtMOQtfiEoB233jSzpUjfVxs95Q/exec'
+                unit: 'CorporateOrders'
             }
         };
+
+        // [QUAN TRỌNG] Dán URL script hợp nhất của bạn vào đây
+        const UNIFIED_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqKgCKJune5u9ezFieKBaTY-P78jOiWExBBgLB7SD-0Yr5svIUn3gsGs-DVHsNvnuf/exec';
 
         const translations = {
             vi: {
                 mainTitle: "Cổng Dịch Vụ Wifi",
                 mainSubtitle: "Vui lòng chọn loại dịch vụ bạn muốn sử dụng.",
                 regularOrderTitle: "Đơn Hàng Thường",
+                regularOrderSubtitle: "Dành cho khách hàng HIS, Toyota, Yamaha.",
                 loginPlaceholder: "Nhập tài khoản",
                 rememberMeLabel: "Ghi nhớ tài khoản",
                 loginButton: "Truy Cập Form",
                 corporateOrderTitle: "Đơn Hàng Doanh Nghiệp",
+                corporateOrderSubtitle: "Dành cho khách hàng có mã giảm giá.",
                 corporateButton: "Tạo Đơn Hàng Mới",
                 historyTitle: "Tra Cứu Lịch Sử",
                 historySubtitle: "Xem lại các đơn hàng đã đăng ký.",
@@ -214,10 +217,12 @@
                 mainTitle: "Wifi Service Portal",
                 mainSubtitle: "Please select the service you want to use.",
                 regularOrderTitle: "Standard Orders",
+                regularOrderSubtitle: "For HIS, Toyota, Yamaha customers.",
                 loginPlaceholder: "Enter account",
                 rememberMeLabel: "Remember account",
                 loginButton: "Access Form",
                 corporateOrderTitle: "Corporate Orders",
+                corporateOrderSubtitle: "For customers with discount codes.",
                 corporateButton: "Create New Order",
                 historyTitle: "Order History",
                 historySubtitle: "Review your registered orders.",
@@ -312,27 +317,15 @@
                 }
                 historyError.textContent = ''; 
 
-                let accountInfo;
-                let searchParam;
+                let unit, searchParam;
                 const knownUsers = ['his_user', 'toyota_user', 'yamaha_user'];
 
                 if (knownUsers.includes(query.toLowerCase())) {
-                    accountInfo = accounts[query.toLowerCase()];
-                    searchParam = `unit=${accountInfo.unit}`;
+                    unit = accounts[query.toLowerCase()].unit;
+                    searchParam = `unit=${unit}`;
                 } else {
-                    accountInfo = accounts['corporate_search'];
-                    searchParam = `taxCode=${encodeURIComponent(query)}`;
-                }
-
-                if (!accountInfo) {
-                    historyError.textContent = 'Thông tin tra cứu không hợp lệ.';
-                    return;
-                }
-                
-                const scriptUrl = accountInfo.scriptUrl;
-                if (!scriptUrl || scriptUrl.includes('URL_SCRIPT')) {
-                    historyError.textContent = 'Lỗi cấu hình: URL script chưa được thiết lập.';
-                    return;
+                    unit = accounts['corporate_search'].unit;
+                    searchParam = `unit=${unit}&taxCode=${encodeURIComponent(query)}`;
                 }
                 
                 historyModalTitle.textContent = `Kết quả tra cứu cho: ${query}`;
@@ -340,7 +333,7 @@
                 historyModal.classList.remove('hidden');
 
                 try {
-                    const response = await fetch(`${scriptUrl}?${searchParam}`);
+                    const response = await fetch(`${UNIFIED_SCRIPT_URL}?${searchParam}`);
                     const result = await response.json();
                     if (result.result === 'success' && result.data) {
                         if (result.data.length === 0) {
