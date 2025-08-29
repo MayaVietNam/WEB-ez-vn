@@ -8,14 +8,14 @@
         // Security Redirect: Block direct access to this form
         (function() {
             // URL của trang chủ mà bạn cho phép truy cập từ đó
-            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
+            const allowedReferrer = "https://ez-vn.com/"; // <-- XÁC NHẬN LẠI ĐỊA CHỈ NÀY CHO ĐÚNG
 
             // Kiểm tra xem người dùng có đến từ trang chủ không
             if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
                 // Hợp lệ, không làm gì cả
             } else {
                 // Nếu không, chuyển hướng họ về trang chủ
-                // window.location.href = allowedReferrer;
+                window.location.href = allowedReferrer;
             }
         })();
     </script>
@@ -239,10 +239,18 @@
         
         const calcDays = (from, to) => {
             if (!from || !to) return 1;
-            const d1 = new Date(from + 'T00:00:00Z');
-            const d2 = new Date(to + 'T00:00:00Z');
-            const ms = d2.getTime() - d1.getTime();
+            // Tách chuỗi ngày tháng để tránh các vấn đề về múi giờ
+            const fromParts = from.split('-').map(Number);
+            const toParts = to.split('-').map(Number);
+            
+            // Tạo ngày bằng Date.UTC để đảm bảo tính toán nhất quán
+            const d1 = Date.UTC(fromParts[0], fromParts[1] - 1, fromParts[2]);
+            const d2 = Date.UTC(toParts[0], toParts[1] - 1, toParts[2]);
+
+            const ms = d2 - d1;
             if (ms < 0) return 1;
+            
+            // 86400000 = 1000ms * 60s * 60min * 24h
             return Math.round(ms / 86400000) + 1;
         };
 
@@ -487,15 +495,26 @@
             };
             
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-                Swal.fire("Thành công!", "Đơn đăng ký đã được gửi đi.<br>Vui lòng kiểm tra email để xem báo giá chi tiết.", "success");
-                form.reset();
-                container.innerHTML = '';
-                discountMessage.textContent = '';
-                currentDiscountPercent = 0;
-                createRentalRequestSection();
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.result === "success") {
+                    Swal.fire("Thành công!", "Đơn đăng ký đã được gửi đi.<br>Vui lòng kiểm tra email để xem báo giá chi tiết.", "success");
+                    form.reset();
+                    container.innerHTML = '';
+                    discountMessage.textContent = '';
+                    currentDiscountPercent = 0;
+                    createRentalRequestSection();
+                } else {
+                    throw new Error(result.error || "Lỗi không xác định từ máy chủ.");
+                }
             } catch (err) {
-                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. Vui lòng kiểm tra kết nối mạng và thử lại.", "error");
+                Swal.fire("Lỗi", `Không thể gửi đơn đăng ký. Vui lòng kiểm tra kết nối mạng và thử lại. Chi tiết: ${err.message}`, "error");
             } finally {
                 setSubmitState(true);
             }
