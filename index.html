@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập - Cổng Dịch Vụ Wifi MayaVietNam</title>
+    <title>Cổng Dịch Vụ Thuê Wifi - MayaVietNam</title>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
-        body {
+        body { 
             font-family: 'Be Vietnam Pro', sans-serif;
             background-color: #f0f4f8;
         }
@@ -18,127 +18,129 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
-        .bg-logo-bg { pointer-events: none; position: fixed; z-index: -1; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
-        .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.05; will-change: transform; }
+        .bg-logo-bg { position: fixed; z-index: -1; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
+        .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.05; }
+        .tab-button { transition: all 0.3s ease; }
+        .tab-button.active { border-color: #ef4444; color: #ef4444; font-weight: 700; }
     </style>
 </head>
-<body class="text-gray-800 antialiased relative">
-
+<body class="antialiased">
     <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
-    
-    <div class="flex min-h-screen items-center justify-center p-4">
-        <div class="w-full max-w-md">
-            <div class="glass-container transform transition-all duration-500 hover:scale-105 rounded-2xl p-8 shadow-2xl">
-                
-                <div class="mb-8 text-center">
-                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo" class="mb-4 h-16 w-auto mx-auto">
-                    <h2 class="text-3xl font-bold text-gray-900">Chào Mừng Quay Trở Lại</h2>
-                    <p class="mt-2 text-gray-600">Đăng nhập vào cổng dịch vụ của bạn</p>
-                </div>
+    <div class="min-h-screen flex flex-col sm:flex-row">
+        <!-- Mascot Section -->
+        <div class="w-full sm:w-1/2 flex items-center justify-center p-8 bg-gradient-to-br from-red-50 to-blue-100">
+            <div class="text-center">
+                <img src="https://i.postimg.cc/Qd911d3y/EZ-MASCOT-13.png" alt="Linh vật EZ Wifi" class="max-w-xs sm:max-w-sm mx-auto">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mt-6">Kết nối không giới hạn</h1>
+                <p class="text-gray-600 mt-2">Dịch vụ Wifi du lịch hàng đầu Việt Nam</p>
+            </div>
+        </div>
 
-                <form id="login-form" class="space-y-6">
-                    <div>
-                        <label for="login-account" class="block text-sm font-semibold text-gray-700">Tài khoản (Đối tác hoặc MST)</label>
-                        <input type="text" id="login-account" class="mt-1 block w-full rounded-lg border-gray-300 bg-white/70 px-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
+        <!-- Login Section -->
+        <div class="w-full sm:w-1/2 flex items-center justify-center p-6">
+            <div class="w-full max-w-md">
+                 <div class="text-center mb-8">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo" class="h-14 w-auto mx-auto">
+                 </div>
+                <div class="glass-container rounded-2xl p-8 shadow-2xl">
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-300 mb-6">
+                        <button id="partner-tab" class="tab-button active w-1/2 py-3 text-center font-semibold text-gray-500 border-b-4 border-transparent">Đối Tác</button>
+                        <button id="corp-tab" class="tab-button w-1/2 py-3 text-center font-semibold text-gray-500 border-b-4 border-transparent">Doanh Nghiệp</button>
                     </div>
-                    <div>
-                        <label for="login-password" class="block text-sm font-semibold text-gray-700">Mật khẩu</label>
-                        <input type="password" id="login-password" class="mt-1 block w-full rounded-lg border-gray-300 bg-white/70 px-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
-                    </div>
-                    <p id="login-error" class="text-sm text-red-600 h-4 text-center"></p>
-                    <div>
-                        <button type="submit" id="login-button" class="flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-transform transform hover:scale-105">
-                            <span id="login-spinner" class="hidden h-5 w-5 animate-spin rounded-full border-b-2 border-white"></span>
-                            <span id="login-text">Đăng Nhập</span>
-                        </button>
-                    </div>
-                </form>
 
-                <div class="mt-6 text-center text-sm">
-                    <p class="text-gray-600">
-                        Doanh nghiệp mới? 
-                        <a href="./Corporate/index.html" class="font-semibold text-indigo-600 hover:text-indigo-500">Đăng ký tại đây</a>
-                    </p>
+                    <!-- Partner Form -->
+                    <form id="partner-form" class="space-y-6">
+                        <input type="text" id="partner-user" placeholder="Tài khoản đối tác" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white/70 focus:ring-2 focus:ring-indigo-500 transition">
+                        <input type="password" id="partner-pass" placeholder="Mật khẩu" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white/70 focus:ring-2 focus:ring-indigo-500 transition">
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg shadow-lg transition-transform transform hover:scale-105">Đăng Nhập</button>
+                    </form>
+
+                    <!-- Corporate Form -->
+                    <form id="corp-form" class="space-y-6 hidden">
+                        <input type="text" id="corp-user" placeholder="Mã số thuế" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white/70 focus:ring-2 focus:ring-indigo-500 transition">
+                        <input type="password" id="corp-pass" placeholder="Mật khẩu" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white/70 focus:ring-2 focus:ring-indigo-500 transition">
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg shadow-lg transition-transform transform hover:scale-105">Đăng Nhập</button>
+                    </form>
+                    
+                    <div id="corp-register-link" class="text-center mt-6 hidden">
+                        <p class="text-sm text-gray-600">Chưa có tài khoản? <a href="./Corporate/index.html" class="font-semibold text-indigo-600 hover:underline">Đăng ký tại đây</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const loginForm = document.getElementById('login-form');
-        const loginAccountInput = document.getElementById('login-account');
-        const loginPasswordInput = document.getElementById('login-password');
-        const loginError = document.getElementById('login-error');
-        const loginButton = document.getElementById('login-button');
-        const loginSpinner = document.getElementById('login-spinner');
-        const loginText = document.getElementById('login-text');
-        
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqKgCKJune5u9ezFieKBaTY-P78jOiWExBBgLB7SD-0Yr5svIUn3gsGs-DVHsNvnuf/exec';
-        
+
         const partnerAccounts = {
             'his_user': { path: './HIS/index.html' },
             'toyota_user': { path: './TOYOTA/index.html' },
             'yamaha_user': { path: './YAMAHA/index.html' }
         };
+        const partnerPassword = "MAYAVIETNAM";
 
-        const setLoginButtonState = (enabled) => {
-            loginButton.disabled = !enabled;
-            loginSpinner.classList.toggle('hidden', enabled);
-            loginText.textContent = enabled ? 'Đăng Nhập' : 'Đang xử lý...';
-        };
+        const partnerTab = document.getElementById('partner-tab');
+        const corpTab = document.getElementById('corp-tab');
+        const partnerForm = document.getElementById('partner-form');
+        const corpForm = document.getElementById('corp-form');
+        const corpRegisterLink = document.getElementById('corp-register-link');
 
-        const handleLogin = async (e) => {
+        function switchTab(activeTab) {
+            if (activeTab === 'partner') {
+                partnerTab.classList.add('active');
+                corpTab.classList.remove('active');
+                partnerForm.classList.remove('hidden');
+                corpForm.classList.add('hidden');
+                corpRegisterLink.classList.add('hidden');
+            } else {
+                corpTab.classList.add('active');
+                partnerTab.classList.remove('active');
+                corpForm.classList.remove('hidden');
+                partnerForm.classList.add('hidden');
+                corpRegisterLink.classList.remove('hidden');
+            }
+        }
+
+        partnerTab.addEventListener('click', () => switchTab('partner'));
+        corpTab.addEventListener('click', () => switchTab('corp'));
+
+        partnerForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            setLoginButtonState(false);
-            loginError.textContent = '';
-            
-            const account = loginAccountInput.value.trim();
-            const password = loginPasswordInput.value.trim();
+            const user = document.getElementById('partner-user').value.trim().toLowerCase();
+            const pass = document.getElementById('partner-pass').value;
+            if (partnerAccounts[user] && pass === partnerPassword) {
+                window.location.href = partnerAccounts[user].path;
+            } else {
+                Swal.fire('Lỗi', 'Tài khoản hoặc mật khẩu đối tác không chính xác.', 'error');
+            }
+        });
 
-            if (!account || !password) {
-                loginError.textContent = 'Vui lòng nhập tài khoản và mật khẩu.';
-                setLoginButtonState(true);
+        corpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const taxCode = document.getElementById('corp-user').value.trim();
+            const password = document.getElementById('corp-pass').value;
+            if (!taxCode || !password) {
+                Swal.fire('Thiếu thông tin', 'Vui lòng nhập Mã số thuế và Mật khẩu.', 'warning');
                 return;
             }
-
-            // Xử lý đăng nhập cho đối tác
-            if (partnerAccounts[account.toLowerCase()] && password === 'MAYAVIETNAM') { // Mật khẩu chung cho đối tác
-                loginError.textContent = 'Đăng nhập thành công, đang chuyển hướng...';
-                loginError.className = 'text-sm text-green-600 h-4 text-center';
-                setTimeout(() => {
-                    window.location.href = partnerAccounts[account.toLowerCase()].path;
-                }, 500);
-                return;
-            }
-
-            // Xử lý đăng nhập cho doanh nghiệp bằng MST
+            Swal.fire({ title: 'Đang đăng nhập...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=login&taxCode=${encodeURIComponent(account)}&password=${encodeURIComponent(password)}`);
-                if (!response.ok) throw new Error("Lỗi mạng hoặc máy chủ.");
-                
+                const response = await fetch(`${SCRIPT_URL}?action=login&taxCode=${taxCode}&password=${encodeURIComponent(password)}`);
                 const result = await response.json();
-
                 if (result.result === 'success' && result.isValid) {
-                    loginError.textContent = 'Đăng nhập thành công, đang chuyển hướng...';
-                    loginError.className = 'text-sm text-green-600 h-4 text-center';
-                    // Chuyển đến trang đặt hàng của doanh nghiệp, mang theo MST
-                    setTimeout(() => {
-                        window.location.href = `./Corporate/order.html?taxCode=${encodeURIComponent(account)}`;
-                    }, 500);
+                    Swal.close();
+                    window.location.href = `./Corporate/order.html?taxCode=${taxCode}`;
                 } else {
-                    loginError.textContent = result.error || 'Tài khoản hoặc mật khẩu không chính xác.';
-                    setLoginButtonState(true);
+                    throw new Error(result.error || 'Tài khoản hoặc mật khẩu không chính xác.');
                 }
             } catch (error) {
-                loginError.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
-                setLoginButtonState(true);
+                Swal.fire('Lỗi', error.message, 'error');
             }
-        };
-
-        loginForm.addEventListener('submit', handleLogin);
-    });
+        });
     </script>
 </body>
 </html>
