@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background-color: #f0f4f8;
+}
+
+.glass-container {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all .3s ease;
+}
+
+.bg-logo-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.bg-logo-bg-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200vw;
+  height: 200vh;
+  transform: translate(-50%,-50%) rotate(-10deg);
+  background: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png') repeat;
+  background-size: 120px auto;
+  opacity: .05;
+}
+
+.tab-button {
+  transition: all .3s ease;
+}
+
+.tab-button.active {
+  color: #ef4444;
+  border-color: #ef4444;
+  font-weight: 700;
+}
