@@ -1,125 +1,347 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>ĐƠN ĐĂNG KÝ (CHIẾT KHẤU DOANH NGHIỆP)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script src="price-table.js"></script> 
+  <meta charset="UTF-8">
+  <title>ĐƠN ĐĂNG KÝ (CHIẾT KHẤU DOANH NGHIỆP)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="styles.css">
+  <!-- Tailwind + SweetAlert2 -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
 
+  <!-- Choices.js -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"
+    defer
+  ></script>
+
+  <!-- BẢNG GIÁ (PRICE_TABLE) -->
+  <script src="price-table.js" defer></script>
+
+  <!-- LOGIC FORM -->
+  <script src="script.js" defer></script>
+
+  <!-- CUSTOM STYLES -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="p-4 sm:p-8">
-    <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
-    <div class="logo-on-top"><img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo"></div>
-    <main>
-        <div class="form-container max-w-3xl mx-auto mt-2">
-            <h1 class="text-3xl font-extrabold text-center text-blue-900 mb-6 tracking-widest uppercase">
-                ĐƠN ĐĂNG KÝ (CHIẾT KHẤU DOANH NGHIỆP)<br>
-                <span class="text-lg font-bold label-en uppercase">CORPORATE DISCOUNT REGISTRATION</span>
-            </h1>
-            <form id="wifi-form" autocomplete="on" novalidate>
-                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
-                    Thông tin người gửi <span class="label-en">Sender Information</span>
-                </h2>
-                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Họ tên người gửi <span class="label-en">Sender's Name</span></label>
-                        <input type="text" id="sender-name" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Email <span class="label-en">Email</span></label>
-                        <input type="email" id="sender-email" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Số điện thoại <span class="label-en">Phone Number</span></label>
-                        <input type="tel" id="sender-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Công ty <span class="label-en">Company</span></label>
-                        <input type="text" id="sender-company" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Khu vực <span class="label-en">Region</span></label>
-                        <select id="sender-region" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                            <option value="">-- Chọn khu vực --</option>
-                            <option value="HN">HN</option>
-                            <option value="HCM">HCM</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Mã số thuế <span class="label-en">Tax Code</span></label>
-                        <input type="text" id="sender-taxcode" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
-                        <div id="discount-message" class="text-sm mt-1 h-5"></div>
-                    </div>
-                </div>
 
-                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
-                    Chi tiết các đơn thuê <span class="label-en">Rental Request Details</span>
-                </h2>
-                <div id="rental-requests-container" class="space-y-8 mb-8"></div>
-                <div class="flex justify-center mb-8">
-                    <button id="add-request-btn" type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 text-md">
-                        + Thêm đơn đăng ký mới
-                        <span class="label-en text-white/90">+ Add new rental request</span>
-                    </button>
-                </div>
-                
-                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
-                    Thông tin Vận chuyển <span class="label-en">Shipping Information</span>
-                </h2>
-                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Tên người nhận <span class="label-en">Recipient's Name</span></label>
-                        <input type="text" id="shipping-recipient" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                    <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">SĐT người nhận <span class="label-en">Recipient's Phone</span></label>
-                        <input type="tel" id="shipping-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Địa chỉ nhận hàng <span class="label-en">Shipping Address</span></label>
-                        <textarea id="shipping-address" rows="3" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required></textarea>
-                    </div>
-                     <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Ngày giao hàng mong muốn <span class="label-en">Desired Delivery Date</span></label>
-                        <input type="date" id="shipping-date" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                    </div>
-                     <div>
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Hình thức vận chuyển <span class="label-en">Shipping Method</span></label>
-                        <select id="shipping-method" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
-                            <option value="">-- Chọn hình thức --</option>
-                            <option value="Chuyển phát nhanh">Chuyển phát nhanh (50,000 VND)</option>
-                            <option value="Hỏa tốc">Hỏa tốc (Phí báo sau)</option>
-                        </select>
-                    </div>
-                </div>
+  <div class="bg-logo-bg">
+    <div class="bg-logo-bg-inner"></div>
+  </div>
 
-                <div class="flex justify-center">
-                    <button id="submit-form-btn" type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 text-lg flex items-center gap-2">
-                        <span id="submit-text">Gửi Yêu Cầu <span class="label-en text-white/90">Submit Request</span></span>
-                        <span id="loading-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
-                    </button>
-                </div>
-            </form>
+  <div class="logo-on-top">
+    <img
+      src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png"
+      alt="EZ Maya Logo"
+    >
+  </div>
+
+  <main>
+    <div class="form-container max-w-3xl mx-auto mt-2">
+      <h1
+        class="text-3xl font-extrabold text-center text-blue-900 mb-6
+               tracking-widest uppercase"
+      >
+        ĐƠN ĐĂNG KÝ (CHIẾT KHẤU DOANH NGHIỆP)<br>
+        <span class="text-lg font-bold label-en uppercase">
+          CORPORATE DISCOUNT REGISTRATION
+        </span>
+      </h1>
+
+      <form id="wifi-form" autocomplete="on" novalidate>
+        <!-- Sender Info -->
+        <h2
+          class="text-xl font-bold text-blue-800 border-b-2 border-blue-200
+                 pb-2 mb-4"
+        >
+          Thông tin người gửi
+          <span class="label-en">Sender Information</span>
+        </h2>
+
+        <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Họ tên người gửi
+              <span class="label-en">Sender's Name</span>
+            </label>
+            <input
+              type="text"
+              id="sender-name"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Email
+              <span class="label-en">Email</span>
+            </label>
+            <input
+              type="email"
+              id="sender-email"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Số điện thoại
+              <span class="label-en">Phone Number</span>
+            </label>
+            <input
+              type="tel"
+              id="sender-phone"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Công ty
+              <span class="label-en">Company</span>
+            </label>
+            <input
+              type="text"
+              id="sender-company"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Khu vực
+              <span class="label-en">Region</span>
+            </label>
+            <select
+              id="sender-region"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+              <option value="">-- Chọn khu vực --</option>
+              <option value="HN">HN</option>
+              <option value="HCM">HCM</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Mã số thuế
+              <span class="label-en">Tax Code</span>
+            </label>
+            <input
+              type="text"
+              id="sender-taxcode"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+            >
+            <div
+              id="discount-message"
+              class="text-sm mt-1 h-5"
+            ></div>
+          </div>
         </div>
-    </main>
-    <footer>
-        <div class="footer-company-info">
-            <h2>CÔNG TY TNHH MAYA VIETNAM</h2>
-            <div class="en">MAYA VIETNAM CO., LTD</div>
-            <div class="line"><span class="label">Địa chỉ:</span> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam</div>
-            <div class="line en"><span class="label">Address:</span> Room 1630, 16th Floor, DAEHA BUSINESS CENTER, 360 Kim Ma, Giang Vo, Hanoi, Vietnam</div>
-            <div class="line"><span class="label">Hotline:</span> <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Tiếng Việt) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Tiếng Nhật)</div>
-            <div class="line en"><span class="label">Hotline:</span> <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Vietnamese) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Japanese)</div>
-        </div>
-    </footer>
 
-    <script src="script.js"></script>
+        <!-- Rental Requests -->
+        <h2
+          class="text-xl font-bold text-blue-800 border-b-2 border-blue-200
+                 pb-2 mb-4"
+        >
+          Chi tiết các đơn thuê
+          <span class="label-en">Rental Request Details</span>
+        </h2>
+
+        <div
+          id="rental-requests-container"
+          class="space-y-8 mb-8"
+        ></div>
+
+        <div class="flex justify-center mb-8">
+          <button
+            id="add-request-btn"
+            type="button"
+            class="bg-blue-600 hover:bg-blue-700 text-white
+                   font-semibold py-3 px-6 rounded-lg shadow-md
+                   transition duration-300 text-md"
+          >
+            + Thêm đơn đăng ký mới
+            <span class="label-en text-white/90">
+              + Add new rental request
+            </span>
+          </button>
+        </div>
+
+        <!-- Shipping Info -->
+        <h2
+          class="text-xl font-bold text-blue-800 border-b-2 border-blue-200
+                 pb-2 mb-4"
+        >
+          Thông tin Vận chuyển
+          <span class="label-en">Shipping Information</span>
+        </h2>
+
+        <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Tên người nhận
+              <span class="label-en">Recipient's Name</span>
+            </label>
+            <input
+              type="text"
+              id="shipping-recipient"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              SĐT người nhận
+              <span class="label-en">Recipient's Phone</span>
+            </label>
+            <input
+              type="tel"
+              id="shipping-phone"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div class="sm:col-span-2">
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Địa chỉ nhận hàng
+              <span class="label-en">Shipping Address</span>
+            </label>
+            <textarea
+              id="shipping-address"
+              rows="3"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Ngày giao hàng mong muốn
+              <span class="label-en">Desired Delivery Date</span>
+            </label>
+            <input
+              type="date"
+              id="shipping-date"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+          </div>
+
+          <div>
+            <label
+              class="block text-blue-800 text-sm font-semibold mb-2"
+            >
+              Hình thức vận chuyển
+              <span class="label-en">Shipping Method</span>
+            </label>
+            <select
+              id="shipping-method"
+              class="w-full px-4 py-2 border border-blue-300
+                     rounded-lg text-blue-900"
+              required
+            >
+              <option value="">-- Chọn hình thức --</option>
+              <option value="Chuyển phát nhanh">
+                Chuyển phát nhanh (50,000 VND)
+              </option>
+              <option value="Hỏa tốc">
+                Hỏa tốc (Phí báo sau)
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-center">
+          <button
+            id="submit-form-btn"
+            type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white font-bold
+                   py-3 px-8 rounded-lg shadow-xl transition duration-300
+                   text-lg flex items-center gap-2"
+          >
+            <span id="submit-text">
+              Gửi Yêu Cầu
+              <span class="label-en text-white/90">
+                Submit Request
+              </span>
+            </span>
+            <span
+              id="loading-spinner"
+              class="hidden animate-spin rounded-full
+                     h-5 w-5 border-b-2 border-white"
+            ></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-company-info">
+      <h2>CÔNG TY TNHH MAYA VIETNAM</h2>
+      <div class="en">MAYA VIETNAM CO., LTD</div>
+      <div class="line">
+        <span class="label">Địa chỉ:</span>
+        Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam
+      </div>
+      <div class="line en">
+        <span class="label">Address:</span>
+        Room 1630, 16th Floor, DAEHA BUSINESS CENTER, 360 Kim Ma, Giang Vo, Hanoi, Vietnam
+      </div>
+      <div class="line">
+        <span class="label">Hotline:</span>
+        <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Tiếng Việt) |
+        <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Tiếng Nhật)
+      </div>
+      <div class="line en">
+        <span class="label">Hotline:</span>
+        <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Vietnamese) |
+        <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Japanese)
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
