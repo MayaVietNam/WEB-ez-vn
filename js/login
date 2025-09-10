@@ -1,44 +1,40 @@
+// js/login.js
+
 document.addEventListener('DOMContentLoaded', () => {
-  const partnerTab = document.getElementById('partner-tab');
-  const corpTab    = document.getElementById('corp-tab');
-  const partnerForm= document.getElementById('partner-form');
-  const corpForm   = document.getElementById('corp-form');
+  const container    = document.getElementById('container');
+  const signUpBtn    = document.getElementById('corp-btn');
+  const signInBtn    = document.getElementById('partner-btn');
+  const partnerForm  = document.getElementById('partner-form');
+  const corpForm     = document.getElementById('corp-form');
 
-  // Chuyển tab
-  function switchTab(isPartner) {
-    partnerForm.classList.toggle('hidden', !isPartner);
-    corpForm.classList.toggle('hidden', isPartner);
-    partnerTab.classList.toggle('active', isPartner);
-    corpTab.classList.toggle('active', !isPartner);
-    partnerTab.setAttribute('aria-selected', isPartner);
-    corpTab.setAttribute('aria-selected', !isPartner);
-  }
-  partnerTab.addEventListener('click', () => switchTab(true));
-  corpTab.addEventListener('click',    () => switchTab(false));
+  // Toggle panels
+  signUpBtn.addEventListener('click', () => {
+    container.classList.add('right-panel-active');
+  });
+  signInBtn.addEventListener('click', () => {
+    container.classList.remove('right-panel-active');
+  });
 
-  // Xử lý login Đối tác (giữ nguyên logic cũ)
+  // Partner login
   partnerForm.addEventListener('submit', e => {
     e.preventDefault();
-    const user = document.getElementById('partner-user').value.trim().toLowerCase();
-    const pass = document.getElementById('partner-pass').value;
-    // Ví dụ kiểm tra tĩnh
-    if (user === 'his_user' && pass === 'MAYAVIETNAM') {
+    const u = document.getElementById('partner-user').value.trim().toLowerCase();
+    const p = document.getElementById('partner-pass').value;
+    if (u === 'his_user' && p === 'MAYAVIETNAM') {
       window.location.href = './HIS/index.html';
     } else {
-      Swal.fire('Lỗi', 'Tài khoản đối tác không đúng.', 'error');
+      Swal.fire('Lỗi', 'Tài khoản hoặc mật khẩu không đúng.', 'error');
     }
   });
 
-  // Xử lý login Doanh nghiệp chỉ với Tax Code
+  // Corporate login (tax code)
   corpForm.addEventListener('submit', e => {
     e.preventDefault();
-    const taxCode = document.getElementById('corp-tax-code').value.trim();
-    if (!taxCode) {
-      return Swal.fire('Thiếu thông tin', 'Vui lòng nhập Mã số thuế.', 'warning');
+    const code = document.getElementById('corp-tax-code').value.trim();
+    if (!code) {
+      return Swal.fire('Thiếu thông tin', 'Nhập mã số thuế doanh nghiệp.', 'warning');
     }
-    // Lưu Tax Code vào sessionStorage
-    sessionStorage.setItem('corpTaxCode', taxCode);
-    // Chuyển thẳng vào trang đăng ký bộ phát
+    sessionStorage.setItem('corpTaxCode', code);
     window.location.href = './Corporate/router.html';
   });
 });
