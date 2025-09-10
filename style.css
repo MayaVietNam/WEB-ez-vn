@@ -1,15 +1,19 @@
-/* Reset & font */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Reset & Font */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body {
   font-family: 'Poppins', sans-serif;
   background: #f6f5f7;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
 }
 
-/* Container */
+/* Main Container */
 .container {
   background: #fff;
   border-radius: 10px;
@@ -23,19 +27,18 @@ body {
   min-height: 480px;
 }
 
-/* Forms */
+/* Form Containers */
 .form-container {
   position: absolute;
-  top: 0; height: 100%;
+  top: 0;
+  height: 100%;
   transition: all 0.6s ease-in-out;
 }
-
 .sign-in {
   left: 0;
   width: 50%;
   z-index: 2;
 }
-
 .sign-up {
   left: 0;
   width: 50%;
@@ -43,7 +46,7 @@ body {
   z-index: 1;
 }
 
-/* When active, slide panels */
+/* Toggle Forms */
 .container.right-panel-active .sign-in {
   transform: translateX(100%);
 }
@@ -53,10 +56,15 @@ body {
   z-index: 5;
   animation: show 0.6s;
 }
-
 @keyframes show {
-  0%, 49.99% { opacity: 0; transform: translateX(0); }
-  50%, 100%   { opacity: 1; transform: translateX(0); }
+  0%, 49.99% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  50%, 100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Overlay */
@@ -70,7 +78,6 @@ body {
   transition: transform 0.6s ease-in-out;
   z-index: 100;
 }
-
 .container.right-panel-active .overlay-container {
   transform: translateX(-100%);
 }
@@ -80,12 +87,11 @@ body {
   color: #ffffff;
   position: relative;
   left: -100%;
-  height: 100%;
   width: 200%;
+  height: 100%;
   transform: translateX(0);
   transition: transform 0.6s ease-in-out;
 }
-
 .container.right-panel-active .overlay {
   transform: translateX(50%);
 }
@@ -99,29 +105,25 @@ body {
   padding: 0 40px;
   text-align: center;
   top: 0;
-  height: 100%;
   width: 50%;
+  height: 100%;
   transition: transform 0.6s ease-in-out;
 }
-
 .overlay-left {
   transform: translateX(-20%);
 }
-
 .container.right-panel-active .overlay-left {
   transform: translateX(0);
 }
-
 .overlay-right {
   right: 0;
   transform: translateX(0);
 }
-
 .container.right-panel-active .overlay-right {
   transform: translateX(20%);
 }
 
-/* Form styling */
+/* Forms */
 form {
   background: #fff;
   display: flex;
@@ -132,12 +134,10 @@ form {
   height: 100%;
   text-align: center;
 }
-
 form h1 {
   font-weight: 600;
   margin-bottom: 20px;
 }
-
 form input {
   background: #eee;
   border: none;
@@ -146,7 +146,6 @@ form input {
   width: 100%;
   border-radius: 5px;
 }
-
 form button {
   border: none;
   padding: 12px 45px;
@@ -159,16 +158,14 @@ form button {
   border-radius: 20px;
   transition: transform 80ms ease-in;
 }
-
 form button:active {
   transform: scale(0.95);
 }
-
 form button:focus {
   outline: none;
 }
 
-/* Ghost button */
+/* Ghost Button */
 button.ghost {
   background-color: transparent;
   border: 2px solid #ffffff;
@@ -179,7 +176,6 @@ button.ghost {
   border-radius: 20px;
   transition: background-color 0.3s ease;
 }
-
 button.ghost:hover {
   background-color: rgba(255,255,255,0.2);
 }

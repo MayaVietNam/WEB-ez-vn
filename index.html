@@ -2,153 +2,60 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>EZ Đăng Nhập</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EZ Đăng Nhập</title>
 
   <!-- Google Font -->
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
     rel="stylesheet"
   />
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Poppins', 'sans-serif'],
-          },
-          colors: {
-            ezblue: '#2563EB',
-            ezpink: '#9333EA',
-            ezred:  '#EF4444',
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
 
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-
-<<<<<<< HEAD
-  <!-- Google Font -->
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" 
-    rel="stylesheet"
-  />
-
-  <!-- Our styles -->
-  <link rel="stylesheet" href="style.css" />
-=======
-  <style>
-    /* Animated gradient background */
-    body {
-      @apply min-h-screen flex items-center justify-center overflow-hidden;
-      background: linear-gradient(45deg, #2563EB, #9333EA, #EF4444, #2563EB);
-      background-size: 600% 600%;
-      animation: gradientBG 20s ease infinite;
-    }
-    @keyframes gradientBG {
-      0%   { background-position: 0%   50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0%   50%; }
-    }
-
-    /* Floating blobs */
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      animation: float 15s ease-in-out infinite;
-      z-index: 0;
-    }
-    .blob:nth-child(1) { width: 250px; height: 250px; top: -60px;  left: -80px; }
-    .blob:nth-child(2) { width: 350px; height: 350px; bottom: -100px; right: -100px; }
-    @keyframes float {
-      0%   { transform: translate(0,  0)    scale(1); }
-      50%  { transform: translate(20px,20px) scale(1.1); }
-      100% { transform: translate(0,  0)    scale(1); }
-    }
-
-    /* Glassmorphism card */
-    .glass-card {
-      @apply relative z-10 w-full max-w-md p-8 bg-white/25 backdrop-blur-lg 
-             border border-white/30 rounded-xl shadow-2xl;
-    }
-
-    /* Tab button */
-    .tab-btn {
-      @apply flex-1 py-2 text-center font-semibold text-white/75 cursor-pointer;
-    }
-    .tab-btn.active {
-      @apply text-white border-b-2 border-white;
-    }
-
-    /* Input style */
-    .input-base {
-      @apply w-full px-4 py-3 bg-white/80 border border-transparent rounded-lg 
-             focus:outline-none focus:ring-2 focus:ring-white/80 transition;
-    }
-
-    /* Submit button */
-    .btn-ez {
-      @apply w-full py-3 rounded-lg text-white font-semibold 
-             bg-gradient-to-r from-ezblue to-ezpink shadow-lg
-             hover:from-ezpink hover:to-ezblue transition-transform transform hover:scale-105;
-    }
-  </style>
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
+  <!-- Login Logic -->
+  <script src="js/login.js" defer></script>
 </head>
-
 <body>
-<<<<<<< HEAD
   <div class="container" id="container">
-    <!-- Partner Sign-In -->
+    <!-- Partner Sign-In Form -->
     <div class="form-container sign-in">
       <form id="partner-form">
         <h1>Đối Tác</h1>
-        <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
-        <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
+        <input
+          type="text"
+          id="partner-user"
+          placeholder="Tài khoản đăng nhập"
+          required
+        />
+        <input
+          type="password"
+          id="partner-pass"
+          placeholder="Mật khẩu"
+          required
+        />
         <button type="submit">Đăng Nhập</button>
       </form>
-=======
-  <!-- Animated blobs -->
-  <div class="blob"></div>
-  <div class="blob"></div>
-
-  <div class="glass-card">
-    <!-- Logo -->
-    <div class="mb-6 text-center">
-      <img 
-        src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" 
-        alt="EZ Logo" 
-        class="mx-auto h-12"
-      />
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
     </div>
 
-<<<<<<< HEAD
-    <!-- Corporate Sign-Up (Tax Code) -->
+    <!-- Corporate Sign-Up Form -->
     <div class="form-container sign-up">
       <form id="corp-form">
         <h1>Doanh Nghiệp</h1>
-        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
+        <input
+          type="text"
+          id="corp-tax-code"
+          placeholder="Mã số thuế doanh nghiệp"
+          required
+        />
         <button type="submit">Tiếp Tục</button>
       </form>
-=======
-    <!-- Tabs -->
-    <div class="flex mb-6">
-      <div id="partner-tab" class="tab-btn active">Đối Tác</div>
-      <div id="corp-tab"    class="tab-btn">Doanh Nghiệp</div>
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
     </div>
 
-<<<<<<< HEAD
-    <!-- Overlay panels -->
+    <!-- Overlay Panels -->
     <div class="overlay-container">
       <div class="overlay">
         <div class="overlay-panel overlay-left">
@@ -163,87 +70,6 @@
         </div>
       </div>
     </div>
-=======
-    <!-- Partner Form -->
-    <form id="partner-form" class="space-y-4">
-      <input 
-        type="text" 
-        id="partner-user" 
-        placeholder="Tài khoản đối tác" 
-        class="input-base" 
-        required
-      />
-      <input 
-        type="password" 
-        id="partner-pass" 
-        placeholder="Mật khẩu" 
-        class="input-base" 
-        required
-      />
-      <button type="submit" class="btn-ez">Đăng Nhập</button>
-    </form>
-
-    <!-- Corporate Form -->
-    <form id="corp-form" class="space-y-4 hidden">
-      <input 
-        type="text" 
-        id="corp-tax-code" 
-        placeholder="Mã số thuế doanh nghiệp" 
-        class="input-base" 
-        required
-      />
-      <button type="submit" class="btn-ez">Tiếp Tục</button>
-    </form>
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
   </div>
-
-<<<<<<< HEAD
-  <!-- Our login logic -->
-  <script src="js/login.js" defer></script>
-=======
-  <!-- Login Logic -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const pTab    = document.getElementById('partner-tab');
-      const cTab    = document.getElementById('corp-tab');
-      const pForm   = document.getElementById('partner-form');
-      const cForm   = document.getElementById('corp-form');
-
-      function switchTab(isPartner) {
-        pForm.classList.toggle('hidden', !isPartner);
-        cForm.classList.toggle('hidden',  isPartner);
-        pTab.classList.toggle('active',  isPartner);
-        cTab.classList.toggle('active', !isPartner);
-      }
-
-      pTab.addEventListener('click', () => switchTab(true));
-      cTab.addEventListener('click', () => switchTab(false));
-
-      // Đăng nhập Partner
-      pForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const u = document.getElementById('partner-user').value.trim().toLowerCase();
-        const p = document.getElementById('partner-pass').value;
-        if (u === 'his_user' && p === 'MAYAVIETNAM') {
-          window.location.href = './HIS/index.html';
-        } else {
-          Swal.fire('Lỗi', 'Tài khoản hoặc mật khẩu không đúng.', 'error');
-        }
-      });
-
-      // Doanh nghiệp: chỉ cần tax code
-      cForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const code = document.getElementById('corp-tax-code').value.trim();
-        if (!code) {
-          Swal.fire('Thiếu thông tin', 'Nhập Mã số thuế doanh nghiệp.', 'warning');
-          return;
-        }
-        sessionStorage.setItem('corpTaxCode', code);
-        window.location.href = './Corporate/router.html';
-      });
-    });
-  </script>
->>>>>>> fd0a688c17b7acf6883da5268ab7bec1b3fc1775
 </body>
 </html>
