@@ -2,57 +2,129 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Đăng Nhập Đối Tác / Doanh Nghiệp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EZ Đăng Nhập</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(circle at center, #e0f2fe, #c7d2fe)',
+          },
+          colors: {
+            ezblue: '#2563eb',
+            ezred: '#dc2626',
+          }
+        }
+      }
+    }
+  </script>
+
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-  <!-- CSS chung -->
-  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background: radial-gradient(circle at center, #e0f2fe, #c7d2fe);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .glass-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .tab-button.active {
+      border-b-2: solid;
+      border-color: #2563eb;
+      font-weight: bold;
+      color: #2563eb;
+    }
+    .input-base {
+      @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ezblue transition;
+    }
+    .btn-red {
+      @apply bg-ezred hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105;
+    }
+  </style>
 </head>
-<body class="antialiased">
+<body>
 
-  <div class="min-h-screen flex items-center justify-center p-6 bg-gray-50">
-    <div class="w-full max-w-md glass-container p-8 shadow-lg rounded-2xl">
-      <!-- Logo -->
-      <div class="text-center mb-6">
-        <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png"
-             alt="EZ Logo"
-             class="mx-auto h-12 w-auto">
-      </div>
-
-      <!-- Tab buttons -->
-      <div role="tablist" class="flex mb-6 border-b">
-        <button id="partner-tab" role="tab" aria-selected="true"
-                class="tab-button active w-1/2 py-2 text-center">
-          Đối Tác
-        </button>
-        <button id="corp-tab" role="tab" aria-selected="false"
-                class="tab-button w-1/2 py-2 text-center">
-          Doanh Nghiệp
-        </button>
-      </div>
-
-      <!-- Partner Form -->
-      <form id="partner-form" class="space-y-4">
-        <input type="text" id="partner-user" placeholder="Tài khoản đối tác" required
-               class="input-base">
-        <input type="password" id="partner-pass" placeholder="Mật khẩu" required
-               class="input-base">
-        <button type="submit" class="btn-red w-full">Đăng Nhập</button>
-      </form>
-
-      <!-- Corporate Form: chỉ Mã số thuế -->
-      <form id="corp-form" class="space-y-4 hidden">
-        <input type="text" id="corp-tax-code" placeholder="Mã số thuế" required
-               class="input-base">
-        <button type="submit" class="btn-red w-full">Tiếp Tục</button>
-      </form>
+  <div class="glass-card w-full max-w-md p-8">
+    <div class="text-center mb-6">
+      <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Logo" class="mx-auto h-12">
     </div>
+
+    <!-- Tabs -->
+    <div class="flex justify-center mb-6">
+      <button id="partner-tab" class="w-1/2 py-2 text-center tab-button active">Đối Tác</button>
+      <button id="corp-tab" class="w-1/2 py-2 text-center tab-button">Doanh Nghiệp</button>
+    </div>
+
+    <!-- Partner Form -->
+    <form id="partner-form" class="space-y-4">
+      <input type="text" id="partner-user" placeholder="Tài khoản đối tác" class="input-base" required>
+      <input type="password" id="partner-pass" placeholder="Mật khẩu" class="input-base" required>
+      <button type="submit" class="btn-red w-full">Đăng Nhập</button>
+    </form>
+
+    <!-- Corporate Form -->
+    <form id="corp-form" class="space-y-4 hidden">
+      <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" class="input-base" required>
+      <button type="submit" class="btn-red w-full">Tiếp Tục</button>
+    </form>
   </div>
 
-  <script src="js/login.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pTab = document.getElementById('partner-tab');
+      const cTab = document.getElementById('corp-tab');
+      const pForm = document.getElementById('partner-form');
+      const cForm = document.getElementById('corp-form');
+
+      function switchTab(isPartner) {
+        pForm.classList.toggle('hidden', !isPartner);
+        cForm.classList.toggle('hidden', isPartner);
+        pTab.classList.toggle('active', isPartner);
+        cTab.classList.toggle('active', !isPartner);
+      }
+
+      pTab.addEventListener('click', () => switchTab(true));
+      cTab.addEventListener('click', () => switchTab(false));
+
+      // Đăng nhập đối tác
+      pForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const user = document.getElementById('partner-user').value.trim().toLowerCase();
+        const pass = document.getElementById('partner-pass').value;
+        if (user === 'his_user' && pass === 'MAYAVIETNAM') {
+          window.location.href = './HIS/index.html';
+        } else {
+          Swal.fire('Lỗi', 'Tài khoản hoặc mật khẩu không đúng.', 'error');
+        }
+      });
+
+      // Doanh nghiệp: chỉ cần mã số thuế
+      cForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const taxCode = document.getElementById('corp-tax-code').value.trim();
+        if (!taxCode) {
+          return Swal.fire('Thiếu thông tin', 'Vui lòng nhập Mã số thuế.', 'warning');
+        }
+        sessionStorage.setItem('corpTaxCode', taxCode);
+        window.location.href = './Corporate/router.html';
+      });
+    });
+  </script>
+
 </body>
 </html>
