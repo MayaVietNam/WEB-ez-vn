@@ -1,7 +1,7 @@
 // script.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  const SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
+  const SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbwqKgCKJune5u9ezFieKBaTY-P78jOiWExBBgLB7SD-0Yr5svIUn3gsGs-DVHsNvnuf/exec';
   const UNIT_NAME     = 'CorporateOrders';
   const PACKAGE_LIST  = ['500MB/ngày', '1GB/ngày', '5GB/ngày'];
   const PRICE_TABLE   = window.PRICE_TABLE || {};

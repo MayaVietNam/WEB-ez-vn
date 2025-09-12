@@ -5,22 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EZ Login</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-
-  <!-- Login Logic -->
   <script src="login.js" defer></script>
 </head>
 <body>
   <div class="container" id="container">
     <!-- Đối Tác -->
     <div class="form-container sign-in">
+      <div class="logo">
+        <img src="images/logo.png" alt="Logo Công ty">
+      </div>
       <form id="partner-form">
         <h1>Đối Tác</h1>
         <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
@@ -31,6 +27,9 @@
 
     <!-- Doanh Nghiệp -->
     <div class="form-container sign-up">
+      <div class="logo">
+        <img src="images/logo.png" alt="Logo Công ty">
+      </div>
       <form id="corp-form">
         <h1>Doanh Nghiệp</h1>
         <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
