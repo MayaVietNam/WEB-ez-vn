@@ -1,61 +1,44 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EZ Đăng Nhập</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EZ Login</title>
 
   <!-- Google Font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
   <!-- Login Logic -->
-  <script src="js/login.js" defer></script>
+  <script src="login.js" defer></script>
 </head>
 <body>
   <div class="container" id="container">
-    <!-- Partner Sign-In Form -->
+    <!-- Đối Tác -->
     <div class="form-container sign-in">
       <form id="partner-form">
         <h1>Đối Tác</h1>
-        <input
-          type="text"
-          id="partner-user"
-          placeholder="Tài khoản đăng nhập"
-          required
-        />
-        <input
-          type="password"
-          id="partner-pass"
-          placeholder="Mật khẩu"
-          required
-        />
+        <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
+        <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
         <button type="submit">Đăng Nhập</button>
       </form>
     </div>
 
-    <!-- Corporate Sign-Up Form -->
+    <!-- Doanh Nghiệp -->
     <div class="form-container sign-up">
       <form id="corp-form">
         <h1>Doanh Nghiệp</h1>
-        <input
-          type="text"
-          id="corp-tax-code"
-          placeholder="Mã số thuế doanh nghiệp"
-          required
-        />
+        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
         <button type="submit">Tiếp Tục</button>
       </form>
     </div>
 
-    <!-- Overlay Panels -->
+    <!-- Overlay -->
     <div class="overlay-container">
       <div class="overlay">
         <div class="overlay-panel overlay-left">

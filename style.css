@@ -1,25 +1,18 @@
-/* Reset & Font */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f6f5f7;
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
 }
 
-/* Main Container */
 .container {
   background: #fff;
   border-radius: 10px;
-  box-shadow:
-    0 14px 28px rgba(0,0,0,0.25),
-    0 10px 10px rgba(0,0,0,0.22);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25),
+              0 10px 10px rgba(0,0,0,0.22);
   position: relative;
   overflow: hidden;
   width: 768px;
@@ -27,7 +20,6 @@ body {
   min-height: 480px;
 }
 
-/* Form Containers */
 .form-container {
   position: absolute;
   top: 0;
@@ -45,8 +37,6 @@ body {
   opacity: 0;
   z-index: 1;
 }
-
-/* Toggle Forms */
 .container.right-panel-active .sign-in {
   transform: translateX(100%);
 }
@@ -57,17 +47,10 @@ body {
   animation: show 0.6s;
 }
 @keyframes show {
-  0%, 49.99% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  50%, 100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  0%, 49.99% { opacity: 0; transform: translateX(0); }
+  50%, 100%  { opacity: 1; transform: translateX(0); }
 }
 
-/* Overlay */
 .overlay-container {
   position: absolute;
   top: 0;
@@ -81,10 +64,9 @@ body {
 .container.right-panel-active .overlay-container {
   transform: translateX(-100%);
 }
-
 .overlay {
   background: linear-gradient(to right, #ff4b2b, #ff416c);
-  color: #ffffff;
+  color: #fff;
   position: relative;
   left: -100%;
   width: 200%;
@@ -95,7 +77,6 @@ body {
 .container.right-panel-active .overlay {
   transform: translateX(50%);
 }
-
 .overlay-panel {
   position: absolute;
   display: flex;
@@ -105,8 +86,8 @@ body {
   padding: 0 40px;
   text-align: center;
   top: 0;
-  width: 50%;
   height: 100%;
+  width: 50%;
   transition: transform 0.6s ease-in-out;
 }
 .overlay-left {
@@ -123,7 +104,6 @@ body {
   transform: translateX(20%);
 }
 
-/* Forms */
 form {
   background: #fff;
   display: flex;
@@ -164,14 +144,12 @@ form button:active {
 form button:focus {
   outline: none;
 }
-
-/* Ghost Button */
 button.ghost {
   background-color: transparent;
-  border: 2px solid #ffffff;
+  border: 2px solid #fff;
   padding: 8px 30px;
   font-size: 14px;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
   border-radius: 20px;
   transition: background-color 0.3s ease;

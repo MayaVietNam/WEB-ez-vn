@@ -1,5 +1,3 @@
-// js/login.js
-
 document.addEventListener('DOMContentLoaded', () => {
   const container   = document.getElementById('container');
   const corpBtn     = document.getElementById('corp-btn');
