@@ -12,12 +12,24 @@
 </head>
 <body>
   <div class="container" id="container">
-    <!-- Đối Tác -->
+    <!-- Form Đăng nhập Doanh Nghiệp (Sign Up) -->
+    <div class="form-container sign-up">
+      <form id="corp-form">
+        <div class="logo">
+          <img src="https://placehold.co/150x60/f8f9fa/000?text=Corp+Logo" alt="Logo Doanh Nghiệp" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+        </div>
+        <h1>Doanh Nghiệp</h1>
+        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
+        <button type="submit">Tiếp Tục</button>
+      </form>
+    </div>
+
+    <!-- Form Đăng nhập Đối Tác (Sign In) -->
     <div class="form-container sign-in">
-      <div class="logo">
-        <img src="images/logo.png" alt="Logo Công ty">
-      </div>
       <form id="partner-form">
+        <div class="logo">
+          <img src="https://placehold.co/150x60/f8f9fa/000?text=Partner+Logo" alt="Logo Đối Tác" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+        </div>
         <h1>Đối Tác</h1>
         <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
         <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
@@ -25,30 +37,18 @@
       </form>
     </div>
 
-    <!-- Doanh Nghiệp -->
-    <div class="form-container sign-up">
-      <div class="logo">
-        <img src="images/logo.png" alt="Logo Công ty">
-      </div>
-      <form id="corp-form">
-        <h1>Doanh Nghiệp</h1>
-        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
-        <button type="submit">Tiếp Tục</button>
-      </form>
-    </div>
-
-    <!-- Overlay -->
+    <!-- Lớp phủ (Overlay) -->
     <div class="overlay-container">
       <div class="overlay">
         <div class="overlay-panel overlay-left">
-          <h1>Chào Doanh Nghiệp!</h1>
-          <p>Nhập mã số thuế để tiếp tục</p>
-          <button class="ghost" id="corp-btn">Doanh Nghiệp</button>
+          <h1>Chào mừng Doanh Nghiệp!</h1>
+          <p>Nếu bạn là Đối tác của chúng tôi, vui lòng chuyển qua form đăng nhập dành cho Đối tác.</p>
+          <button class="ghost" id="partner-btn">Chuyển sang Đối Tác</button>
         </div>
         <div class="overlay-panel overlay-right">
-          <h1>Chào Đối Tác!</h1>
-          <p>Đăng nhập bằng tài khoản đối tác</p>
-          <button class="ghost" id="partner-btn">Đối Tác</button>
+          <h1>Chào mừng Đối Tác!</h1>
+          <p>Nếu bạn là khách hàng Doanh nghiệp, vui lòng nhập mã số thuế để tiếp tục.</p>
+          <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
         </div>
       </div>
     </div>
