@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- Giả định file này tồn tại và chứa biến PRICE_TABLE -->
+    <!-- Giả định file này tồn tại trong cùng thư mục Corporate -->
     <script src="price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
@@ -144,13 +144,16 @@
         const PACKAGE_LIST = ["500MB/ngày", "1GB/ngày", "5GB/ngày"];
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
         
-        // [QUAN TRỌNG] THAY THẾ URL NÀY BẰNG URL ĐÃ TRIỂN KHAI CỦA SCRIPT CỦA BẠN
-        const APPS_SCRIPT_URL = 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE';
+        // ===================================================================================
+        // [QUAN TRỌNG NHẤT] BẠN CẦN THAY THẾ URL NÀY
+        // Dán URL Web App bạn nhận được sau khi triển khai (Deploy) file Apps Script vào đây.
+        // ===================================================================================
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
         
         const UNIT_NAME = "CorporateOrders";
         let requestCounter = 0;
-        let discountRate = 0; // Biến lưu trữ mức chiết khấu
-        let discountMap = {}; // Biến lưu trữ toàn bộ danh sách chiết khấu
+        let discountRate = 0;
+        let discountMap = {};
 
         // --- DOM Elements ---
         const form = document.getElementById('wifi-form');
@@ -195,7 +198,7 @@
                     priceHTML = `
                         <span class="line-through text-gray-500">${formatCurrency(total)}</span>
                         <span class="ml-2">${formatCurrency(discountedTotal)}</span>
-                        <span class="text-green-600 text-sm ml-1">(-${discountRate * 100}%)</span>`;
+                        <span class="text-green-600 text-sm ml-1">(-${(discountRate * 100).toFixed(0)}%)</span>`;
                 }
 
                 priceEl.innerHTML = priceHTML;
@@ -243,19 +246,27 @@
             `;
             rentalContainer.appendChild(requestBlock);
             new Choices(document.getElementById(`country-${index}`), { searchResultLimit: 10 });
-            updatePrice(index);
+
+            // Tự động điền mã số thuế từ trang login nếu có
+            const savedTaxCode = sessionStorage.getItem('corpTaxCode');
+            if (savedTaxCode && taxCodeInput.value === '') {
+                taxCodeInput.value = savedTaxCode;
+                checkTaxCode(); // Tự động kiểm tra chiết khấu
+            } else {
+                updatePrice(index);
+            }
         };
         
         const checkTaxCode = () => {
             const taxCode = taxCodeInput.value.trim();
-            discountRate = 0; // Reset chiết khấu
+            discountRate = 0;
             
             if (!taxCode) {
                 discountMessage.textContent = '';
             } else {
-                 if (discountMap[taxCode]) {
+                if (discountMap[taxCode] !== undefined) {
                     discountRate = discountMap[taxCode];
-                    discountMessage.textContent = `Mã hợp lệ! Áp dụng chiết khấu ${discountRate * 100}%.`;
+                    discountMessage.textContent = `Mã hợp lệ! Áp dụng chiết khấu ${(discountRate * 100).toFixed(0)}%.`;
                     discountMessage.className = 'text-sm mt-1 h-5 font-semibold text-green-600';
                 } else {
                     discountMessage.textContent = 'Mã không hợp lệ hoặc không có chiết khấu.';
@@ -276,6 +287,7 @@
                 const result = await response.json();
                 if (result.result === 'success') {
                     discountMap = result.data;
+                    checkTaxCode(); // Kiểm tra lại mã thuế sau khi đã tải xong danh sách
                 }
             } catch (error) {
                 console.error("Không thể tải danh sách chiết khấu:", error);
@@ -309,7 +321,7 @@
             form.querySelectorAll('[required]').forEach(input => {
                 const parentChoice = input.closest('.choices');
                 const targetElement = parentChoice ? parentChoice : input;
-                if (!input.value) {
+                if (!input.value.trim()) {
                     isValid = false;
                     targetElement.classList.add('is-invalid');
                 } else {
@@ -322,7 +334,7 @@
                 return;
             }
             if (APPS_SCRIPT_URL === 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE') {
-                Swal.fire('Lỗi Cấu hình', 'Vui lòng cập nhật URL của Apps Script trong file index.html.', 'error');
+                Swal.fire('Lỗi Cấu hình', 'Vui lòng cập nhật URL của Apps Script trong file HTML.', 'error');
                 return;
             }
 
@@ -359,11 +371,11 @@
                 const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
                 
                 rentalRequests.push({
-                    country: country,
+                    country,
                     dataPackage: pkg,
                     fromDate: startDate,
                     toDate: endDate,
-                    days: days,
+                    days,
                     quantity: document.getElementById(`quantity-${index}`).value,
                     unitPrice: PRICE_TABLE[country]?.[pkg] || 0
                 });
@@ -378,27 +390,33 @@
             };
 
             try {
-                 await fetch(APPS_SCRIPT_URL, {
+                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'application/json' }
                 });
+                const result = await response.json();
+
+                if (result.result !== 'success') {
+                  throw new Error(result.error || 'Lỗi không xác định từ server.');
+                }
                 
                 Swal.fire({
                     title: 'Thành công!',
-                    text: 'Yêu cầu của bạn đã được gửi đi. Chúng tôi sẽ liên hệ lại sớm nhất có thể.',
+                    text: 'Yêu cầu của bạn đã được gửi. Vui lòng kiểm tra email để xác nhận.',
                     icon: 'success'
                 }).then(() => {
                     form.reset();
                     rentalContainer.innerHTML = '';
                     discountMessage.textContent = '';
                     discountRate = 0;
+                    sessionStorage.removeItem('corpTaxCode');
                     createRentalRequestBlock();
                 });
 
             } catch (error) {
                 console.error("Lỗi khi gửi form:", error);
-                Swal.fire('Lỗi', 'Đã có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.', 'error');
+                Swal.fire('Lỗi', `Đã có lỗi xảy ra: ${error.message}`, 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitText.classList.remove('hidden');
@@ -413,4 +431,3 @@
     </script>
 </body>
 </html>
-
