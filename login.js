@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
           timer: 1500,
           showConfirmButton: false
         }).then(() => {
-          window.location.href = './Corporate/index.html';
+          window.location.href = './Corporate/Index.html';
         });
     });
   }
