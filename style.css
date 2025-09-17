@@ -1,249 +1,315 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EZ Login</title>
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+  <script src="login.js" defer></script>
+  <style>
+    /* --- Cài đặt chung --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  /* [THAY ĐỔI] Nền màu xanh dương nhạt */
-  background: #e5eefb;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  /* Thêm overflow để tránh thanh cuộn ngang không cần thiết */
-  overflow-x: hidden; 
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e5eefb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden; 
+    }
 
-/* [MỚI] Style cho lớp nền logo lặp lại */
-.bg-logo-bg {
-  pointer-events: none;
-  position: fixed;
-  z-index: 0;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
+    /* --- Lớp nền logo lặp lại --- */
+    .bg-logo-bg {
+      pointer-events: none;
+      position: fixed;
+      z-index: 0;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-.bg-logo-bg-inner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 200vw;
-  height: 200vh;
-  transform: translate(-50%, -50%) rotate(-10deg);
-  background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png');
-  background-repeat: repeat;
-  background-size: 120px auto;
-  opacity: 0.07;
-  will-change: transform;
-}
+    .bg-logo-bg-inner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 200vw;
+      height: 200vh;
+      transform: translate(-50%, -50%) rotate(-10deg);
+      background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png');
+      background-repeat: repeat;
+      background-size: 120px auto;
+      opacity: 0.07;
+      will-change: transform;
+    }
 
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+      position: relative;
+      overflow: hidden;
+      width: 768px;
+      max-width: 100%;
+      min-height: 520px;
+      z-index: 1;
+    }
 
-.container {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-  position: relative;
-  overflow: hidden;
-  width: 768px;
-  max-width: 100%;
-  min-height: 520px;
-  z-index: 1; /* Đảm bảo form nổi lên trên nền */
-}
+    /* --- Cấu trúc Form & Overlay --- */
+    .form-container {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      transition: all 0.6s ease-in-out;
+    }
 
-.form-container {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  transition: all 0.6s ease-in-out;
-}
+    .sign-in {
+      left: 0;
+      width: 50%;
+      z-index: 2;
+    }
 
-.sign-in {
-  left: 0;
-  width: 50%;
-  z-index: 2;
-}
+    .sign-up {
+      left: 0;
+      width: 50%;
+      opacity: 0;
+      z-index: 1;
+    }
 
-.container.right-panel-active .sign-in {
-  transform: translateX(100%);
-}
+    .overlay-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      transition: transform 0.6s ease-in-out;
+      z-index: 100;
+    }
 
-.sign-up {
-  left: 0;
-  width: 50%;
-  opacity: 0;
-  z-index: 1;
-}
+    .overlay {
+      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+      color: #FFFFFF;
+      position: relative;
+      left: -100%;
+      height: 100%;
+      width: 200%;
+      transform: translateX(0);
+      transition: transform 0.6s ease-in-out;
+    }
 
-.container.right-panel-active .sign-up {
-  transform: translateX(100%);
-  opacity: 1;
-  z-index: 5;
-  animation: show 0.6s;
-}
+    .overlay-panel {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 0 40px;
+      text-align: center;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      transform: translateX(0);
+      transition: transform 0.6s ease-in-out;
+    }
 
-@keyframes show {
-  0%, 49.99% {
-    opacity: 0;
-    z-index: 1;
-  }
-  
-  50%, 100% {
-    opacity: 1;
-    z-index: 5;
-  }
-}
+    /* --- Logic Hiệu ứng Chuyển đổi --- */
+    .container.right-panel-active .sign-in { transform: translateX(100%); }
+    .container.right-panel-active .sign-up {
+      transform: translateX(100%);
+      opacity: 1;
+      z-index: 5;
+      animation: show 0.6s;
+    }
+    .container.right-panel-active .overlay-container { transform: translateX(-100%); }
+    .container.right-panel-active .overlay { transform: translateX(50%); }
+    .overlay-left { transform: translateX(-20%); }
+    .container.right-panel-active .overlay-left { transform: translateX(0); }
+    .overlay-right { right: 0; transform: translateX(0); }
+    .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
-.overlay-container {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  transition: transform 0.6s ease-in-out;
-  z-index: 100;
-}
+    @keyframes show {
+      0%, 49.99% { opacity: 0; z-index: 1; }
+      50%, 100% { opacity: 1; z-index: 5; }
+    }
 
-.container.right-panel-active .overlay-container {
-  transform: translateX(-100%);
-}
+    /* --- [MỚI] Cải tiến Text và Hiệu ứng --- */
+    form {
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 0 50px;
+      height: 100%;
+      text-align: center;
+    }
 
-.overlay {
-  /* [THAY ĐỔI] Gradient màu xanh dương */
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 0 0;
-  color: #FFFFFF;
-  position: relative;
-  left: -100%;
-  height: 100%;
-  width: 200%;
-  transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
-}
+    form h1 {
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInDown 0.8s ease-out;
+    }
 
-.container.right-panel-active .overlay {
-  transform: translateX(50%);
-}
+    .overlay-panel h1 {
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: fadeInDown 0.8s ease-out 0.2s;
+      animation-fill-mode: backwards;
+    }
 
-.overlay-panel {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 40px;
-  text-align: center;
-  top: 0;
-  height: 100%;
-  width: 50%;
-  transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
-}
+    .overlay-panel p {
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.5px;
+      margin: 20px 0 30px;
+      animation: fadeInUp 0.8s ease-out 0.4s;
+      animation-fill-mode: backwards;
+    }
 
-.overlay-left {
-  transform: translateX(-20%);
-}
+    input {
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 12px 15px;
+      margin: 8px 0;
+      width: 100%;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
 
-.container.right-panel-active .overlay-left {
-  transform: translateX(0);
-}
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      outline: none;
+    }
 
-.overlay-right {
-  right: 0;
-  transform: translateX(0);
-}
+    button {
+      border-radius: 20px;
+      border: 1px solid #2563eb;
+      background-color: #2563eb;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 45px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
 
-.container.right-panel-active .overlay-right {
-  transform: translateX(20%);
-}
+    button:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
 
-form {
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 50px;
-  height: 100%;
-  text-align: center;
-}
+    button:active {
+      transform: scale(0.95);
+    }
 
-h1 {
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #1e3a8a; /* Thêm màu cho tiêu đề */
-}
+    button:focus {
+      outline: none;
+    }
 
-p {
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.5px;
-  margin: 20px 0 30px;
-}
+    button.ghost {
+      background-color: transparent;
+      border-color: #FFFFFF;
+      box-shadow: none;
+    }
 
-input {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  padding: 12px 15px;
-  margin: 8px 0;
-  width: 100%;
-  border-radius: 5px;
-  font-family: 'Poppins', sans-serif;
-}
+    button.ghost:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(0); /* Bỏ hiệu ứng nhấc lên */
+      box-shadow: none;
+    }
 
-button {
-  border-radius: 20px;
-  /* [THAY ĐỔI] Màu nút chính */
-  border: 1px solid #2563eb;
-  background-color: #2563eb;
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 12px 45px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  margin-top: 20px;
-}
+    .logo {
+      margin-bottom: 20px;
+    }
 
-button:hover {
-    background-color: #1d4ed8; /* Thêm hiệu ứng hover */
-}
+    .logo img {
+      max-width: 150px;
+      height: auto;
+    }
 
-button:active {
-  transform: scale(0.95);
-}
+    /* --- Keyframes cho Animations --- */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-button:focus {
-  outline: none;
-}
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Lớp nền logo lặp lại -->
+  <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
 
-button.ghost {
-  background-color: transparent;
-  border-color: #FFFFFF;
-}
+  <div class="container" id="container">
+    <!-- Form Đăng nhập Đối Tác (Sign In) -->
+    <div class="form-container sign-in">
+      <form id="partner-form">
+        <div class="logo">
+          <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Đối Tác" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+        </div>
+        <h1>Đối Tác</h1>
+        <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
+        <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
+        <button type="submit">Đăng Nhập</button>
+      </form>
+    </div>
 
-button.ghost:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+    <!-- Form Đăng nhập Doanh Nghiệp (Sign Up) -->
+    <div class="form-container sign-up">
+      <form id="corp-form">
+        <div class="logo">
+          <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Doanh Nghiệp" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+        </div>
+        <h1>Doanh Nghiệp</h1>
+        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
+        <button type="submit">Tiếp Tục</button>
+      </form>
+    </div>
 
-.logo {
-  margin-bottom: 20px;
-}
-
-.logo img {
-  max-width: 150px;
-  height: auto;
-}
+    <!-- Lớp phủ (Overlay) -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <!-- Panel này sẽ hiển thị KHI form Doanh nghiệp active -->
+        <div class="overlay-panel overlay-left">
+          <h1>Chào mừng trở lại, Đối Tác!</h1>
+          <p>Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.</p>
+          <button class="ghost" id="partner-btn">Đăng nhập Đối Tác</button>
+        </div>
+        <!-- Panel này sẽ hiển thị MẶC ĐỊNH -->
+        <div class="overlay-panel overlay-right">
+          <h1>Chào mừng, Doanh Nghiệp!</h1>
+          <p>Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.</p>
+          <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
 
