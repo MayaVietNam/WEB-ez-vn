@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
         targetUrl = './HIS/index.html';
       } 
       // [MỚI] Đối tác TOYOTA - Vui lòng thay đổi mật khẩu
-      else if (user === 'toyota_user' && pass === 'PASSWORD_TOYOTA') {
+      else if (user === 'toyota' && pass === '123456789') {
         targetUrl = './TOYOTA/index.html';
       }
       // [MỚI] Đối tác YAMAHA - Vui lòng thay đổi mật khẩu
-      else if (user === 'yamaha_user' && pass === 'PASSWORD_YAMAHA') {
+      else if (user === 'yamaha' && pass === '0123456789') {
         targetUrl = './YAMAHA/index.html';
       }
 
