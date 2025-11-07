@@ -50,7 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (user === 'yamaha' && pass === '0123456789') {
         targetUrl = './YAMAHA/index.html';
       }
-
+      // [MỚI] Đối tác MITSUBISHI - Vui lòng thay đổi mật khẩu
+    else if (user === 'mitsubishi' && pass === '0987654321') {
+      targetUrl = './MITSUBISHI/index.html'; // (Hoặc đường dẫn đúng)
+    }
       // --- Xử lý kết quả ---
 
       if (targetUrl) {
