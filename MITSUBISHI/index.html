@@ -26,7 +26,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- [SỬA LỖI] Đường dẫn đúng đến file price-table.js ở thư mục cha -->
     <script src="price-table.js"></script> 
     <style>
         html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
@@ -118,6 +117,7 @@
             <div class="line en"><span class="label">Hotline:</span> <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Vietnamese) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Japanese)</div>
         </div>
     </footer>
+    
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- CONFIG ---
@@ -125,8 +125,10 @@
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
         
-        // [QUAN TRỌNG] Thay đổi giá trị này cho từng trang (HIS, TOYOTA, YAMAHA)
+        // [QUAN TRỌNG] Tên của đơn vị này
         const UNIT_NAME = "MITSUBISHI";
+        // [MỚI] Giá bảo hiểm mỗi ngày (chưa VAT)
+        const INSURANCE_PER_DAY = 30000;
 
         // --- ELEMENTS ---
         const form = document.getElementById('wifi-form');
@@ -151,14 +153,23 @@
             return Math.round(ms / 86400000) + 1;
         };
 
-        const calcPrice = (country, pkg, days) => {
+        // [ĐÃ SỬA] Cập nhật hàm calcPrice để nhận 'hasInsurance'
+        const calcPrice = (country, pkg, days, hasInsurance) => {
             if (typeof PRICE_TABLE === 'undefined' || !PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
             const unit = PRICE_TABLE[country][pkg];
             if (unit === null || typeof unit === 'undefined') return null;
-            const total = unit * days;
+
+            const dataTotal = unit * days;
+            // Tính tiền bảo hiểm (nếu có)
+            const insuranceTotal = hasInsurance ? (INSURANCE_PER_DAY * days) : 0;
+            
+            // Tổng trước VAT = Tiền Data + Tiền Bảo hiểm
+            const total = dataTotal + insuranceTotal; 
             const vat = Math.round(total * 0.1);
             const grandTotal = total + vat;
-            return { days, total, unitPrice: unit, vat, grandTotal };
+
+            // Trả về chi tiết để hiển thị
+            return { days, total, unitPrice: unit, vat, grandTotal, dataTotal, insuranceTotal };
         };
 
         const createCountrySelect = (id) => {
@@ -177,16 +188,21 @@
             </select>`;
 
         // --- CORE LOGIC ---
+        // [ĐÃ SỬA] Cập nhật hàm updatePrice để đọc giá trị bảo hiểm
         function updatePriceForSection(section) {
             const country = section.querySelector('.choices-country').value;
             const pkg = section.querySelector('.package-select').value;
             const from = section.querySelector('.date-from').value;
             const to = section.querySelector('.date-to').value;
+            // [MỚI] Đọc giá trị từ radio button bảo hiểm
+            const hasInsurance = section.querySelector('.insurance-toggle:checked').value === 'yes';
+
             const daysInput = section.querySelector('.days-input');
             const priceInfo = section.querySelector('.price-info');
             const days = calcDays(from, to);
             daysInput.value = days;
-            const result = calcPrice(country, pkg, days);
+            // [MỚI] Truyền giá trị bảo hiểm vào hàm tính giá
+            const result = calcPrice(country, pkg, days, hasInsurance);
             
             if (!country || !pkg || !from || !to) {
                 priceInfo.innerHTML = '';
@@ -194,11 +210,18 @@
             }
 
             if (result && result.unitPrice) {
-                priceInfo.innerHTML = `<span class="price-info-highlight">
-                    Đơn giá: ${currency(result.unitPrice)} x ${days} ngày = ${currency(result.total)}<br>
-                    VAT (10%): ${currency(result.vat)}<br>
-                    <span style="color:#2563eb;">Tổng cộng: ${currency(result.grandTotal)}</span>
-                </span>`;
+                // [MỚI] Hiển thị chi tiết giá, bao gồm cả bảo hiểm (nếu có)
+                let priceHTML = `Đơn giá (data): ${currency(result.unitPrice)} x ${days} ngày = ${currency(result.dataTotal)}<br>`;
+                
+                if (result.insuranceTotal > 0) {
+                    priceHTML += `Phí bảo hiểm: ${currency(INSURANCE_PER_DAY)} x ${days} ngày = ${currency(result.insuranceTotal)}<br>`;
+                }
+                
+                priceHTML += `Tổng (chưa VAT): ${currency(result.total)}<br>`;
+                priceHTML += `VAT (10%): ${currency(result.vat)}<br>`;
+                priceHTML += `<span style="color:#2563eb;">Tổng cộng: ${currency(result.grandTotal)}</span>`;
+
+                priceInfo.innerHTML = `<span class="price-info-highlight">${priceHTML}</span>`;
             } else {
                 priceInfo.innerHTML = '<span class="text-red-700 font-semibold">Gói cước không áp dụng cho quốc gia này.</span>';
             }
@@ -257,6 +280,22 @@
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Gói data <span class="label-en">Data Package</span></label>
                         ${createPackageSelect(`data-package-${n}`)}
                     </div>
+
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Đăng ký Bảo hiểm (30,000 VND/ngày, chưa VAT) <span class="label-en">Insurance (30,000 VND/day, excl. VAT)</span></label>
+                        <div class="flex items-center space-x-6 mt-1">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="use-insurance-${n}" value="no" class="insurance-toggle" checked>
+                                <span class="ml-2 text-blue-900">Không</span>
+                                <span class="ml-1 text-gray-500 text-sm">/ No</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="use-insurance-${n}" value="yes" class="insurance-toggle">
+                                <span class="ml-2 text-blue-900">Có</span>
+                                <span class="ml-1 text-gray-500 text-sm">/ Yes</span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="price-info col-span-1 md:col-span-2 mt-2 text-blue-900 font-semibold"></div>
                     
                     <div class="col-span-1 md:col-span-2">
@@ -274,11 +313,11 @@
                             </label>
                         </div>
                     </div>
-                    <div class="budget-code-input-container col-span-1 md:col-span-2 hidden">
-                        <label class="block text-blue-800 text-sm font-semibold mb-2">Nhập Mã Thanh Toán <span class="label-en">Enter Budget Code</span></label>
-                        <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
-                    </div>
-                </div>`;
+                <div class="budget-code-input-container col-span-1 md:col-span-2 hidden">
+                    <label class="block text-blue-800 text-sm font-semibold mb-2">Nhập Mã Thanh Toán <span class="label-en">Enter Budget Code</span></label>
+                    <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                </div>
+            </div>`;
             
             container.appendChild(section);
             
@@ -309,7 +348,8 @@
                 }
             }
             
-            if (e.target.matches('.choices-country, .package-select, .date-from, .date-to')) {
+            // [ĐÃ SỬA] Thêm '.insurance-toggle' vào danh sách kích hoạt tính lại giá
+            if (e.target.matches('.choices-country, .package-select, .date-from, .date-to, .insurance-toggle')) {
                 updatePriceForSection(section);
             }
         });
@@ -355,9 +395,9 @@
             const sections = container.querySelectorAll('section.rental-request');
 
             if (sections.length === 0) {
-                 Swal.fire("Chưa có đơn", "Vui lòng thêm ít nhất một đơn đăng ký.", "warning");
-                 setSubmitState(true);
-                 return;
+                Swal.fire("Chưa có đơn", "Vui lòng thêm ít nhất một đơn đăng ký.", "warning");
+                setSubmitState(true);
+                return;
             }
 
             sections.forEach(section => {
@@ -366,7 +406,10 @@
                 const from = section.querySelector('.date-from').value;
                 const to = section.querySelector('.date-to').value;
                 const days = calcDays(from, to);
-                const price = calcPrice(country, pkg, days);
+                // [MỚI] Đọc giá trị bảo hiểm khi gửi
+                const hasInsurance = section.querySelector('.insurance-toggle:checked').value === 'yes';
+                const price = calcPrice(country, pkg, days, hasInsurance); // Pass it here
+                
                 const request = {
                     requestNumber: section.dataset.requestNumber,
                     userName: section.querySelector('.user-name-input').value.trim(),
@@ -377,8 +420,13 @@
                     country: country,
                     dataPackage: pkg,
                     budgetCode: section.querySelector('.budget-code-input').value.trim(),
+                    
+                    // [MỚI] Thêm chi tiết bảo hiểm và giá vào payload
+                    hasInsurance: hasInsurance,
+                    insuranceCost: price ? price.insuranceTotal : 0,
+
                     unitPrice: price ? price.unitPrice : "",
-                    total: price ? price.total : "",
+                    total: price ? price.total : "", // This 'total' now includes insurance
                     vat: price ? price.vat : "",
                     grandTotal: price ? price.grandTotal : ""
                 };
