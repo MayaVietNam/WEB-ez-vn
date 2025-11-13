@@ -1,65 +1,142 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EZ Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EZ Login</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-  <!-- Liên kết đến file style.css riêng -->
-  <link rel="stylesheet" href="style.css" />
-  
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-  <script src="login.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    
+    <script src="login.js" defer></script>
 </head>
 <body>
-  <!-- Lớp nền logo lặp lại -->
-  <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
+    <div class="bg-logo-bg"></div>
 
-  <div class="container" id="container">
-    <!-- Form Đăng nhập Đối Tác (Sign In) -->
-    <div class="form-container sign-in">
-      <form id="partner-form">
-        <div class="logo">
-          <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Đối Tác" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+    <div class="container" id="container">
+        <div class="form-container sign-in">
+            <form id="partner-form">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Đối Tác" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+                </div>
+                <h1>Đối Tác</h1>
+                <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
+                <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
+                <button type="submit">Đăng Nhập</button>
+            </form>
         </div>
-        <h1>Đối Tác</h1>
-        <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
-        <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
-        <button type="submit">Đăng Nhập</button>
-      </form>
+
+        <div class="form-container sign-up">
+            <form id="corp-form">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Doanh Nghiệp" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+                </div>
+                <h1>Doanh Nghiệp</h1>
+                <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
+                <button type="submit">Tiếp Tục</button>
+            </form>
+        </div>
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Chào mừng trở lại, Đối Tác!</h1>
+                    <p>Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.</p>
+                    <button class="ghost" id="partner-btn">Đăng nhập Đối Tác</button>
+                    <button class="guide-button" id="guide-btn-left">❓ Hướng dẫn</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Chào mừng, Doanh Nghiệp!</h1>
+                    <p>Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.</p>
+                    <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
+                    <button class="guide-button" id="guide-btn-right">❓ Hướng dẫn</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Form Đăng nhập Doanh Nghiệp (Sign Up) -->
-    <div class="form-container sign-up">
-      <form id="corp-form">
-        <div class="logo">
-          <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Doanh Nghiệp" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
-        </div>
-        <h1>Doanh Nghiệp</h1>
-        <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
-        <button type="submit">Tiếp Tục</button>
-      </form>
-    </div>
 
-    <!-- Lớp phủ (Overlay) -->
-    <div class="overlay-container">
-      <div class="overlay">
-        <!-- Panel này sẽ hiển thị KHI form Doanh nghiệp active -->
-        <div class="overlay-panel overlay-left">
-          <h1>Chào mừng trở lại, Đối Tác!</h1>
-          <p>Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.</p>
-          <button class="ghost" id="partner-btn">Đăng nhập Đối Tác</button>
+    <div class="modal-overlay" id="guide-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close-btn">&times;</span>
+            
+            <h1>📄 Hướng dẫn Đăng ký Thuê thiết bị</h1>
+            <div class="homepage-link">
+                <a href="https://ez-vn.com/" target="_blank">Trang chủ: https://ez-vn.com/</a>
+            </div>
+
+            <h2>🧑‍💼 Phần 1: Đăng nhập Đối Tác</h2>
+            <p>Sử dụng tài khoản và mật khẩu được cấp để truy cập.</p>
+            <img src="image_1.png" alt="Màn hình đăng nhập Đối Tác" style="max-width: 500px; display: block; margin: 15px auto;">
+            <p>1. Mở trang đăng nhập, nhập <strong>Tài khoản</strong> và <strong>Mật khẩu</strong>.</p>
+            <p>2. Nhấn nút <strong>"Đăng Nhập"</strong> để tiếp tục.</p>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <h2>📝 Phần 2: Điền Biểu mẫu Đăng ký</h2>
+            <p>Hoàn tất biểu mẫu đăng ký gồm 3 phần chính sau:</p>
+
+            <div class="guide-columns-container">
+
+                <div class="guide-column">
+                    <h3>1. ℹ️ Thông tin người gửi</h3>
+                    <img src="image_2.png" alt="Khu vực thông tin người gửi">
+                    <ul>
+                        <li><strong>Họ tên người gửi:</strong> Nhập đầy đủ họ và tên của bạn.</li>
+                        <li><strong>Email:</strong> Nhập địa chỉ email chính xác.</li>
+                        <li><strong>Số điện thoại:</strong> Nhập số điện thoại di động.</li>
+                        <li><strong>Công ty:</strong> Nhập tên đầy đủ của công ty.
+                            <div class="note"><em>Nếu là cá nhân, điền "Cá nhân".</em></div>
+                        </li>
+                        <li><strong>Khu vực:</strong> Chọn Tỉnh/Thành phố.</li>
+                        <li><strong>Mã số thuế:</strong> Nhập Mã số thuế công ty.
+                            <div class="note"><em>Quan trọng để xuất hóa đơn VAT.</em></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="guide-column">
+                    <h3>2. 📱 Chi tiết các đơn thuê</h3>
+                    <img src="image_3.png" alt="Khu vực chi tiết đơn thuê">
+                    <ul>
+                        <li><strong>Tên người dùng:</strong> Nhập tên người sử dụng.</li>
+                        <li><strong>IMEI:</strong> Nhập số IMEI (nếu có).
+                            <div class="note"><em>Bỏ trống để hệ thống tự điền.</em></div>
+                        </li>
+                        <li><strong>Từ ngày:</strong> Chọn ngày bắt đầu thuê.</li>
+                        <li><strong>Đến ngày:</strong> Chọn ngày kết thúc thuê.</li>
+                        <li><strong>Quốc gia:</strong> Chọn quốc gia sử dụng.</li>
+                        <li><strong>Gói data:</strong> Chọn gói cước phù hợp.</li>
+                    </ul>
+                    <div class="note">
+                        <strong>Thuê nhiều thiết bị?</strong><br>
+                        Nhấn nút <strong>"+ Thêm đơn đăng ký mới"</strong>.
+                    </div>
+                </div>
+
+                <div class="guide-column">
+                    <h3>3. 🚚 Thông tin Vận chuyển</h3>
+                    <img src="image_4.png" alt="Khu vực thông tin vận chuyển">
+                    <ul>
+                        <li><strong>Tên người nhận:</strong> Nhập họ tên người nhận.</li>
+                        <li><strong>SĐT người nhận:</strong> Nhập số điện thoại người nhận.</li>
+                        <li><strong>Địa chỉ nhận hàng:</strong> Nhập chi tiết địa chỉ giao.</li>
+                        <li><strong>Ngày nhận mong muốn:</strong> Chọn ngày muốn nhận.</li>
+                        <li><strong>Hình thức vận chuyển:</strong> Chọn phương thức.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <h2>✅ Phần 3: Gửi Yêu Cầu</h2>
+            <p>1. Kiểm tra lại toàn bộ thông tin ở cả 3 phần.</p>
+            <p>2. Nhấn nút <strong>"Gửi Yêu Cầu (Submit Request)"</strong> màu đỏ ở cuối biểu mẫu để hoàn tất.</p>
+
         </div>
-        <!-- Panel này sẽ hiển thị MẶC ĐỊNH -->
-        <div class="overlay-panel overlay-right">
-          <h1>Chào mừng, Doanh Nghiệp!</h1>
-          <p>Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.</p>
-          <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
-        </div>
-      </div>
     </div>
-  </div>
 </body>
 </html>
-
