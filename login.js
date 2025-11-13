@@ -1,99 +1,140 @@
-// Đợi cho toàn bộ nội dung trang được tải xong
+/* === FILE: login.js (TRÊN WEBSITE CỦA BẠN) === */
+
 document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('container');
+  const corpBtn = document.getElementById('corp-btn');
+  const partnerBtn = document.getElementById('partner-btn');
+  const partnerForm = document.getElementById('partner-form');
+  const corpForm = document.getElementById('corp-form');
 
-    // --- Code JS cho Form Đăng nhập (Chuyển đổi panel) ---
-    const container = document.getElementById('container');
-    const corpBtn = document.getElementById('corp-btn');
-    const partnerBtn = document.getElementById('partner-btn');
+  // [QUAN TRỌNG] Dán URL ứng dụng web bạn nhận được ở Bước 1 vào đây
+  const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxx/exec';
 
-    if (corpBtn && partnerBtn && container) {
-        corpBtn.addEventListener('click', () => {
-            container.classList.add('right-panel-active');
-        });
+  /**
+   * =========================
+   * 1. Chuyển qua lại form
+   * =========================
+   */
+  if (corpBtn) {
+    corpBtn.addEventListener('click', () => {
+      container.classList.add('right-panel-active');
+    });
+  }
 
-        partnerBtn.addEventListener('click', () => {
-            container.classList.remove('right-panel-active');
-        });
-    }
+  if (partnerBtn) {
+    partnerBtn.addEventListener('click', () => {
+      container.classList.remove('right-panel-active');
+    });
+  }
 
-    // --- Code JS cho Modal Hướng dẫn (Pop-up) ---
-    
-    // Lấy các phần tử
-    const guideModal = document.getElementById('guide-modal');
-    const guideBtnLeft = document.getElementById('guide-btn-left');
-    const guideBtnRight = document.getElementById('guide-btn-right');
-    const closeModalBtn = document.getElementById('modal-close-btn');
+  /**
+   * =========================
+   * 2. Đăng nhập Đối tác (ĐÃ SỬA BẢO MẬT)
+   * =========================
+   */
+  if (partnerForm) {
+    partnerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    // Hàm mở modal
-    const openModal = () => {
-        if (guideModal) {
-            guideModal.style.display = 'flex'; // Hiển thị modal
+      const user = document.getElementById('partner-user').value;
+      const pass = document.getElementById('partner-pass').value;
+
+      // Hiển thị thông báo "Đang tải"
+      Swal.fire({
+        title: 'Đang đăng nhập...',
+        text: 'Vui lòng chờ trong giây lát.',
+        icon: 'info',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
         }
-    };
+      });
 
-    // Hàm đóng modal
-    const closeModal = () => {
-        if (guideModal) {
-            guideModal.style.display = 'none'; // Ẩn modal
+      try {
+        // Gửi thông tin đến Google Apps Script
+        const response = await fetch(LOGIN_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'cors', 
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({ user: user, pass: pass })
+        });
+
+        const result = await response.json();
+
+        // Xử lý kết quả trả về từ Google Apps Script
+        if (result.success) {
+          // Thành công!
+          Swal.fire({
+            title: 'Thành công!',
+            text: 'Đăng nhập thành công, đang chuyển hướng...',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = result.url; // Chuyển hướng đến URL mà server trả về
+          });
+        } else {
+          // Thất bại (sai pass, sai user)
+          Swal.fire('Lỗi', result.message, 'error');
         }
-    };
 
-    // Gán sự kiện click cho các nút
-    if (guideBtnLeft && guideBtnRight && closeModalBtn) {
-        guideBtnLeft.addEventListener('click', openModal);
-        guideBtnRight.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
-    }
+      } catch (err) {
+        // Lỗi mạng hoặc lỗi server
+        Swal.fire('Lỗi nghiêm trọng', 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.', 'error');
+      }
+    });
+  }
 
-    // Đóng modal khi bấm ra ngoài nền mờ
-    if (guideModal) {
-        guideModal.addEventListener('click', (event) => {
-            if (event.target === guideModal) { // Chỉ khi bấm vào nền mờ (overlay)
-                closeModal();
-            }
-        });
-    }
+  /**
+   * =========================
+   * 3. Đăng nhập Doanh nghiệp (Giữ nguyên)
+   * =========================
+   */
+  if (corpForm) {
+    corpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('corp-tax-code').value.trim();
+      if (!code) {
+        Swal.fire('Thiếu thông tin', 'Vui lòng nhập mã số thuế doanh nghiệp.', 'warning');
+        return;
+      }
+      sessionStorage.setItem('corpTaxCode', code);
+      Swal.fire({
+        title: 'Xác nhận!',
+        text: 'Đã lưu mã số thuế, đang chuyển hướng...',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = './Corporate/Index.html';
+      });
+    });
+  }
+  
+  // --- PHẦN JS CỦA POP-UP HƯỚNG DẪN (GIỮ NGUYÊN) ---
+  const guideModal = document.getElementById('guide-modal');
+  const guideBtnLeft = document.getElementById('guide-btn-left');
+  const guideBtnRight = document.getElementById('guide-btn-right');
+  const closeModalBtn = document.getElementById('modal-close-btn');
 
-    // --- Code JS cho Form Submit (Ví dụ) ---
-    // (Bạn cần thay thế phần này bằng logic đăng nhập thật của bạn)
-    
-    const partnerForm = document.getElementById('partner-form');
-    if (partnerForm) {
-        partnerForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Ngăn form gửi đi thật
-            
-            // Ví dụ dùng SweetAlert (bạn đã nhúng thư viện này)
-            if (typeof Swal !== 'undefined') {
-                const user = document.getElementById('partner-user').value;
-                Swal.fire(
-                    'Đăng nhập thành công!',
-                    'Chào mừng Đối Tác: ' + user,
-                    'success'
-                );
-            } else {
-                alert('Đăng nhập thành công!');
-            }
-            // Sau đó chuyển hướng: window.location.href = 'trang-doi-tac.html';
-        });
-    }
+  const openModal = () => {
+    if (guideModal) guideModal.style.display = 'flex';
+  };
+  const closeModal = () => {
+    if (guideModal) guideModal.style.display = 'none';
+  };
 
-    const corpForm = document.getElementById('corp-form');
-    if (corpForm) {
-        corpForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Ngăn form gửi đi thật
-            
-            if (typeof Swal !== 'undefined') {
-                const taxCode = document.getElementById('corp-tax-code').value;
-                Swal.fire(
-                    'Xác thực thành công!',
-                    'Đang chuyển đến cổng thông tin Doanh Nghiệp (MST: ' + taxCode + ')',
-                    'success'
-                );
-            } else {
-                alert('Xác thực thành công!');
-            }
-            // Sau đó chuyển hướng: window.location.href = 'trang-doanh-nghiep.html';
-        });
-    }
-
+  if (guideBtnLeft && guideBtnRight && closeModalBtn) {
+    guideBtnLeft.addEventListener('click', openModal);
+    guideBtnRight.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+  }
+  if (guideModal) {
+    guideModal.addEventListener('click', (event) => {
+      if (event.target === guideModal) closeModal();
+    });
+  }
+  
 }); // Kết thúc 'DOMContentLoaded'
