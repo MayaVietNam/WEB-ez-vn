@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const corpForm = document.getElementById('corp-form');
 
   // [QUAN TRỌNG] Dán URL ứng dụng web (Web App URL) của bạn vào đây
-  const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec'; 
+  const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0623sBAQ6u9RgD_egshL5vmcKu4OWKTYQs2rVeihqcC1jE0brVUodaI2DhablS05J/exec'; 
   // (Hãy chắc chắn URL này là URL triển khai của file Code.gs đã sửa lỗi CORS)
 
   /**
