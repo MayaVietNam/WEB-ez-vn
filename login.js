@@ -1,4 +1,4 @@
-/* === FILE: login.js (TRÊN WEBSITE CỦA BẠN) === */
+/* === FILE: login.js (Phiên bản đúng) === */
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('container');
@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const partnerForm = document.getElementById('partner-form');
   const corpForm = document.getElementById('corp-form');
 
-  // [QUAN TRỌNG] Dán URL ứng dụng web bạn nhận được ở Bước 1 vào đây
-  const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxx/exec';
+  // [QUAN TRỌNG] Dán URL ứng dụng web (Web App URL) của bạn vào đây
+  const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxx/exec'; 
+  // (Hãy chắc chắn URL này là URL triển khai của file Code.gs đã sửa lỗi CORS)
 
   /**
    * =========================
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * =========================
-   * 2. Đăng nhập Đối tác (ĐÃ SỬA BẢO MẬT)
+   * 2. Đăng nhập Đối tác (Đã sửa bảo mật & CORS)
    * =========================
    */
   if (partnerForm) {
@@ -51,15 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       try {
-        // Gửi thông tin đến Google Apps Script
-        const response = await fetch(LOGIN_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'cors', 
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-          body: JSON.stringify({ user: user, pass: pass })
+        // [SỬA] Xây dựng URL để gọi action=login bằng GET
+        const url = new URL(LOGIN_SCRIPT_URL);
+        url.searchParams.append('action', 'login');
+        url.searchParams.append('user', user);
+        url.searchParams.append('pass', pass);
+        
+        // [SỬA] Gửi yêu cầu GET đến Google Apps Script
+        const response = await fetch(url, {
+          method: 'GET', // Phải là GET
+          mode: 'cors'
         });
+
+        // Xử lý lỗi mạng (ví dụ: 404, 500)
+        if (!response.ok) {
+           throw new Error('Lỗi máy chủ hoặc kết nối mạng: ' + response.statusText);
+        }
 
         const result = await response.json();
 
@@ -81,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
       } catch (err) {
-        // Lỗi mạng hoặc lỗi server
-        Swal.fire('Lỗi nghiêm trọng', 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.', 'error');
+        // Lỗi (ví dụ: mất mạng, fetch bị từ chối)
+        Swal.fire('Lỗi nghiêm trọng', 'Không thể kết nối đến máy chủ. ' + err.message, 'error');
       }
     });
   }
