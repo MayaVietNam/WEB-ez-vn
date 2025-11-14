@@ -1,502 +1,455 @@
-/**
- * =================================================================
- * HẰNG SỐ TOÀN CỤC
- * =================================================================
- */
-const SPREADSHEET_ID = "18v0MZ2iePT5ZsHM5dG3b_WbKzjAUcret3C2XU1hCdmo"; // ID Sheet của bạn
-const DISCOUNT_SHEEET_NAME = "Discounts";
-const INTERNAL_CC_EMAILS = [
-    "adm2.mv@ezfivn.com", "info@ezfivn.com", "nhat.nam@ezfivn.com",
-    "info@ez-vn.com", "t.sakaguchi@mayass.com"
-];
-
-const ACCOUNTS = {
-  "his_user": { pass: "MAYAVIETNAM", url: "./HIS/index.html" },
-  "toyota": { pass: "123456789", url: "./TOYOTA/index.html" }, // [SỬA LẠI MK]
-  "yamaha": { pass: "0123456789", url: "./YAMAHA/index.html" }, // [SỬA LẠI MK]
-  "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" } // [SỬA LẠI MK]
-};
-
-/**
- * =================================================================
- * ĐỊNH NGHĨA CẤU TRÚC CỘT (ĐÃ NÂNG CẤP)
- * =================================================================
- */
-
-// [SỬA] Thêm "quantity" vào danh sách cột chính
-const MASTER_COLUMNS = [
-    { id: "recordTime", name: "Thời gian ghi", width: 150, format: "dd/MM/yyyy HH:mm:ss" },
-    { id: "submissionTime", name: "Thời gian gửi", width: 150, format: "dd/MM/yyyy HH:mm" },
-    { id: "emailStatus", name: "Trạng thái Email", width: 150 },
-    { id: "name", name: "Họ tên", width: 120 }, { id: "email", name: "Email", width: 180 },
-    { id: "phone", name: "Số điện thoại", width: 120 }, { id: "company", name: "Công ty", width: 150 },
-    { id: "region", name: "Khu vực", width: 120 }, { id: "taxCode", name: "Mã số thuế", width: 120 },
-    { id: "requestNumber", name: "Số thứ tự đơn", width: 120 }, 
-    { id: "userName", name: "Tên người dùng", width: 120 }, // Dùng cho Đối tác
-    { id: "imei", name: "IMEI", width: 120 }, // Dùng cho Đối tác
-    { id: "quantity", name: "Số lượng", width: 90, format: "0" }, // [MỚI] Dùng cho Doanh nghiệp
-    { id: "fromDate", name: "Từ ngày", width: 120, format: "dd/MM/yyyy" },
-    { id: "toDate", name: "Đến ngày", width: 120, format: "dd/MM/yyyy" },
-    { id: "days", name: "Số ngày sử dụng", width: 120, format: "0" },
-    { id: "country", name: "Quốc gia", width: 120 }, { id: "dataPackage", name: "Gói data", width: 120 },
-    { id: "budgetCode", name: "Budget Code", width: 120 }, // Dùng cho Đối tác
-    { id: "discountPercent", name: "Chiết khấu (%)", width: 120, format: "0.0%" },
-    { id: "discountAmount", name: "Số tiền giảm", width: 120, format: "#,##0" },
-    { id: "unitPrice", name: "Đơn giá/ngày", width: 120, format: "#,##0" },
-    { id: "total", name: "Thành tiền", width: 120, format: "#,##0" }, { id: "vat", name: "VAT (10%)", width: 120, format: "#,##0" },
-    { id: "grandTotal", name: "Tổng cộng", width: 120, format: "#,##0" },
-    { id: "shippingMethod", name: "Hình thức vận chuyển", width: 150 },
-    { id: "shippingFee", name: "Phí vận chuyển", width: 120, format: "#,##0" },
-    { id: "shippingDate", name: "Ngày giao hàng mong muốn", width: 160, format: "dd/MM/yyyy" },
-    { id: "shippingRecipient", name: "Người nhận hàng", width: 150 },
-    { id: "shippingPhone", name: "SĐT nhận hàng", width: 120 },
-    { id: "shippingAddress", name: "Địa chỉ nhận hàng", width: 250 }
-];
-
-// Cột loại trừ cho Đối tác (Partner)
-const PARTNER_EXCLUDE_IDS = [
-    'quantity', 'discountPercent', 'discountAmount', 
-    'shippingMethod', 'shippingFee', 'shippingDate',
-    'shippingRecipient', 'shippingPhone', 'shippingAddress'
-];
-
-// Cột loại trừ cho Doanh nghiệp (Corporate)
-const CORPORATE_EXCLUDE_IDS = [
-    'userName', 'imei', 'budgetCode'
-];
-
-// [SỬA] Hàm này giờ sẽ chọn cột dựa trên "unit"
-function getColumnsForUnit(unit) {
-    let excludedIds = [];
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    // Đối tác (KHÔNG có vận chuyển, chiết khấu, số lượng)
-    if (unit === 'TOYOTA' || unit === 'YAMAHA' || unit === 'MITSUBISHI') {
-        excludedIds = PARTNER_EXCLUDE_IDS;
-    }
-    // Doanh nghiệp (CÓ vận chuyển, chiết khấu, số lượng - KHÔNG có userName, imei)
-    else if (unit === 'CorporateOrders') {
-        excludedIds = CORPORATE_EXCLUDE_IDS;
-    }
-    // Đối tác HIS (CÓ vận chuyển - KHÔNG có chiết khấu, số lượng)
-    else if (unit === 'HIS') {
-        excludedIds = ['quantity', 'discountPercent', 'discountAmount'];
-    }
-    // Mặc định (nếu có)
-    else {
-        excludedIds = [];
-    }
+    <script>
+        // Security Redirect: Block direct access to this form
+        (function() {
+            // URL của trang chủ mà bạn cho phép truy cập từ đó
+            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
 
-    return MASTER_COLUMNS.filter(col => !excludedIds.includes(col.id));
-}
-
-/**
- * =================================================================
- * HÀM XỬ LÝ ĐĂNG NHẬP VÀ CHIẾT KHẤU
- * (Giữ nguyên)
- * =================================================================
- */
-
-function getDiscountData() {
-    const cache = CacheService.getScriptCache();
-    const cachedData = cache.get('discountData');
-    if (cachedData) return JSON.parse(cachedData);
-    try {
-        const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-        const sheet = ss.getSheetByName(DISCOUNT_SHEEET_NAME);
-        if (!sheet) return {};
-        const data = sheet.getDataRange().getValues();
-        const headers = data.shift();
-        const taxCodeIndex = headers.indexOf("TaxCode");
-        const discountIndex = headers.indexOf("DiscountPercentage");
-        if (taxCodeIndex === -1 || discountIndex === -1) return {};
-        const discountMap = data.reduce((acc, row) => {
-            const taxCode = row[taxCodeIndex];
-            const discount = parseFloat(row[discountIndex]) / 100;
-            if (taxCode && !isNaN(discount)) {
-                acc[String(taxCode).trim()] = discount;
+            // Kiểm tra xem người dùng có đến từ trang chủ không
+            // document.referrer sẽ trống nếu người dùng truy cập trực tiếp
+            if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
+                // Hợp lệ, không làm gì cả
+            } else {
+                // Nếu không, chuyển hướng họ về trang chủ
+                // window.location.href = allowedReferrer;
             }
-            return acc;
-        }, {});
-        cache.put('discountData', JSON.stringify(discountMap), 600);
-        return discountMap;
-    } catch (e) {
-        Logger.log("Lỗi khi lấy dữ liệu chiết khấu: " + e.message);
-        return {};
-    }
-}
+        })();
+    </script>
 
-function handleLogin(params) {
-    let response = { success: false, message: "Tài khoản hoặc mật khẩu không đúng." };
-    const user = params.user ? params.user.trim().toLowerCase() : '';
-    const pass = params.pass || '';
-    if (ACCOUNTS[user] && ACCOUNTS[user].pass === pass) {
-        response = { success: true, message: "Đăng nhập thành công!", url: ACCOUNTS[user].url };
-    }
-    return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
-}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <!-- [QUAN TRỌNG] Đường dẫn đúng đến file price-table.js ở thư mục cha -->
+    <script src="price-table.js"></script> 
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0; min-height: 100vh; }
+        body { background: #e5eefb; min-height: 100vh; position: relative; box-sizing: border-box; overflow-x: hidden; }
+        .bg-logo-bg { pointer-events: none; position: fixed; z-index: -1; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
+        .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.07; will-change: transform; }
+        .logo-on-top { display: flex; justify-content: center; margin-bottom: 0.7rem; position: relative; z-index: 2; }
+        .logo-on-top img { height: 56px; width: auto; opacity: 0.96; }
+        .form-container { background: #fff; border-radius: 16px; box-shadow: 0 2px 10px 0 rgba(0,0,0,0.06); border: 1px solid #bee3f8; padding: 2rem; position: relative; z-index: 3; }
+        .label-en { font-size:0.98em; color:#2563eb; font-weight: 500; display:block; margin-bottom:0.16em; margin-top:0.05em; letter-spacing: 0.01em; }
+        .price-info-highlight { background: #fef2f2; color: #b91c1c; font-weight: bold; border-radius: 5px; padding: 0.3em 0.7em; margin-top: 5px; display: inline-block; }
+        .footer-company-info { font-size: 0.95em; background: linear-gradient(90deg, #fbeff0 0%, #dbeafe 100%); color: #0c2245; border-radius: 10px 10px 0 0; box-shadow: 0 0 8px 0 #0002; padding: 0.7rem 1.1rem 0.8rem 1.1rem; margin: 2.2rem auto 0 auto; text-align: center; max-width: 600px; border-top: 3px solid #da1a32; border-left: 1.5px solid #c7e0fb; border-right: 1.5px solid #c7e0fb; }
+        .footer-company-info h2 { font-size: 1.18rem; font-weight: bold; color: #da1a32; margin-bottom: 0.12rem; letter-spacing: 0.03em; text-transform: uppercase; }
+        .footer-company-info .en { color: #2563eb; font-weight: 500; font-size: 0.98em; margin-bottom: 0.2em; letter-spacing: 0.01em; }
+        .footer-company-info .line { font-size: 1em; margin-bottom: 2px;}
+        .footer-company-info .label { font-weight: 600; }
+        @media (max-width: 520px) { .form-container, .footer-company-info { padding: 1.25rem !important; border-radius: 8px; } .footer-company-info { font-size: 0.89em; } }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
+    <div class="logo-on-top"><img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="EZ Maya Logo"></div>
+    <main>
+        <div class="form-container max-w-3xl mx-auto mt-2">
+            <h1 class="text-3xl font-extrabold text-center text-blue-900 mb-6 tracking-widest uppercase">
+                ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI<br>
+                <span class="text-lg font-bold label-en uppercase">WIFI DEVICE RENTAL REGISTRATION FORM</span>
+            </h1>
+            <form id="wifi-form" autocomplete="on" novalidate>
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Thông tin người gửi <span class="label-en">Sender Information</span>
+                </h2>
+                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Họ tên người gửi <span class="label-en">Sender's Name</span></label>
+                        <input type="text" id="sender-name" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Email <span class="label-en">Email</span></label>
+                        <input type="email" id="sender-email" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Số điện thoại <span class="label-en">Phone Number</span></label>
+                        <input type="tel" id="sender-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Công ty <span class="label-en">Company</span></label>
+                        <input type="text" id="sender-company" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Khu vực <span class="label-en">Region</span></label>
+                        <select id="sender-region" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                            <option value="">-- Chọn khu vực --</option>
+                            <option value="HN">HN</option>
+                            <option value="HCM">HCM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Mã số thuế <span class="label-en">Tax Code</span></label>
+                        <input type="text" id="sender-taxcode" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                    </div>
+                </div>
 
-function handleGetDiscounts() {
-    const discounts = getDiscountData();
-    return ContentService.createTextOutput(JSON.stringify({ result: 'success', data: discounts })).setMimeType(ContentService.MimeType.JSON);
-}
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Chi tiết các đơn thuê <span class="label-en">Rental Request Details</span>
+                </h2>
+                <div id="rental-requests-container" class="space-y-8 mb-8"></div>
+                <div class="flex justify-center mb-8">
+                    <button id="add-request-btn" type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 text-md">
+                        + Thêm đơn đăng ký mới
+                        <span class="label-en text-white/90">+ Add new rental request</span>
+                    </button>
+                </div>
+                
+                <h2 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-4">
+                    Thông tin Vận chuyển <span class="label-en">Shipping Information</span>
+                </h2>
+                <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Tên người nhận <span class="label-en">Recipient's Name</span></label>
+                        <input type="text" id="shipping-recipient" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">SĐT người nhận <span class="label-en">Recipient's Phone</span></label>
+                        <input type="tel" id="shipping-phone" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Địa chỉ nhận hàng <span class="label-en">Shipping Address</span></label>
+                        <textarea id="shipping-address" rows="3" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required></textarea>
+                    </div>
+                     <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Ngày nhận hàng mong muốn <span class="label-en">Desired date of receipt</span></label>
+                        <input type="date" id="shipping-date" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                     <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Hình thức vận chuyển <span class="label-en">Shipping Method</span></label>
+                        <select id="shipping-method" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                            <option value="">-- Chọn hình thức --</option>
+                            <option value="Chuyển phát nhanh">Chuyển phát nhanh (50,000 VND)</option>
+                            <option value="Hỏa tốc">Hỏa tốc (Phí báo sau)</option>
+                        </select>
+                    </div>
+                </div>
 
-// [SỬA LỖI CORS] Hàm doGet đã được sửa
-function doGet(e) {
-    let responseOutput; 
-    try {
-        const action = e.parameter.action;
-        if (action === "login") {
-            responseOutput = handleLogin(e.parameter);
-        } else if (action === "getDiscounts") {
-            responseOutput = handleGetDiscounts();
-        } else {
-            responseOutput = createErrorResponse(new Error('Action không hợp lệ.'));
-        }
-    } catch (err) {
-        Logger.log(`ERROR in doGet: ${err.message}\nStack: ${err.stack || ''}`);
-        responseOutput = createErrorResponse(err);
-    }
-    // Thêm header để sửa lỗi CORS
-    responseOutput.withHeaders({'Access-Control-Allow-Origin': '*'});
-    return responseOutput; 
-}
-
-
-/**
- * =================================================================
- * HÀM XỬ LÝ FORM (doPost)
- * =================================================================
- */
-
-// Hàm doPost chính (Xử lý gửi form)
-function doPost(e) {
-    try {
-        const data = parseAndValidateInput(e);
-        const { sender, shippingInfo, rentalRequests, submissionTime, unit } = data;
-
-        const { sheet } = setupSpreadsheet(SPREADSHEET_ID, unit);
-        // [SỬA] Gửi "unit" vào hàm processRentalRequests
-        const newRowsRange = processRentalRequests(sheet, sender, shippingInfo, rentalRequests, submissionTime, unit); 
-
-        // [SỬA] Gửi "unit" vào hàm sendEmails
-        sendEmails(sender, shippingInfo, rentalRequests, submissionTime, unit);
-        updateStatusOnSheet(sheet, newRowsRange, "Đã gửi mail", unit);
-
-        return createSuccessResponse();
-    } catch (err) {
-        Logger.log(`ERROR in doPost: ${err.message}\nStack: ${err.stack || ''}`);
-        return createErrorResponse(err);
-    }
-}
-
-// Hàm phân tích dữ liệu đầu vào (Giữ nguyên)
-function parseAndValidateInput(e) {
-    if (!e || !e.postData || !e.postData.contents) throw new Error("Invalid request: No post data received");
-    const data = JSON.parse(e.postData.contents);
-    const unit = data.unit;
-    if (!unit) throw new Error("Thiếu 'unit' để xác định sheet.");
-    const sender = data.globalSenderInfo || {};
-    if (!sender.email) throw new Error("Thiếu email người gửi.");
-    const rentalRequests = Array.isArray(data.rentalRequests) ? data.rentalRequests : [];
-    if (rentalRequests.length === 0) throw new Error("Không có yêu cầu thuê nào được gửi.");
-    return { unit, submissionTime: data.submissionTime ? new Date(data.submissionTime) : new Date(), sender: data.globalSenderInfo, shippingInfo: data.shippingInfo || {}, rentalRequests };
-}
-
-// Hàm cài đặt Google Sheet (Giữ nguyên)
-function setupSpreadsheet(spreadsheetId, sheetName) {
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    let sheet = ss.getSheetByName(sheetName);
-    const columns = getColumnsForUnit(sheetName);
-    if (!sheet) {
-        sheet = ss.insertSheet(sheetName);
-        const headers = columns.map(c => c.name);
-        sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold").setBackground("#f3f4f6");
-        columns.forEach((c, idx) => { if (c.width) sheet.setColumnWidth(idx + 1, c.width); });
-        sheet.setFrozenRows(1);
-    }
-    columns.forEach((c, idx) => {
-        if (c.format) {
-            sheet.getRange(2, idx + 1, Math.max(1, sheet.getMaxRows() - 1), 1).setNumberFormat(c.format);
-        }
-    });
-    return { ss, sheet };
-}
-
-// [SỬA LỚN] Hàm này sẽ tính toán dựa trên "unit"
-function processRentalRequests(sheet, sender, shippingInfo, rentalRequests, submissionTime, unit) {
-    const columns = getColumnsForUnit(unit);
-    const discounts = getDiscountData();
-    const discountPercent = discounts[String(sender.taxCode).trim()] || 0;
-    const recordTime = new Date();
-    const startRow = sheet.getLastRow() + 1;
-
-    const rows = rentalRequests.map((req, idx) => {
+                <div class="flex justify-center">
+                    <button id="submit-form-btn" type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 text-lg flex items-center gap-2">
+                        <span id="submit-text">Gửi Yêu Cầu <span class="label-en text-white/90">Submit Request</span></span>
+                        <span id="loading-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-company-info">
+            <h2>CÔNG TY TNHH MAYA VIETNAM</h2>
+            <div class="en">MAYA VIETNAM CO., LTD</div>
+            <div class="line"><span class="label">Địa chỉ:</span> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam</div>
+            <div class="line en"><span class="label">Address:</span> Room 1630, 16th Floor, DAEHA BUSINESS CENTER, 360 Kim Ma, Giang Vo, Hanoi, Vietnam</div>
+            <div class="line"><span class="label">Hotline:</span> <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Tiếng Việt) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Tiếng Nhật)</div>
+            <div class="line en"><span class="label">Hotline:</span> <span style="color:#da1a32;font-weight:bold;">0962 000 650</span> (Vietnamese) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:bold;">0365 399 288</span> (Japanese)</div>
+        </div>
+    </footer>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- CONFIG ---
+        const PACKAGE_LIST = ["500MB/ngày", "1GB/ngày", "5GB/ngày"];
+        const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCEzp3E_n1B167Lfg4wfgoY1YMGTX9pPXwoU92EDZY5haOlxhjcIZdAt789qKfM86v/exec';
         
-        // ---- BẮT ĐẦU TÍNH TOÁN LẠI ----
-        const days = Number(req.days || 0);
-        const unitPrice = Number(req.unitPrice || 0);
-        let total, discountAmount, afterDiscount, vat, grandTotal;
+        const UNIT_NAME = "HIS";
 
-        // Xử lý cho form DOANH NGHIỆP (CorporateOrders)
-        if (unit === 'CorporateOrders') {
-            const quantity = Number(req.quantity || 1); // Lấy 'quantity'
-            total = unitPrice * days * quantity; // Tính tổng
-            discountAmount = Math.round(total * discountPercent); // Tính chiết khấu
-            afterDiscount = total - discountAmount;
-            vat = Math.round(afterDiscount * 0.10);
-            grandTotal = afterDiscount + vat;
-        } 
-        // Xử lý cho form ĐỐI TÁC (Mitsubishi, HIS...)
-        else {
-            // Logic cũ của bạn (đã sửa)
-            const dataTotal = unitPrice * days;
-            const insuranceTotal = Number(req.insuranceCost || 0); // (Form mới ko có, sẽ là 0)
-            total = dataTotal + insuranceTotal;
-            discountAmount = Math.round(total * discountPercent); // (Đối tác thường discount=0)
-            afterDiscount = total - discountAmount;
-            vat = Math.round(afterDiscount * 0.10);
-            grandTotal = afterDiscount + vat;
-        }
+        // --- ELEMENTS ---
+        const form = document.getElementById('wifi-form');
+        const container = document.getElementById('rental-requests-container');
+        const addRequestBtn = document.getElementById('add-request-btn');
+        const submitBtn = document.getElementById('submit-form-btn');
+        const submitText = document.getElementById('submit-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        let requestCounter = 0;
+
+        // --- HELPERS ---
+        const currency = (val) => val != null ? Number(val).toLocaleString("vi-VN") + " VND" : "-";
         
-        let shippingFee = 0;
-        if (idx === 0 && (unit === 'CorporateOrders' || unit === 'HIS')) { // Chỉ tính phí VC cho đơn 1 VÀ đúng loại form
-             if (shippingInfo && shippingInfo.method === "Chuyển phát nhanh") {
-                shippingFee = 50000;
-                grandTotal += shippingFee;
-             }
-        }
-        // ---- KẾT THÚC TÍNH TOÁN LẠI ----
-
-        // Đẩy dữ liệu vào đúng cột
-        const rowData = {
-            recordTime: recordTime,
-            submissionTime: submissionTime,
-            emailStatus: "Đang xử lý...",
-            name: sender.name,
-            email: sender.email,
-            phone: sender.phone,
-            company: sender.company,
-            region: sender.region,
-            taxCode: sender.taxCode,
-            requestNumber: idx + 1,
-            userName: req.userName || "", // Sẽ trống nếu là Corporate
-            imei: req.imei || "", // Sẽ trống nếu là Corporate
-            quantity: req.quantity || null, // Sẽ trống nếu là Partner
-            fromDate: parseDate(req.fromDate),
-            toDate: parseDate(req.toDate),
-            days: days,
-            country: req.country,
-            dataPackage: req.dataPackage,
-            budgetCode: req.budgetCode || "", // Sẽ trống nếu là Corporate
-            discountPercent: discountPercent,
-            discountAmount: discountAmount,
-            unitPrice: unitPrice,
-            total: total,
-            vat: vat,
-            grandTotal: grandTotal,
-            shippingMethod: idx === 0 ? (shippingInfo.method || "") : "",
-            shippingFee: idx === 0 ? shippingFee : null,
-            shippingDate: idx === 0 ? parseDate(shippingInfo.date) : null,
-            shippingRecipient: idx === 0 ? (shippingInfo.recipient || "") : "",
-            shippingPhone: idx === 0 ? (shippingInfo.phone || "") : "",
-            shippingAddress: idx === 0 ? (shippingInfo.address || "") : ""
+        const calcDays = (from, to) => {
+            if (!from || !to) return 1;
+            const d1 = new Date(from + 'T00:00:00Z');
+            const d2 = new Date(to + 'T00:00:00Z');
+            const ms = d2.getTime() - d1.getTime();
+            if (ms < 0) return 1;
+            return Math.round(ms / 86400000) + 1;
         };
 
-        return columns.map(col => {
-            const value = rowData[col.id];
-            return (value === undefined || value === null) ? "" : value;
-        });
-    });
+        const calcPrice = (country, pkg, days) => {
+            if (typeof PRICE_TABLE === 'undefined' || !PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
+            const unit = PRICE_TABLE[country][pkg];
+            if (unit === null || typeof unit === 'undefined') return null;
+            const total = unit * days;
+            const vat = Math.round(total * 0.1);
+            const grandTotal = total + vat;
+            return { days, total, unitPrice: unit, vat, grandTotal };
+        };
 
-    if (rows.length > 0) {
-        const range = sheet.getRange(startRow, 1, rows.length, columns.length);
-        range.setValues(rows);
-        return range;
-    }
-    return null;
-}
+        const createCountrySelect = (id) => {
+            let html = `<select id="${id}" class="choices-country w-full" required><option value="">-- Chọn quốc gia --</option>`;
+            html += COUNTRY_LIST.map(c => `<option value="${c}">${c}</option>`).join('');
+            html += `</select>`;
+            return html;
+        };
 
-// Hàm cập nhật Status (Giữ nguyên)
-function updateStatusOnSheet(sheet, range, statusText, unit) {
-    if (!range) return;
-    const columns = getColumnsForUnit(unit);
-    const colIndex = columns.findIndex(c => c.id === 'emailStatus') + 1;
-    if (colIndex > 0) {
-        sheet.getRange(range.getRow(), colIndex, range.getNumRows(), 1).setValue(statusText);
-    }
-}
+        const createPackageSelect = (id) => `
+            <select id="${id}" class="package-select w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                <option value="">-- Chọn gói data --</option>
+                <option value="500MB/ngày">500MB/ngày / 500MB/day</option>
+                <option value="1GB/ngày">1GB/ngày / 1GB/day</option>
+                <option value="5GB/ngày">5GB/ngày / 5GB/day</option>
+            </select>`;
 
+        // --- CORE LOGIC ---
+        function updatePriceForSection(section) {
+            const country = section.querySelector('.choices-country').value;
+            const pkg = section.querySelector('.package-select').value;
+            const from = section.querySelector('.date-from').value;
+            const to = section.querySelector('.date-to').value;
+            const daysInput = section.querySelector('.days-input');
+            const priceInfo = section.querySelector('.price-info');
+            const days = calcDays(from, to);
+            daysInput.value = days;
+            const result = calcPrice(country, pkg, days);
+            
+            if (!country || !pkg || !from || !to) {
+                priceInfo.innerHTML = '';
+                return;
+            }
 
-/**
- * =================================================================
- * HÀM XỬ LÝ EMAIL (ĐÃ NÂNG CẤP)
- * =================================================================
- */
-
-// [SỬA] Gửi "unit" vào hàm
-function sendEmails(sender, shippingInfo, rentalRequests, submissionTime, unit) {
-    const recipientEmail = sender.email;
-    const recipientName = sender.name || "quý khách";
-    const ccList = [...new Set(INTERNAL_CC_EMAILS.filter(Boolean))].join(",");
-    const subject = `Thông tin yêu cầu thuê WiFi tại ${getCountriesTitle(rentalRequests)} - ${sender.company || recipientName}`;
-    
-    // [SỬA] Gửi "unit" vào hàm build HTML
-    const emailData = { recipientName, sender, shippingInfo, requests: rentalRequests, unit };
-    const htmlBody = buildQuotationEmail_HTML(emailData);
-    const textBody = buildQuotationEmail_PlainText(emailData);
-
-    try {
-        if (recipientEmail) {
-            GmailApp.sendEmail(recipientEmail, subject, textBody, {
-                htmlBody: htmlBody,
-                name: "MAYA VIETNAM CO., LTD",
-                replyTo: ccList
+            if (result && result.unitPrice) {
+                priceInfo.innerHTML = `<span class="price-info-highlight">
+                    Đơn giá: ${currency(result.unitPrice)} x ${days} ngày = ${currency(result.total)}<br>
+                    VAT (10%): ${currency(result.vat)}<br>
+                    <span style="color:#2563eb;">Tổng cộng: ${currency(result.grandTotal)}</span>
+                </span>`;
+            } else {
+                priceInfo.innerHTML = '<span class="text-red-700 font-semibold">Gói cước không áp dụng cho quốc gia này.</span>';
+            }
+        }
+        
+        function updateSectionNumbers() {
+            const sections = container.querySelectorAll('section.rental-request');
+            sections.forEach((section, idx) => {
+                const n = idx + 1;
+                section.dataset.requestNumber = n;
+                section.querySelector('h2.request-title').innerHTML = `Đơn ${n} <span class="label-en">Request ${n}</span>`;
+                const removeBtn = section.querySelector('.remove-request-btn');
+                if (removeBtn) removeBtn.style.display = sections.length > 1 ? 'inline-block' : 'none';
             });
+            requestCounter = sections.length;
         }
-        const internalSubject = `[Nội bộ] ${subject}`;
-        GmailApp.sendEmail(ccList, internalSubject, textBody, {
-            htmlBody: htmlBody,
-            name: "MAYA VIETNAM CO., LTD",
-            replyTo: recipientEmail
+
+        function createRentalRequestSection() {
+            requestCounter++;
+            const n = requestCounter;
+            const section = document.createElement('section');
+            section.className = 'rental-request bg-blue-50 p-6 rounded-lg shadow-sm border border-blue-200';
+            section.dataset.requestNumber = n;
+
+            section.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="request-title text-xl font-bold text-blue-800">Đơn ${n} <span class="label-en">Request ${n}</span></h2>
+                    <button type="button" class="remove-request-btn text-red-500 hover:text-red-700 font-semibold text-sm" title="Xóa đơn này">Xóa <span class="label-en text-red-400">Remove</span></button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Tên người dùng <span class="label-en">User Name</span></label>
+                        <input type="text" class="user-name-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">IMEI <span class="label-en">IMEI</span></label>
+                        <input type="text" class="imei-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Từ ngày <span class="label-en">From date</span></label>
+                        <input type="date" class="date-from w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Đến ngày <span class="label-en">To date</span></label>
+                        <input type="date" class="date-to w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Số ngày sử dụng <span class="label-en">Usage days</span></label>
+                        <input type="number" class="days-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900 bg-gray-100" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Quốc gia <span class="label-en">Country</span></label>
+                        ${createCountrySelect(`country-${n}`)}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Gói data <span class="label-en">Data Package</span></label>
+                        ${createPackageSelect(`data-package-${n}`)}
+                    </div>
+                    <div class="price-info col-span-1 md:col-span-2 mt-2 text-blue-900 font-semibold"></div>
+                    <div class="budget-code-input-container col-span-1 md:col-span-2 hidden">
+                        <label class="block text-blue-800 text-sm font-semibold mb-2">Nhập Mã Thanh Toán <span class="label-en">Enter Budget Code</span></label>
+                        <input type="text" class="budget-code-input w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900">
+                    </div>
+                </div>`;
+            
+            container.appendChild(section);
+            
+            new Choices(section.querySelector('.choices-country'), { 
+                searchEnabled: true, 
+                shouldSort: false,
+                itemSelectText: 'Chọn' 
+            });
+
+            updateSectionNumbers();
+        }
+
+        // --- EVENT LISTENERS ---
+        addRequestBtn.addEventListener('click', createRentalRequestSection);
+        
+        container.addEventListener('change', (e) => {
+            const section = e.target.closest('section.rental-request');
+            if (!section) return;
+
+            if (e.target.matches('.choices-country, .package-select, .date-from, .date-to')) {
+                updatePriceForSection(section);
+            }
         });
-    } catch (err) {
-        throw new Error(`Email sending failed: ${err.message}`);
-    }
-}
 
-// [SỬA LỚN] Hàm build HTML Email
-function buildQuotationEmail_HTML({ recipientName, sender, shippingInfo, requests, unit }) {
-    const timezone = "Asia/Ho_Chi_Minh";
-    const discounts = getDiscountData();
-    const discountPercent = discounts[String(sender.taxCode).trim()] || 0;
-    let totalItemsCost = 0;
+        container.addEventListener('click', (e) => {
+            if (e.target.matches('.remove-request-btn, .remove-request-btn *')) {
+                const section = e.target.closest('section.rental-request');
+                if (section) {
+                    const choicesInstance = section.querySelector('.choices-country').choices;
+                    if (choicesInstance) {
+                        choicesInstance.destroy();
+                    }
+                    section.remove();
+                    updateSectionNumbers();
+                }
+            }
+        });
 
-    const requestDetailsHTML = requests.map((req, idx) => {
-        const fromDateStr = req.fromDate ? Utilities.formatDate(new Date(req.fromDate), timezone, "dd/MM/yyyy") : "";
-        const toDateStr = req.toDate ? Utilities.formatDate(new Date(req.toDate), timezone, "dd/MM/yyyy") : "";
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            loadingSpinner.classList.remove('hidden');
+            submitText.style.opacity = 0.5;
+
+            const senderInfo = {
+                name: document.getElementById('sender-name').value.trim(),
+                email: document.getElementById('sender-email').value.trim(),
+                phone: document.getElementById('sender-phone').value.trim(),
+                company: document.getElementById('sender-company').value.trim(),
+                region: document.getElementById('sender-region').value.trim(),
+                taxCode: document.getElementById('sender-taxcode').value.trim()
+            };
+
+            const shippingInfo = {
+                recipient: document.getElementById('shipping-recipient').value.trim(),
+                phone: document.getElementById('shipping-phone').value.trim(),
+                address: document.getElementById('shipping-address').value.trim(),
+                date: document.getElementById('shipping-date').value,
+                method: document.getElementById('shipping-method').value.trim()
+            };
+
+            // --- VALIDATION ---
+            if (!senderInfo.name || !senderInfo.email || !senderInfo.phone || !senderInfo.region) {
+                Swal.fire("Thiếu thông tin người gửi", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại và Khu vực.", "warning");
+                setSubmitState(true);
+                return;
+            }
+
+            if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.method || !shippingInfo.date) {
+                Swal.fire("Thiếu thông tin vận chuyển", "Vui lòng điền đầy đủ thông tin nhận hàng, bao gồm cả ngày giao hàng.", "warning");
+                setSubmitState(true);
+                return;
+            }
+
+            const rentalRequests = [];
+            let isFormValid = true;
+            const sections = container.querySelectorAll('section.rental-request');
+
+            if (sections.length === 0) {
+                 Swal.fire("Chưa có đơn", "Vui lòng thêm ít nhất một đơn đăng ký.", "warning");
+                 setSubmitState(true);
+                 return;
+            }
+
+            sections.forEach(section => {
+                const country = section.querySelector('.choices-country').value;
+                const pkg = section.querySelector('.package-select').value;
+                const from = section.querySelector('.date-from').value;
+                const to = section.querySelector('.date-to').value;
+                const days = calcDays(from, to);
+                const price = calcPrice(country, pkg, days);
+                const request = {
+                    requestNumber: section.dataset.requestNumber,
+                    userName: section.querySelector('.user-name-input').value.trim(),
+                    imei: section.querySelector('.imei-input').value.trim(),
+                    fromDate: from,
+                    toDate: to,
+                    days: days,
+                    country: country,
+                    dataPackage: pkg,
+                    budgetCode: section.querySelector('.budget-code-input')?.value.trim() || "",
+                    unitPrice: price ? price.unitPrice : "",
+                    total: price ? price.total : "",
+                    vat: price ? price.vat : "",
+                    grandTotal: price ? price.grandTotal : ""
+                };
+                if (!request.userName || !request.fromDate || !request.toDate || !request.country || !request.dataPackage) {
+                    isFormValid = false;
+                }
+                rentalRequests.push(request);
+            });
+
+            if (!isFormValid) {
+                Swal.fire("Thiếu thông tin đơn thuê", "Vui lòng điền đầy đủ thông tin cho tất cả các đơn đăng ký.", "warning");
+                setSubmitState(true);
+                return;
+            }
+
+            const payload = {
+                unit: UNIT_NAME,
+                globalSenderInfo: senderInfo,
+                shippingInfo: shippingInfo,
+                rentalRequests,
+                submissionTime: new Date().toISOString()
+            };
+            
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                
+                Swal.fire("Thành công!", "Đơn đăng ký đã được gửi đi.<br>Vui lòng kiểm tra email để xem báo giá chi tiết.", "success");
+                form.reset();
+                container.innerHTML = '';
+                createRentalRequestSection();
+                
+            } catch (err) {
+                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. Vui lòng kiểm tra kết nối mạng và thử lại.", "error");
+            } finally {
+                setSubmitState(true);
+            }
+        });
         
-        // ---- BẮT ĐẦU TÍNH TOÁN LẠI (GIỐNG HÀM processRentalRequests) ----
-        const days = Number(req.days || 0);
-        const unitPrice = Number(req.unitPrice || 0);
-        let total, discountAmount, afterDiscount, vat, grandTotal, title;
-        
-        if (unit === 'CorporateOrders') {
-            const quantity = Number(req.quantity || 1);
-            title = `Đơn ${idx + 1}: ${req.country} (SL: ${quantity})`; // Tiêu đề cho Doanh nghiệp
-            total = unitPrice * days * quantity;
-            discountAmount = Math.round(total * discountPercent);
-            afterDiscount = total - discountAmount;
-            vat = Math.round(afterDiscount * 0.10);
-            grandTotal = afterDiscount + vat;
-        } else {
-            title = `Đơn ${idx + 1}: ${req.userName || ''}${req.imei ? " / " + req.imei : ""}`; // Tiêu đề cho Đối tác
-            const dataTotal = unitPrice * days;
-            const insuranceTotal = Number(req.insuranceCost || 0);
-            total = dataTotal + insuranceTotal;
-            discountAmount = Math.round(total * discountPercent);
-            afterDiscount = total - discountAmount;
-            vat = Math.round(afterDiscount * 0.10);
-            grandTotal = afterDiscount + vat;
-        }
-        totalItemsCost += grandTotal;
-        // ---- KẾT THÚC TÍNH TOÁN LẠI ----
+        const setSubmitState = (enabled) => {
+            submitBtn.disabled = !enabled;
+            loadingSpinner.classList.toggle('hidden', enabled);
+            submitText.style.opacity = enabled ? 1 : 0.5;
+        };
 
-        return `
-        <div style="margin:20px 0;padding:15px;background:#f8f9fa;border-left:3px solid #2563eb;border-radius:5px;">
-            <b style="color:#2563eb;">${title}</b><br>
-            - Thời gian: ${fromDateStr} đến ${toDateStr} (${days} ngày)<br>
-            - Quốc gia: ${req.country || ''}<br>
-            - Gói cước: ${req.dataPackage || ''}<br>
-            - Chi phí (gồm VAT): <b>${currency(grandTotal)}</b>
-            ${ discountPercent > 0 ? `<br><span style="font-size:0.9em; color:#166534;">(Đã bao gồm chiết khấu ${ (discountPercent * 100).toFixed(0) }%)</span>` : '' }
-        </div>`;
-    }).join('');
-
-    // Logic Vận chuyển (chỉ hiển thị nếu là Corporate hoặc HIS)
-    const hasShippingInfo = (unit === 'CorporateOrders' || unit === 'HIS') && shippingInfo && shippingInfo.method;
-    const summaryTitle = hasShippingInfo ? "Thông tin Vận chuyển & Tổng kết" : "Tổng kết Đơn hàng";
-
-    let shippingDetailsHTML = '';
-    if (hasShippingInfo) {
-        shippingDetailsHTML = `
-            <tr><td style="padding: 8px; border: 1px solid #ddd; width: 180px;">Người nhận hàng</td><td style="padding: 8px; border: 1px solid #ddd;"><b>${shippingInfo.recipient || ""}</b></td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ddd;">Số điện thoại</td><td style="padding: 8px; border: 1px solid #ddd;">${shippingInfo.phone || ""}</td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ddd;">Địa chỉ giao hàng</td><td style="padding: 8px; border: 1px solid #ddd;">${shippingInfo.address || ""}</td></tr>
-            <tr><td style,"padding: 8px; border: 1px solid #ddd;">Ngày giao mong muốn</td><td style="padding: 8px; border: 1px solid #ddd;">${shippingInfo.date ? Utilities.formatDate(new Date(shippingInfo.date), "Asia/Ho_Chi_Minh", "dd/MM/yyyy") : ""}</td></tr>
-            <tr><td style="padding: 8px; border: 1px solid #ddd;">Hình thức vận chuyển</td><td style="padding: 8px; border: 1px solid #ddd;">${shippingInfo.method || ""}</td></tr>
-        `;
-    }
-
-    let shippingFee = 0;
-    let shippingFeeRowHTML = '';
-    if (hasShippingInfo) {
-        let shippingFeeText = "";
-        if (shippingInfo.method === "Chuyển phát nhanh") {
-            shippingFee = 50000;
-            shippingFeeText = currency(shippingFee);
-        } else if (shippingInfo.method === "Hỏa tốc") {
-            shippingFeeText = "Sẽ được báo sau (chưa bao gồm)";
-        }
-        shippingFeeRowHTML = `<tr><td style="padding: 8px; border: 1px solid #ddd;">Phí vận chuyển</td><td style="padding: 8px; border: 1px solid #ddd;">${shippingFeeText}</td></tr>`;
-    }
-
-    const finalGrandTotal = totalItemsCost + shippingFee;
-
-    // Phần còn lại của HTML (Giữ nguyên)
-    let html = `
-    <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;color:#333;line-height:1.6;">
-        <div style="border-bottom:2px solid #2563eb;padding-bottom:10px;margin-bottom:20px;"><div style="font-weight:bold;color:#2563eb;font-size:18px;">CÔNG TY TNHH MAYA VIETNAM</div></div>
-        <div style="margin:20px 0;"><b>Kính gửi: ${sender.company || recipientName}</b><br><i>Dear ${recipientName},</i></div>
-        <div>Cảm ơn Quý Công ty đã quan tâm đến dịch vụ của chúng tôi. Chúng tôi xin gửi thông tin chi tiết về yêu cầu như sau:</div>
-        ${requestDetailsHTML}
-    <div style="margin-top:25px; border-top: 1px solid #ccc; padding-top: 15px;">
-        <h3 style="color:#2563eb; margin-bottom: 10px;">${summaryTitle}</h3>
-        <table style="width:100%; border-collapse: collapse; font-size: 14px;">
-            ${shippingDetailsHTML}
-            <tr><td style="padding: 8px; border: 1px solid #ddd; width: 180px;">Tổng tiền hàng (gồm VAT)</td><td style="padding: 8px; border: 1px solid #ddd;">${currency(totalItemsCost)}</td></tr>
-            ${shippingFeeRowHTML}
-            <tr style="background-color: #f8f9fa;"><td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; font-size: 16px; color: #d32f2f;">TỔNG THANH TOÁN</td><td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; font-size: 16px; color: #d32f2f;">${currency(finalGrandTotal)}</td></tr>
-        </table>
-    </div>`;
-
-    html += `
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 14px; line-height: 1.6; color: #555;">
-        <p style="margin: 0;">Trân trọng,</p>
-        <p style="font-weight: bold; color: #da1a32; margin: 5px 0 0 0;">Phòng Kinh Doanh</p>
-        <p style="font-weight: bold; color: #2563eb; margin: 5px 0 0 0;">MAYA VIETNAM CO., LTD</p>
-        <p style="margin: 0;"><strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội</p>
-        <p style="margin: 0;"><strong>Hotline (VN):</strong> 0962 000 650 | <strong>Hotline (JP):</strong> 0365 399 288</p>
-        <p style="margin: 0;"><strong>Email:</strong> <a href="mailto:info@ezfivn.com" style="color: #2563eb; text-decoration: none;">info@ezfivn.com</a></a</p>
-        <p style="margin: 0;"><strong>Website:</strong> <a href="https://mayavietnam.com/" style="color: #2563eb; text-decoration: none;">mayavietnam.com</a></p>
-    </div>
-    <div style="margin-top:20px;padding-top:15px;border-top:1px solid #eee;color:#777;text-align:center;font-size:12px;"><i>Đây là email tự động, vui lòng không trả lời trực tiếp.</i></div>
-    </div>`;
-    return html;
-}
-
-// [SỬA LỚN] Hàm build Email dạng Text
-function buildQuotationEmail_PlainText({ sender, requests, submissionTime, unit }) {
-    const submissionTimeFormatted = Utilities.formatDate(new Date(submissionTime), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm");
-    let text = `Kính gửi: ${sender.company || sender.name}\n\n`;
-    text += `Công ty TNHH Maya Vietnam xin chân thành cảm ơn Quý Công ty đã quan tâm đến dịch vụ của chúng tôi.\n\n`;
-    requests.forEach((req, idx) => {
-        text += `----------------------------------------\n`;
-         if (unit === 'CorporateOrders') {
-            text += `Đơn ${idx + 1}: ${req.country} (SL: ${req.quantity})\n`;
-        } else {
-            text += `Đơn ${idx + 1}: ${req.userName}\n`;
-        }
-        text += `- Chi phí (gồm VAT): (Vui lòng xem chi tiết trong email HTML)\n\n`;
+        // --- INITIALIZE ---
+        createRentalRequestSection();
     });
-    text += `----------------------------------------\n`;
-    text += `Trân trọng cảm ơn Quý khách!\n`;
-    text += `Ngày gửi: ${submissionTimeFormatted}\n`;
-    return text;
-}
-
-// Các hàm trợ giúp cuối cùng (Giữ nguyên)
-function createSuccessResponse() { return ContentService.createTextOutput(JSON.stringify({ result: 'success' })).setMimeType(ContentService.MimeType.JSON); }
-function createErrorResponse(err) { return ContentService.createTextOutput(JSON.stringify({ result: 'error', error: err.message || String(err) })).setMimeType(ContentService.MimeType.JSON); }
-function currency(vnd) { if (typeof vnd !== 'number' || isNaN(vnd)) return "-"; return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(vnd); }
-function getCountriesTitle(requests) { const countries = [...new Set((requests || []).map(r => r.country).filter(Boolean))]; return countries.join(", "); }
-function parseDate(input) { if (!input) return null; if (input instanceof Date) return input; if (typeof input === 'string') { const iso = new Date(input); if (!isNaN(iso)) return iso; } return null; }
+    </script>
+</body>
+</html>
