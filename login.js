@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // [CẢNH BÁO] MẬT KHẨU LỘ THIÊN NGAY TẠI ĐÂY
       const ACCOUNTS = {
         "his_user": { pass: "MAYAVIETNAM", url: "./HIS/index.html" },
-        "Toyota": { pass: "123456789", url: "./TOYOTA/index.html" },
+        "Toyota": { pass: "TMV-MAYA-2025", url: "./TOYOTA/index.html" },
         "yamaha": { pass: "0123456789", url: "./YAMAHA/index.html" },
         "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" }
       };
