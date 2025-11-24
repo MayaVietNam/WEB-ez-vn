@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" }
       };
 
-      const user = document.getElementById('partner-user').value.trim().toLowerCase();
+      const user = document.getElementById('partner-user').value.trim();
       const pass = document.getElementById('partner-pass').value;
 
       // Hiển thị thông báo "Đang tải"
