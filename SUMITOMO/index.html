@@ -6,17 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
-        // Security Redirect: Block direct access to this form
         (function() {
-            // URL của trang chủ mà bạn cho phép truy cập từ đó
-            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
-
-            // Kiểm tra xem người dùng có đến từ trang chủ không
+            const allowedReferrer = "https://ez-vn.com/"; 
             if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
-                // Hợp lệ, không làm gì cả
             } else {
-                // Nếu không, chuyển hướng họ về trang chủ
-                // window.location.href = allowedReferrer;
             }
         })();
     </script>
@@ -161,7 +154,6 @@
         
         const UNIT_NAME = "SUMITOMO";
 
-        // Bản đồ chứa MST tương ứng cho từng công ty SUMITOMO
         const TAX_CODE_MAP = {
             "CÔNG TY TNHH SUMITOMO CORPORATION VIỆT NAM": "0102267852",
             "CHI NHÁNH CÔNG TY TNHH SUMITOMO CORPORATION VIỆT NAM TẠI THÀNH PHỐ HỒ CHÍ MINH": "0102267852-001"
@@ -192,21 +184,26 @@
             return Math.round(ms / 86400000) + 1;
         };
 
+        // [FIX] Cập nhật lại logic tính toán hiển thị HTML
         const calcPrice = (country, pkg, days) => {
             if (typeof PRICE_TABLE === 'undefined' || !PRICE_TABLE[country] || !PACKAGE_LIST.includes(pkg) || !days) return null;
             const unit = PRICE_TABLE[country][pkg];
             if (unit === null || typeof unit === 'undefined') return null;
             
-            // Tính toán SUMITOMO: Tổng = (Đơn giá * Ngày) - Giảm giá 15% + Bảo hiểm 100k + VAT 10%
-            const total = unit * days;
-            const discount = Math.round(total * 0.15); // Giảm 15%
-            const insurance = 100000; // Bảo hiểm cố định
-            const afterDiscount = total - discount;
+            const dataTotal = unit * days;
+            // Chỉ giảm 15% trên tiền thuê Data
+            const discount = Math.round(dataTotal * 0.15); 
+            const afterDiscount = dataTotal - discount;
+            
+            // Bảo hiểm không được giảm giá
+            const insurance = 100000; 
             const preTax = afterDiscount + insurance;
-            const vat = Math.round(preTax * 0.1); // VAT 10% 
+            
+            const vat = Math.round(preTax * 0.1);
             const grandTotal = preTax + vat;
 
-            return { days, total, unitPrice: unit, discount, insurance, vat, grandTotal };
+            // Truyền dataTotal (chưa có bảo hiểm) làm total để hiển thị cho khớp
+            return { days, total: dataTotal, unitPrice: unit, discount, insurance, vat, grandTotal };
         };
 
         const createCountrySelect = (id) => {
@@ -327,13 +324,12 @@
 
         // --- EVENT LISTENERS ---
         
-        // Lắng nghe sự kiện khi khách chọn công ty để tự điền MST
         companySelect.addEventListener('change', (e) => {
             const selectedCompany = e.target.value;
             if (TAX_CODE_MAP[selectedCompany]) {
                 taxCodeInput.value = TAX_CODE_MAP[selectedCompany];
             } else {
-                taxCodeInput.value = ""; // Xóa trắng nếu không khớp (hoặc khi chọn "Chọn công ty")
+                taxCodeInput.value = ""; 
             }
         });
 
@@ -390,7 +386,6 @@
                 method: document.getElementById('shipping-method').value.trim()
             };
 
-            // --- VALIDATION ---
             if (!senderInfo.name || !senderInfo.email || !senderInfo.phone || !senderInfo.region || !senderInfo.company) {
                 Swal.fire("Thiếu thông tin người gửi", "Vui lòng nhập đủ Họ tên, Email, Số điện thoại, Công ty và Khu vực.", "warning");
                 setSubmitState(true);
@@ -458,14 +453,13 @@
             };
             
             try {
-                // ĐÃ FIX: Dùng text/plain thay vì no-cors để nhận được phản hồi từ server
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
                 
-                const result = await response.json(); // Đọc kết quả thực tế
+                const result = await response.json(); 
 
                 if (result.status === "OK") {
                     await Swal.fire({

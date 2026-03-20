@@ -1,6 +1,9 @@
-/* === FILE: login.js (Phiên bản KHÔNG BẢO MẬT) === */
+/* === FILE: login.js (Phiên bản ĐÃ BẢO MẬT BẰNG GOOGLE SCRIPT) === */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // [BẢO MẬT] URL của Google Apps Script để xác thực (Thay bằng URL Deploy mới nhất của bạn nếu cần)
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQMxpnrXHUQsf0Vo8Uos6hajXYXFIsfCaFiH8mGOgWwww7Gc5hFR54NczPaIs6EhPJ/exec';
+
   const container = document.getElementById('container');
   const corpBtn = document.getElementById('corp-btn');
   const partnerBtn = document.getElementById('partner-btn');
@@ -26,63 +29,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * =========================
-   * 2. Đăng nhập Đối tác (Đã thêm tài khoản Sumitomo)
+   * 2. Đăng nhập Đối tác (ĐÃ BẢO MẬT - KHÔNG CÒN LỘ MẬT KHẨU)
    * =========================
    */
   if (partnerForm) {
     partnerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // [CẢNH BÁO] MẬT KHẨU LỘ THIÊN NGAY TẠI ĐÂY
-      const ACCOUNTS = {
-        "his_user": { pass: "MAYAVIETNAM", url: "./HIS/index.html" },
-        "Toyota": { pass: "TMV-MAYA-2025", url: "./TOYOTA/index.html" },
-        "yamaha": { pass: "0123456789", url: "./YAMAHA/index.html" },
-        "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" },
-        // Thêm tài khoản Sumitomo vào đây (bạn có thể tự đổi user/pass)
-        "sumitomo": { pass: "SUMI2026", url: "./SUMITOMO/index.html" } 
-      };
+      const user = document.getElementById('partner-user').value.trim().toUpperCase(); // Tự động in hoa để khớp Backend
+      const pass = document.getElementById('partner-pass').value.trim();
+      const submitBtn = partnerForm.querySelector('button[type="submit"]');
 
-      const user = document.getElementById('partner-user').value.trim();
-      const pass = document.getElementById('partner-pass').value;
+      // Khóa nút đăng nhập để tránh khách bấm nhiều lần
+      if(submitBtn) submitBtn.disabled = true;
 
       // Hiển thị thông báo "Đang tải"
       Swal.fire({
-        title: 'Đang đăng nhập...',
-        text: 'Vui lòng chờ trong giây lát.',
+        title: 'Đang xác thực...',
+        text: 'Vui lòng chờ hệ thống kiểm tra.',
         icon: 'info',
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
         }
       });
-      
-      // Tạm dừng 0.5s để người dùng thấy thông báo
-      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Bắt đầu kiểm tra mật khẩu
-      if (ACCOUNTS[user] && ACCOUNTS[user].pass === pass) {
-        // ĐĂNG NHẬP ĐÚNG
-        Swal.fire({
-          title: 'Thành công!',
-          text: 'Đăng nhập thành công, đang chuyển hướng...',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false
-        }).then(() => {
-          window.location.href = ACCOUNTS[user].url; // Chuyển hướng
+      try {
+        // Gửi thông tin sang Google Script để kiểm tra chéo
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ 
+                action: 'login', 
+                username: user, 
+                password: pass 
+            })
         });
-      } else {
-        // ĐĂNG NHẬP SAI
-        Swal.fire('Lỗi', 'Tài khoản hoặc mật khẩu không đúng.', 'error');
-      }
 
+        const result = await response.json();
+
+        if (result.status === 'OK') {
+          // ĐĂNG NHẬP ĐÚNG -> Backend trả về đường dẫn chính xác
+          Swal.fire({
+            title: 'Thành công!',
+            text: 'Đăng nhập thành công, đang chuyển hướng...',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = result.redirect; // Link an toàn do Google cấp (vd: HIS/index.html)
+          });
+        } else {
+          // ĐĂNG NHẬP SAI
+          Swal.fire('Lỗi', result.message || 'Tài khoản hoặc mật khẩu không đúng.', 'error');
+        }
+      } catch (error) {
+          console.error("Lỗi đăng nhập:", error);
+          Swal.fire('Lỗi kết nối', 'Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.', 'error');
+      } finally {
+          if(submitBtn) submitBtn.disabled = false; // Mở lại nút
+      }
     });
   }
 
   /**
    * =========================
-   * 3. Đăng nhập Doanh nghiệp (Trả về nguyên bản)
+   * 3. Đăng nhập Doanh nghiệp (Trả về nguyên bản theo code của bạn)
    * =========================
    */
   if (corpForm) {
@@ -93,7 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         Swal.fire('Thiếu thông tin', 'Vui lòng nhập mã số thuế doanh nghiệp.', 'warning');
         return;
       }
+      
+      // Lưu lại MST để form bên trong thư mục Corporate có thể gọi ra dùng
       sessionStorage.setItem('corpTaxCode', code);
+      
       Swal.fire({
         title: 'Xác nhận!',
         text: 'Đã lưu mã số thuế, đang chuyển hướng...',
