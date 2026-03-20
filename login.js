@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const partnerForm = document.getElementById('partner-form');
   const corpForm = document.getElementById('corp-form');
 
-  // KHÔNG CẦN URL SCRIPT NỮA
-
   /**
    * =========================
    * 1. Chuyển qua lại form (Giữ nguyên)
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * =========================
-   * 2. Đăng nhập Đối tác (Sửa lại - KHÔNG BẢO MẬT)
+   * 2. Đăng nhập Đối tác (Đã thêm tài khoản Sumitomo)
    * =========================
    */
   if (partnerForm) {
@@ -40,7 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
         "his_user": { pass: "MAYAVIETNAM", url: "./HIS/index.html" },
         "Toyota": { pass: "TMV-MAYA-2025", url: "./TOYOTA/index.html" },
         "yamaha": { pass: "0123456789", url: "./YAMAHA/index.html" },
-        "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" }
+        "mitsubishi": { pass: "0987654321", url: "./MITSUBISHI/index.html" },
+        // Thêm tài khoản Sumitomo vào đây (bạn có thể tự đổi user/pass)
+        "sumitomo": { pass: "SUMI2026", url: "./SUMITOMO/index.html" } 
       };
 
       const user = document.getElementById('partner-user').value.trim();
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * =========================
-   * 3. Đăng nhập Doanh nghiệp (Giữ nguyên)
+   * 3. Đăng nhập Doanh nghiệp (Trả về nguyên bản)
    * =========================
    */
   if (corpForm) {
