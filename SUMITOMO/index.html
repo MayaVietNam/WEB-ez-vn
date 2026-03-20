@@ -2,17 +2,14 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI</title>
+    <title>ĐƠN ĐĂNG KÝ THUÊ THIẾT BỊ WIFI - SUMITOMO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
-        // Security Redirect: Block direct access to this form
         (function() {
             const allowedReferrer = "https://ez-vn.com/"; 
             if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
-                // Hợp lệ, không làm gì cả
             } else {
-                // window.location.href = allowedReferrer;
             }
         })();
     </script>
@@ -155,7 +152,6 @@
         const COUNTRY_LIST = typeof PRICE_TABLE !== 'undefined' ? Object.keys(PRICE_TABLE).sort() : [];
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwymGHKMdmutcGLjLSch-l6LEOTBlWGV2pXAYkfC_kXkMHdaVDcrKHCLhIgnyNXSG2f-g/exec';
         
-        // Đổi tên Unit theo yêu cầu
         const UNIT_NAME = "SUMITOMO";
 
         // --- ELEMENTS ---
@@ -185,13 +181,13 @@
             const unit = PRICE_TABLE[country][pkg];
             if (unit === null || typeof unit === 'undefined') return null;
             
-            // Tính toán: Tổng = (Đơn giá * Ngày) - Giảm giá 15% + Bảo hiểm 100k + VAT 10%
+            // Tính toán SUMITOMO: Tổng = (Đơn giá * Ngày) - Giảm giá 15% + Bảo hiểm 100k + VAT 10%
             const total = unit * days;
             const discount = Math.round(total * 0.15); // Giảm 15%
             const insurance = 100000; // Bảo hiểm cố định
             const afterDiscount = total - discount;
             const preTax = afterDiscount + insurance;
-            const vat = Math.round(preTax * 0.1); // VAT 10% trên số tiền sau giảm và cộng bảo hiểm
+            const vat = Math.round(preTax * 0.1); // VAT 10% 
             const grandTotal = preTax + vat;
 
             return { days, total, unitPrice: unit, discount, insurance, vat, grandTotal };
@@ -339,12 +335,16 @@
             }
         });
 
+        const setSubmitState = (enabled) => {
+            submitBtn.disabled = !enabled;
+            loadingSpinner.classList.toggle('hidden', enabled);
+            submitText.style.opacity = enabled ? 1 : 0.5;
+        };
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            submitBtn.disabled = true;
-            loadingSpinner.classList.remove('hidden');
-            submitText.style.opacity = 0.5;
+            setSubmitState(false);
 
             const senderInfo = {
                 name: document.getElementById('sender-name').value.trim(),
@@ -431,32 +431,38 @@
             };
             
             try {
-                await fetch(SCRIPT_URL, {
+                // ĐÃ FIX: Dùng text/plain thay vì no-cors để nhận được phản hồi từ server
+                const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
                 
-                Swal.fire("Thành công!", "Đơn đăng ký đã được gửi đi.<br>Vui lòng kiểm tra email để xem báo giá chi tiết.", "success");
-                form.reset();
-                container.innerHTML = '';
-                createRentalRequestSection();
+                const result = await response.json(); // Đọc kết quả thực tế
+
+                if (result.status === "OK") {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: 'Đơn đăng ký đã được gửi đi.<br>Vui lòng kiểm tra email để xem báo giá chi tiết.',
+                        confirmButtonColor: '#2563eb'
+                    });
+                    
+                    form.reset();
+                    container.innerHTML = '';
+                    createRentalRequestSection();
+                } else {
+                     throw new Error(result.message || "Lỗi chưa xác định từ server");
+                }
                 
             } catch (err) {
-                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. Vui lòng kiểm tra kết nối mạng và thử lại.", "error");
+                console.error("Lỗi:", err);
+                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. " + err.message, "error");
             } finally {
                 setSubmitState(true);
             }
         });
         
-        const setSubmitState = (enabled) => {
-            submitBtn.disabled = !enabled;
-            loadingSpinner.classList.toggle('hidden', enabled);
-            submitText.style.opacity = enabled ? 1 : 0.5;
-        };
-
         // --- INITIALIZE ---
         createRentalRequestSection();
     });
