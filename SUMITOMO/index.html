@@ -6,10 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
+        // Security Redirect: Block direct access to this form
         (function() {
-            const allowedReferrer = "https://ez-vn.com/"; 
+            // URL của trang chủ mà bạn cho phép truy cập từ đó
+            const allowedReferrer = "https://ez-vn.com/"; // Thay thế bằng tên miền thật của bạn
+
+            // Kiểm tra xem người dùng có đến từ trang chủ không
             if (document.referrer && document.referrer.startsWith(allowedReferrer)) {
+                // Hợp lệ, không làm gì cả
             } else {
+                // Nếu không, chuyển hướng họ về trang chủ
+                // window.location.href = allowedReferrer;
             }
         })();
     </script>
@@ -120,8 +127,8 @@
                         <label class="block text-blue-800 text-sm font-semibold mb-2">Hình thức vận chuyển <span class="label-en">Shipping Method</span></label>
                         <select id="shipping-method" class="w-full px-4 py-2 border border-blue-300 rounded-lg text-blue-900" required>
                             <option value="">-- Chọn hình thức --</option>
-                            <option value="Chuyển phát nhanh">Chuyển phát nhanh (50,000 VND)</option>
-                            <option value="Hỏa tốc">Hỏa tốc (Phí báo sau)</option>
+                            <option value="Chuyển phát nhanh">Chuyển phát nhanh (Miễn phí)</option>
+                            <option value="Hỏa tốc">Hỏa tốc (Miễn phí)</option>
                         </select>
                     </div>
                 </div>
@@ -154,6 +161,12 @@
         
         const UNIT_NAME = "SUMITOMO";
 
+        // Bản đồ chứa MST tương ứng cho từng công ty SUMITOMO
+        const TAX_CODE_MAP = {
+            "CÔNG TY TNHH SUMITOMO CORPORATION VIỆT NAM": "0102267852",
+            "CHI NHÁNH CÔNG TY TNHH SUMITOMO CORPORATION VIỆT NAM TẠI THÀNH PHỐ HỒ CHÍ MINH": "0102267852-001"
+        };
+
         // --- ELEMENTS ---
         const form = document.getElementById('wifi-form');
         const container = document.getElementById('rental-requests-container');
@@ -161,6 +174,9 @@
         const submitBtn = document.getElementById('submit-form-btn');
         const submitText = document.getElementById('submit-text');
         const loadingSpinner = document.getElementById('loading-spinner');
+        
+        const companySelect = document.getElementById('sender-company');
+        const taxCodeInput = document.getElementById('sender-taxcode');
 
         let requestCounter = 0;
 
@@ -310,6 +326,17 @@
         }
 
         // --- EVENT LISTENERS ---
+        
+        // Lắng nghe sự kiện khi khách chọn công ty để tự điền MST
+        companySelect.addEventListener('change', (e) => {
+            const selectedCompany = e.target.value;
+            if (TAX_CODE_MAP[selectedCompany]) {
+                taxCodeInput.value = TAX_CODE_MAP[selectedCompany];
+            } else {
+                taxCodeInput.value = ""; // Xóa trắng nếu không khớp (hoặc khi chọn "Chọn công ty")
+            }
+        });
+
         addRequestBtn.addEventListener('click', createRentalRequestSection);
         
         container.addEventListener('change', (e) => {
@@ -350,9 +377,9 @@
                 name: document.getElementById('sender-name').value.trim(),
                 email: document.getElementById('sender-email').value.trim(),
                 phone: document.getElementById('sender-phone').value.trim(),
-                company: document.getElementById('sender-company').value.trim(),
+                company: companySelect.value.trim(),
                 region: document.getElementById('sender-region').value.trim(),
-                taxCode: document.getElementById('sender-taxcode').value.trim()
+                taxCode: taxCodeInput.value.trim()
             };
 
             const shippingInfo = {
@@ -457,7 +484,7 @@
                 
             } catch (err) {
                 console.error("Lỗi:", err);
-                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. " + err.message, "error");
+                Swal.fire("Lỗi", "Không thể gửi đơn đăng ký. Vui lòng thử lại sau.", "error");
             } finally {
                 setSubmitState(true);
             }
