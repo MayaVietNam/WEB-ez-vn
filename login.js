@@ -1,49 +1,67 @@
-/* === FILE: login.js (Phiên bản ĐÃ BẢO MẬT BẰNG GOOGLE SCRIPT) === */
+/* === FILE: login.js (Phiên bản ĐÃ BẢO MẬT & TỐI ƯU) === */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // [BẢO MẬT] URL của Google Apps Script để xác thực (Thay bằng URL Deploy mới nhất của bạn nếu cần)
+  // [BẢO MẬT] URL của Google Apps Script để xác thực
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQMxpnrXHUQsf0Vo8Uos6hajXYXFIsfCaFiH8mGOgWwww7Gc5hFR54NczPaIs6EhPJ/exec';
 
+  // Lưu reference để tránh query DOM nhiều lần
   const container = document.getElementById('container');
   const corpBtn = document.getElementById('corp-btn');
   const partnerBtn = document.getElementById('partner-btn');
   const partnerForm = document.getElementById('partner-form');
   const corpForm = document.getElementById('corp-form');
+  const guideModal = document.getElementById('guide-modal');
+  const guideBtnLeft = document.getElementById('guide-btn-left');
+  const guideBtnRight = document.getElementById('guide-btn-right');
+  const closeModalBtn = document.getElementById('modal-close-btn');
 
   /**
    * =========================
-   * 1. Chuyển qua lại form (Giữ nguyên)
+   * 1. Chuyển qua lại form
    * =========================
    */
-  if (corpBtn) {
-    corpBtn.addEventListener('click', () => {
+  const toggleForm = (isActive) => {
+    if (isActive) {
       container.classList.add('right-panel-active');
-    });
+    } else {
+      container.classList.remove('right-panel-active');
+    }
+  };
+
+  if (corpBtn) {
+    corpBtn.addEventListener('click', () => toggleForm(true));
   }
 
   if (partnerBtn) {
-    partnerBtn.addEventListener('click', () => {
-      container.classList.remove('right-panel-active');
-    });
+    partnerBtn.addEventListener('click', () => toggleForm(false));
   }
 
   /**
    * =========================
-   * 2. Đăng nhập Đối tác (ĐÃ BẢO MẬT - KHÔNG CÒN LỘ MẬT KHẨU)
+   * 2. Đăng nhập Đối tác (BẢO MẬT)
    * =========================
    */
   if (partnerForm) {
     partnerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const user = document.getElementById('partner-user').value.trim().toUpperCase(); // Tự động in hoa để khớp Backend
-      const pass = document.getElementById('partner-pass').value.trim();
+      const userInput = document.getElementById('partner-user');
+      const passInput = document.getElementById('partner-pass');
       const submitBtn = partnerForm.querySelector('button[type="submit"]');
 
-      // Khóa nút đăng nhập để tránh khách bấm nhiều lần
-      if(submitBtn) submitBtn.disabled = true;
+      const user = userInput.value.trim().toUpperCase();
+      const pass = passInput.value.trim();
 
-      // Hiển thị thông báo "Đang tải"
+      // Validation cơ bản client-side
+      if (!user || !pass) {
+        Swal.fire('Thiếu thông tin', 'Vui lòng nhập tài khoản và mật khẩu.', 'warning');
+        return;
+      }
+
+      // Khóa nút để tránh spam
+      if (submitBtn) submitBtn.disabled = true;
+
+      // Hiển thị loading
       Swal.fire({
         title: 'Đang xác thực...',
         text: 'Vui lòng chờ hệ thống kiểm tra.',
@@ -55,21 +73,33 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       try {
-        // Gửi thông tin sang Google Script để kiểm tra chéo
+        // Gửi request tới Google Script
         const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ 
-                action: 'login', 
-                username: user, 
-                password: pass 
-            })
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'text/plain;charset=utf-8',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({
+            action: 'login',
+            username: user,
+            password: pass
+          }),
+          timeout: 10000 // Timeout 10 giây
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const result = await response.json();
 
-        if (result.status === 'OK') {
-          // ĐĂNG NHẬP ĐÚNG -> Backend trả về đường dẫn chính xác
+        // Xóa dữ liệu nhạy cảm
+        userInput.value = '';
+        passInput.value = '';
+
+        if (result.status === 'OK' && result.redirect) {
+          // Thành công
           Swal.fire({
             title: 'Thành công!',
             text: 'Đăng nhập thành công, đang chuyển hướng...',
@@ -77,38 +107,69 @@ document.addEventListener('DOMContentLoaded', () => {
             timer: 1500,
             showConfirmButton: false
           }).then(() => {
-            window.location.href = result.redirect; // Link an toàn do Google cấp (vd: HIS/index.html)
+            // Redirect an toàn
+            const redirectUrl = result.redirect;
+            if (isValidUrl(redirectUrl)) {
+              window.location.href = redirectUrl;
+            } else {
+              console.error('Invalid redirect URL');
+              Swal.fire('Lỗi', 'Đường dẫn chuyển hướng không hợp lệ.', 'error');
+            }
           });
         } else {
-          // ĐĂNG NHẬP SAI
-          Swal.fire('Lỗi', result.message || 'Tài khoản hoặc mật khẩu không đúng.', 'error');
+          // Lỗi xác thực
+          const errorMsg = result.message || 'Tài khoản hoặc mật khẩu không đúng.';
+          Swal.fire('Lỗi xác thực', errorMsg, 'error');
         }
       } catch (error) {
-          console.error("Lỗi đăng nhập:", error);
-          Swal.fire('Lỗi kết nối', 'Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.', 'error');
+        console.error('Lỗi đăng nhập:', error);
+        
+        // Phân loại lỗi
+        let errorMsg = 'Không thể kết nối đến máy chủ. Vui lòng thử lại sau.';
+        
+        if (error.name === 'TypeError') {
+          errorMsg = 'Lỗi mạng. Kiểm tra kết nối internet.';
+        } else if (error.message.includes('timeout')) {
+          errorMsg = 'Kết nối timeout. Vui lòng thử lại.';
+        }
+        
+        Swal.fire('Lỗi kết nối', errorMsg, 'error');
       } finally {
-          if(submitBtn) submitBtn.disabled = false; // Mở lại nút
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
 
   /**
    * =========================
-   * 3. Đăng nhập Doanh nghiệp (Trả về nguyên bản theo code của bạn)
+   * 3. Đăng nhập Doanh nghiệp
    * =========================
    */
   if (corpForm) {
     corpForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const code = document.getElementById('corp-tax-code').value.trim();
+
+      const corpTaxInput = document.getElementById('corp-tax-code');
+      const code = corpTaxInput.value.trim();
+      const submitBtn = corpForm.querySelector('button[type="submit"]');
+
+      // Validation
       if (!code) {
         Swal.fire('Thiếu thông tin', 'Vui lòng nhập mã số thuế doanh nghiệp.', 'warning');
         return;
       }
-      
-      // Lưu lại MST để form bên trong thư mục Corporate có thể gọi ra dùng
+
+      // Format MST (chỉ số)
+      if (!/^\d+$/.test(code)) {
+        Swal.fire('Lỗi định dạng', 'Mã số thuế chỉ được chứa số.', 'warning');
+        return;
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
+
+      // Lưu MST vào sessionStorage
       sessionStorage.setItem('corpTaxCode', code);
-      
+
       Swal.fire({
         title: 'Xác nhận!',
         text: 'Đã lưu mã số thuế, đang chuyển hướng...',
@@ -116,33 +177,77 @@ document.addEventListener('DOMContentLoaded', () => {
         timer: 1500,
         showConfirmButton: false
       }).then(() => {
+        // Redirect an toàn
         window.location.href = './Corporate/Index.html';
       });
     });
   }
-  
-  // --- PHẦN JS CỦA POP-UP HƯỚNG DẪN (GIỮ NGUYÊN) ---
-  const guideModal = document.getElementById('guide-modal');
-  const guideBtnLeft = document.getElementById('guide-btn-left');
-  const guideBtnRight = document.getElementById('guide-btn-right');
-  const closeModalBtn = document.getElementById('modal-close-btn');
 
+  /**
+   * =========================
+   * 4. Modal Hướng dẫn
+   * =========================
+   */
   const openModal = () => {
-    if (guideModal) guideModal.style.display = 'flex';
-  };
-  const closeModal = () => {
-    if (guideModal) guideModal.style.display = 'none';
+    if (guideModal) {
+      guideModal.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Ngăn scroll
+    }
   };
 
-  if (guideBtnLeft && guideBtnRight && closeModalBtn) {
-    guideBtnLeft.addEventListener('click', openModal);
-    guideBtnRight.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-  }
+  const closeModal = () => {
+    if (guideModal) {
+      guideModal.classList.remove('active');
+      document.body.style.overflow = 'auto'; // Cho phép scroll lại
+    }
+  };
+
+  // Event listeners cho modal
+  if (guideBtnLeft) guideBtnLeft.addEventListener('click', openModal);
+  if (guideBtnRight) guideBtnRight.addEventListener('click', openModal);
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+  // Đóng modal khi click ngoài
   if (guideModal) {
     guideModal.addEventListener('click', (event) => {
       if (event.target === guideModal) closeModal();
     });
   }
-  
-}); // Kết thúc 'DOMContentLoaded'
+
+  // Đóng modal khi bấm ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && guideModal && guideModal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  /**
+   * =========================
+   * 5. Utility Functions
+   * =========================
+   */
+
+  /**
+   * Kiểm tra URL có hợp lệ không (bảo vệ chống Open Redirect)
+   */
+  function isValidUrl(url) {
+    try {
+      const urlObj = new URL(url, window.location.origin);
+      // Chỉ cho phép relative URLs hoặc same-origin URLs
+      return urlObj.origin === window.location.origin || url.startsWith('./') || url.startsWith('/');
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Clear sensitive data khi user rời khỏi trang
+   */
+  window.addEventListener('beforeunload', () => {
+    if (partnerForm) {
+      document.getElementById('partner-user').value = '';
+      document.getElementById('partner-pass').value = '';
+    }
+  });
+
+}); // End DOMContentLoaded

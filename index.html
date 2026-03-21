@@ -138,5 +138,38 @@
 
         </div>
     </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const partnerBtn = document.getElementById('partner-btn');
+        const corpBtn = document.getElementById('corp-btn');
+        const guideModal = document.getElementById('guide-modal');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const guideButtons = document.querySelectorAll('[id^="guide-btn"]');
+
+        partnerBtn.addEventListener('click', () => {
+            container.classList.remove('right-panel-active');
+        });
+
+        corpBtn.addEventListener('click', () => {
+            container.classList.add('right-panel-active');
+        });
+
+        guideButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                guideModal.classList.add('active');
+            });
+        });
+
+        modalCloseBtn.addEventListener('click', () => {
+            guideModal.classList.remove('active');
+        });
+
+        guideModal.addEventListener('click', (e) => {
+            if (e.target === guideModal) {
+                guideModal.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
