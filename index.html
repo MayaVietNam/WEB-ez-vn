@@ -1,265 +1,184 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZ WiFi Rental System - MAYA Vietnam</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EZ Login - Đăng nhập Đối tác & Doanh nghiệp</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    
+    <script src="login.js" defer></script>
 </head>
 <body>
-    <!-- ===== LOGIN PAGE ===== -->
-    <div id="login-page" class="page active">
-        <div class="login-container">
-            <div class="login-box">
-                <div class="logo-section">
-                    <h1 class="logo">🌐 EZ WiFi</h1>
-                    <p>Hệ thống Đặt WiFi - MAYA Vietnam</p>
-                </div>
+    <div class="bg-logo-bg"></div>
 
-                <form id="login-form">
-                    <div class="form-group">
-                        <label>Chọn Công ty:</label>
-                        <select id="unit-select" required>
-                            <option value="">-- Chọn --</option>
-                            <option value="TOYOTA">TOYOTA</option>
-                            <option value="YAMAHA">YAMAHA</option>
-                            <option value="MITSUBISHI">MITSUBISHI</option>
-                            <option value="SUMITOMO">SUMITOMO</option>
-                            <option value="HIS_USER">HIS_USER</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mật khẩu:</label>
-                        <input type="password" id="password-input" placeholder="Nhập mật khẩu" required>
-                    </div>
-
-                    <button type="submit" class="btn-primary">Đăng Nhập</button>
-                </form>
-
-                <div class="footer-text">
-                    <p>© 2024 MAYA Vietnam Co., Ltd</p>
-                    <p>Hotline: 0962 000 650 | Email: info@ezfivn.com</p>
-                </div>
-            </div>
-        </div>
+    <!-- LANGUAGE SELECTOR -->
+    <div class="language-selector">
+        <button class="lang-btn active" data-lang="vi">
+            <span class="flag">🇻🇳</span> Tiếng Việt
+        </button>
+        <button class="lang-btn" data-lang="en">
+            <span class="flag">🇬🇧</span> English
+        </button>
     </div>
 
-    <!-- ===== RENTAL FORM PAGE ===== -->
-    <div id="form-page" class="page">
-        <header class="header">
-            <div class="header-content">
-                <h1>📋 Biểu Mẫu Đặt WiFi</h1>
-                <button class="btn-logout" id="logout-btn">🚪 Đăng xuất</button>
-            </div>
-        </header>
-
-        <main class="form-main">
-            <div class="progress-bar">
-                <div class="progress-step active" data-step="1">
-                    <span>1</span> Thông tin
+    <div class="container" id="container">
+        <!-- FORM ĐỐI TÁC -->
+        <div class="form-container sign-in">
+            <form id="partner-form">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo EZ - Đối Tác" loading="lazy">
                 </div>
-                <div class="progress-step" data-step="2">
-                    <span>2</span> Đơn đặt
-                </div>
-                <div class="progress-step" data-step="3">
-                    <span>3</span> Vận chuyển
-                </div>
-                <div class="progress-step" data-step="4">
-                    <span>4</span> Xác nhận
-                </div>
-            </div>
-
-            <form id="rental-form">
-                <!-- STEP 1: SENDER INFO -->
-                <div class="form-step active" data-step="1">
-                    <h2>📝 Thông Tin Người Gửi</h2>
-                    
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label>Họ tên:</label>
-                            <input type="text" name="sender_name" placeholder="Nhập họ tên" required>
-                        </div>
-                        <div class="form-col">
-                            <label>Email:</label>
-                            <input type="email" name="sender_email" placeholder="example@company.com" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label>Số điện thoại:</label>
-                            <input type="tel" name="sender_phone" placeholder="0912345678" required>
-                        </div>
-                        <div class="form-col">
-                            <label>Công ty:</label>
-                            <input type="text" name="sender_company" placeholder="Tên công ty" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label>Khu vực:</label>
-                            <select name="sender_region" required>
-                                <option value="">-- Chọn --</option>
-                                <option value="Hà Nội">Hà Nội</option>
-                                <option value="TP.HCM">TP.HCM</option>
-                                <option value="Hải Phòng">Hải Phòng</option>
-                                <option value="Đà Nẵng">Đà Nẵng</option>
-                                <option value="Khác">Khác</option>
-                            </select>
-                        </div>
-                        <div class="form-col">
-                            <label>Mã số thuế:</label>
-                            <input type="text" name="sender_tax_code" placeholder="0123456789" required>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
-                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
-                    </div>
-                </div>
-
-                <!-- STEP 2: RENTAL DETAILS -->
-                <div class="form-step" data-step="2">
-                    <h2>📱 Chi Tiết Đơn Đặt</h2>
-                    
-                    <div id="rental-requests-container"></div>
-
-                    <button type="button" class="btn-secondary add-rental-btn" onclick="addRentalRequest()">
-                        + Thêm đơn đặt mới
-                    </button>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
-                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
-                    </div>
-                </div>
-
-                <!-- STEP 3: SHIPPING INFO -->
-                <div class="form-step" data-step="3">
-                    <h2>🚚 Thông Tin Vận Chuyển</h2>
-                    
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label>Người nhận hàng:</label>
-                            <input type="text" name="shipping_recipient" placeholder="Nhập tên người nhận">
-                        </div>
-                        <div class="form-col">
-                            <label>Số điện thoại người nhận:</label>
-                            <input type="tel" name="shipping_phone" placeholder="0912345678">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col full">
-                            <label>Địa chỉ nhận hàng:</label>
-                            <textarea name="shipping_address" placeholder="Nhập địa chỉ đầy đủ" rows="3"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label>Ngày nhận mong muốn:</label>
-                            <input type="date" name="shipping_date">
-                        </div>
-                        <div class="form-col">
-                            <label>Hình thức vận chuyển:</label>
-                            <select name="shipping_method">
-                                <option value="">-- Chọn --</option>
-                                <option value="Bình thường">Bình thường</option>
-                                <option value="Chuyển phát nhanh">Chuyển phát nhanh</option>
-                                <option value="Hỏa tốc">Hỏa tốc</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
-                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
-                    </div>
-                </div>
-
-                <!-- STEP 4: CONFIRMATION -->
-                <div class="form-step" data-step="4">
-                    <h2>✅ Xác Nhận Thông Tin</h2>
-                    
-                    <div id="confirmation-summary" class="confirmation-box"></div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
-                        <button type="submit" class="btn-primary" id="submit-btn">📤 Gửi Đơn Đặt</button>
-                    </div>
-                </div>
+                <h1 class="lang-partner-title">Đối Tác</h1>
+                
+                <input 
+                    type="text" 
+                    id="partner-user" 
+                    class="lang-partner-user-placeholder" 
+                    placeholder="Tài khoản đăng nhập" 
+                    required 
+                    autocomplete="username" />
+                
+                <input 
+                    type="password" 
+                    id="partner-pass" 
+                    class="lang-partner-pass-placeholder" 
+                    placeholder="Mật khẩu" 
+                    required 
+                    autocomplete="current-password" />
+                
+                <button type="submit" class="lang-partner-login-btn">Đăng Nhập</button>
             </form>
-        </main>
-    </div>
+        </div>
 
-    <!-- Modal Thêm Đơn Đặt -->
-    <div id="rental-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeRentalModal()">&times;</span>
-            <h2>➕ Thêm Đơn Đặt Mới</h2>
-            
-            <div class="form-group">
-                <label>Tên người dùng:</label>
-                <input type="text" id="modal_userName" placeholder="Nhập tên người dùng">
-            </div>
+        <!-- FORM DOANH NGHIỆP -->
+        <div class="form-container sign-up">
+            <form id="corp-form">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo EZ - Doanh Nghiệp" loading="lazy">
+                </div>
+                <h1 class="lang-corp-title">Doanh Nghiệp</h1>
+                
+                <input 
+                    type="text" 
+                    id="corp-tax-code" 
+                    class="lang-corp-tax-placeholder" 
+                    placeholder="Mã số thuế doanh nghiệp" 
+                    required 
+                    autocomplete="off" />
+                
+                <button type="submit" class="lang-corp-submit-btn">Tiếp Tục</button>
+            </form>
+        </div>
 
-            <div class="form-group">
-                <label>IMEI (tuỳ chọn):</label>
-                <input type="text" id="modal_imei" placeholder="Nhập IMEI">
-            </div>
-
-            <div class="form-group">
-                <label>Từ ngày:</label>
-                <input type="date" id="modal_fromDate" required>
-            </div>
-
-            <div class="form-group">
-                <label>Đến ngày:</label>
-                <input type="date" id="modal_toDate" required>
-            </div>
-
-            <div class="form-group">
-                <label>Quốc gia:</label>
-                <select id="modal_country">
-                    <option value="">-- Chọn --</option>
-                    <option value="Việt Nam">Việt Nam</option>
-                    <option value="Thái Lan">Thái Lan</option>
-                    <option value="Campuchia">Campuchia</option>
-                    <option value="Lào">Lào</option>
-                    <option value="Myanmar">Myanmar</option>
-                    <option value="Khác">Khác</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Gói data:</label>
-                <input type="text" id="modal_dataPackage" placeholder="VD: 1GB/ngày">
-            </div>
-
-            <div class="form-group">
-                <label>Đơn giá/ngày (VNĐ):</label>
-                <input type="number" id="modal_unitPrice" placeholder="0" min="0">
-            </div>
-
-            <div class="form-group">
-                <label>Phí bảo hiểm (VNĐ):</label>
-                <input type="number" id="modal_insurance" placeholder="0" min="0" value="0">
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-primary" onclick="saveRentalRequest()">💾 Lưu Đơn</button>
-                <button type="button" class="btn-secondary" onclick="closeRentalModal()">❌ Hủy</button>
+        <!-- OVERLAY CHUYỂN FORM -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1 class="lang-welcome-partner">Chào mừng trở lại, Đối Tác!</h1>
+                    <p class="lang-welcome-partner-desc">Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.</p>
+                    <button class="ghost" id="partner-btn">Đăng nhập Đối Tác</button>
+                    <button class="guide-button" id="guide-btn-left">❓ Hướng dẫn</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1 class="lang-welcome-corp">Chào mừng, Doanh Nghiệp!</h1>
+                    <p class="lang-welcome-corp-desc">Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.</p>
+                    <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
+                    <button class="guide-button" id="guide-btn-right">❓ Hướng dẫn</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-    <script src="script.js"></script>
+    <!-- MODAL HƯỚNG DẪN -->
+    <div class="modal-overlay" id="guide-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close-btn">&times;</span>
+            
+            <h1 class="lang-guide-title">📄 Hướng dẫn Đăng ký Thuê thiết bị</h1>
+            <div class="homepage-link">
+                <p>Truy cập trang chủ:</p>
+                <a href="https://ez-vn.com/" target="_blank" rel="noopener noreferrer" class="lang-homepage">
+                    🌐 https://ez-vn.com/
+                </a>
+            </div>
+
+            <h2 class="lang-guide-part1">🧑‍💼 Phần 1: Đăng nhập Đối Tác</h2>
+            <p class="lang-guide-part1-desc">Sử dụng tài khoản và mật khẩu được cấp để truy cập hệ thống EZ.</p>
+            <img src="image_1.png" alt="Màn hình đăng nhập Đối Tác" style="max-width: 500px; display: block; margin: 15px auto; border-radius: 8px;">
+            <p class="lang-guide-part1-step1">1. Mở trang đăng nhập, nhập <strong>Tài khoản</strong> và <strong>Mật khẩu</strong>.</p>
+            <p class="lang-guide-part1-step2">2. Nhấn nút <strong>"Đăng Nhập"</strong> để tiếp tục.</p>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <h2 class="lang-guide-part2">📝 Phần 2: Điền Biểu mẫu Đăng ký</h2>
+            <p class="lang-guide-part2-desc">Hoàn tất biểu mẫu đăng ký gồm 3 phần chính sau:</p>
+
+            <div class="guide-columns-container">
+
+                <div class="guide-column">
+                    <h3 class="lang-guide-col1-title">1. ℹ️ Thông tin người gửi</h3>
+                    <img src="image_2.png" alt="Khu vực thông tin người gửi">
+                    <ul>
+                        <li><strong class="lang-guide-col1-name">Họ tên người gửi:</strong> <span class="lang-guide-col1-name-desc">Nhập đầy đủ họ và tên của bạn.</span></li>
+                        <li><strong class="lang-guide-col1-email">Email:</strong> <span class="lang-guide-col1-email-desc">Nhập địa chỉ email chính xác.</span></li>
+                        <li><strong class="lang-guide-col1-phone">Số điện thoại:</strong> <span class="lang-guide-col1-phone-desc">Nhập số điện thoại di động.</span></li>
+                        <li><strong class="lang-guide-col1-company">Công ty:</strong> <span class="lang-guide-col1-company-desc">Nhập tên đầy đủ của công ty.</span>
+                            <div class="note"><em class="lang-guide-col1-company-note">Nếu là cá nhân, điền "Cá nhân".</em></div>
+                        </li>
+                        <li><strong class="lang-guide-col1-region">Khu vực:</strong> <span class="lang-guide-col1-region-desc">Chọn Tỉnh/Thành phố.</span></li>
+                        <li><strong class="lang-guide-col1-tax">Mã số thuế:</strong> <span class="lang-guide-col1-tax-desc">Nhập Mã số thuế công ty.</span>
+                            <div class="note"><em class="lang-guide-col1-tax-note">Quan trọng để xuất hóa đơn VAT.</em></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="guide-column">
+                    <h3 class="lang-guide-col2-title">2. 📱 Chi tiết các đơn thuê</h3>
+                    <img src="image_3.png" alt="Khu vực chi tiết đơn thuê">
+                    <ul>
+                        <li><strong class="lang-guide-col2-user">Tên người dùng:</strong> <span class="lang-guide-col2-user-desc">Nhập tên người sử dụng.</span></li>
+                        <li><strong class="lang-guide-col2-imei">IMEI:</strong> <span class="lang-guide-col2-imei-desc">Nhập số IMEI (nếu có).</span>
+                            <div class="note"><em class="lang-guide-col2-imei-note">Bỏ trống để hệ thống tự điền.</em></div>
+                        </li>
+                        <li><strong class="lang-guide-col2-from">Từ ngày:</strong> <span class="lang-guide-col2-from-desc">Chọn ngày bắt đầu thuê.</span></li>
+                        <li><strong class="lang-guide-col2-to">Đến ngày:</strong> <span class="lang-guide-col2-to-desc">Chọn ngày kết thúc thuê.</span></li>
+                        <li><strong class="lang-guide-col2-country">Quốc gia:</strong> <span class="lang-guide-col2-country-desc">Chọn quốc gia sử dụng.</span></li>
+                        <li><strong class="lang-guide-col2-plan">Gói data:</strong> <span class="lang-guide-col2-plan-desc">Chọn gói cước phù hợp.</span></li>
+                    </ul>
+                    <div class="note">
+                        <strong class="lang-guide-col2-multi">📌 Thuê nhiều thiết bị?</strong><br>
+                        <span class="lang-guide-col2-multi-desc">Nhấn nút <strong>"+ Thêm đơn đăng ký mới"</strong>.</span>
+                    </div>
+                </div>
+
+                <div class="guide-column">
+                    <h3 class="lang-guide-col3-title">3. 🚚 Thông tin Vận chuyển</h3>
+                    <img src="image_4.png" alt="Khu vực thông tin vận chuyển">
+                    <ul>
+                        <li><strong class="lang-guide-col3-receiver">Tên người nhận:</strong> <span class="lang-guide-col3-receiver-desc">Nhập họ tên người nhận.</span></li>
+                        <li><strong class="lang-guide-col3-phone">SĐT người nhận:</strong> <span class="lang-guide-col3-phone-desc">Nhập số điện thoại người nhận.</span></li>
+                        <li><strong class="lang-guide-col3-address">Địa chỉ nhận hàng:</strong> <span class="lang-guide-col3-address-desc">Nhập chi tiết địa chỉ giao.</span></li>
+                        <li><strong class="lang-guide-col3-date">Ngày nhận mong muốn:</strong> <span class="lang-guide-col3-date-desc">Chọn ngày muốn nhận.</span></li>
+                        <li><strong class="lang-guide-col3-method">Hình thức vận chuyển:</strong> <span class="lang-guide-col3-method-desc">Chọn phương thức.</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <h2 class="lang-guide-part3">✅ Phần 3: Gửi Yêu Cầu</h2>
+            <p><span class="lang-guide-part3-step1">1. Kiểm tra lại toàn bộ thông tin ở cả 3 phần.</span></p>
+            <p><span class="lang-guide-part3-step2">2. Nhấn nút <strong>"Gửi Yêu Cầu (Submit Request)"</strong> để hoàn tất.</span></p>
+
+            <div style="background: linear-gradient(135deg, #FFE5EC 0%, #FFE5F0 100%); padding: 20px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #DC2626; text-align: center;">
+                <strong style="color: #8A3B72;">✨ Sau khi gửi, bạn sẽ nhận được email xác nhận trong vòng 24 giờ.</strong>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
