@@ -1,175 +1,265 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>EZ Login</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZ WiFi Rental System - MAYA Vietnam</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css" />
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    
-    <script src="login.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div class="bg-logo-bg"></div>
-
-    <div class="container" id="container">
-        <div class="form-container sign-in">
-            <form id="partner-form">
-                <div class="logo">
-                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Đối Tác" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
+    <!-- ===== LOGIN PAGE ===== -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="logo-section">
+                    <h1 class="logo">🌐 EZ WiFi</h1>
+                    <p>Hệ thống Đặt WiFi - MAYA Vietnam</p>
                 </div>
-                <h1>Đối Tác</h1>
-                <input type="text" id="partner-user" placeholder="Tài khoản đăng nhập" required />
-                <input type="password" id="partner-pass" placeholder="Mật khẩu" required />
-                <button type="submit">Đăng Nhập</button>
-            </form>
-        </div>
 
-        <div class="form-container sign-up">
-            <form id="corp-form">
-                <div class="logo">
-                    <img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo Doanh Nghiệp" onerror="this.onerror=null;this.src='https://placehold.co/150x60/f8f9fa/000?text=Logo+Error';">
-                </div>
-                <h1>Doanh Nghiệp</h1>
-                <input type="text" id="corp-tax-code" placeholder="Mã số thuế doanh nghiệp" required />
-                <button type="submit">Tiếp Tục</button>
-            </form>
-        </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Chọn Công ty:</label>
+                        <select id="unit-select" required>
+                            <option value="">-- Chọn --</option>
+                            <option value="TOYOTA">TOYOTA</option>
+                            <option value="YAMAHA">YAMAHA</option>
+                            <option value="MITSUBISHI">MITSUBISHI</option>
+                            <option value="SUMITOMO">SUMITOMO</option>
+                            <option value="HIS_USER">HIS_USER</option>
+                        </select>
+                    </div>
 
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Chào mừng trở lại, Đối Tác!</h1>
-                    <p>Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.</p>
-                    <button class="ghost" id="partner-btn">Đăng nhập Đối Tác</button>
-                    <button class="guide-button" id="guide-btn-left">❓ Hướng dẫn</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h1>Chào mừng, Doanh Nghiệp!</h1>
-                    <p>Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.</p>
-                    <button class="ghost" id="corp-btn">Chuyển sang Doanh Nghiệp</button>
-                    <button class="guide-button" id="guide-btn-right">❓ Hướng dẫn</button>
+                    <div class="form-group">
+                        <label>Mật khẩu:</label>
+                        <input type="password" id="password-input" placeholder="Nhập mật khẩu" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Đăng Nhập</button>
+                </form>
+
+                <div class="footer-text">
+                    <p>© 2024 MAYA Vietnam Co., Ltd</p>
+                    <p>Hotline: 0962 000 650 | Email: info@ezfivn.com</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ===== RENTAL FORM PAGE ===== -->
+    <div id="form-page" class="page">
+        <header class="header">
+            <div class="header-content">
+                <h1>📋 Biểu Mẫu Đặt WiFi</h1>
+                <button class="btn-logout" id="logout-btn">🚪 Đăng xuất</button>
+            </div>
+        </header>
 
-    <div class="modal-overlay" id="guide-modal">
-        <div class="modal-content">
-            <span class="modal-close" id="modal-close-btn">&times;</span>
-            
-            <h1>📄 Hướng dẫn Đăng ký Thuê thiết bị</h1>
-            <div class="homepage-link">
-                <a href="https://ez-vn.com/" target="_blank">Trang chủ: https://ez-vn.com/</a>
+        <main class="form-main">
+            <div class="progress-bar">
+                <div class="progress-step active" data-step="1">
+                    <span>1</span> Thông tin
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span>2</span> Đơn đặt
+                </div>
+                <div class="progress-step" data-step="3">
+                    <span>3</span> Vận chuyển
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span>4</span> Xác nhận
+                </div>
             </div>
 
-            <h2>🧑‍💼 Phần 1: Đăng nhập Đối Tác</h2>
-            <p>Sử dụng tài khoản và mật khẩu được cấp để truy cập.</p>
-            <img src="image_1.png" alt="Màn hình đăng nhập Đối Tác" style="max-width: 500px; display: block; margin: 15px auto;">
-            <p>1. Mở trang đăng nhập, nhập <strong>Tài khoản</strong> và <strong>Mật khẩu</strong>.</p>
-            <p>2. Nhấn nút <strong>"Đăng Nhập"</strong> để tiếp tục.</p>
+            <form id="rental-form">
+                <!-- STEP 1: SENDER INFO -->
+                <div class="form-step active" data-step="1">
+                    <h2>📝 Thông Tin Người Gửi</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Họ tên:</label>
+                            <input type="text" name="sender_name" placeholder="Nhập họ tên" required>
+                        </div>
+                        <div class="form-col">
+                            <label>Email:</label>
+                            <input type="email" name="sender_email" placeholder="example@company.com" required>
+                        </div>
+                    </div>
 
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Số điện thoại:</label>
+                            <input type="tel" name="sender_phone" placeholder="0912345678" required>
+                        </div>
+                        <div class="form-col">
+                            <label>Công ty:</label>
+                            <input type="text" name="sender_company" placeholder="Tên công ty" required>
+                        </div>
+                    </div>
 
-            <h2>📝 Phần 2: Điền Biểu mẫu Đăng ký</h2>
-            <p>Hoàn tất biểu mẫu đăng ký gồm 3 phần chính sau:</p>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Khu vực:</label>
+                            <select name="sender_region" required>
+                                <option value="">-- Chọn --</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                                <option value="TP.HCM">TP.HCM</option>
+                                <option value="Hải Phòng">Hải Phòng</option>
+                                <option value="Đà Nẵng">Đà Nẵng</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>Mã số thuế:</label>
+                            <input type="text" name="sender_tax_code" placeholder="0123456789" required>
+                        </div>
+                    </div>
 
-            <div class="guide-columns-container">
-
-                <div class="guide-column">
-                    <h3>1. ℹ️ Thông tin người gửi</h3>
-                    <img src="image_2.png" alt="Khu vực thông tin người gửi">
-                    <ul>
-                        <li><strong>Họ tên người gửi:</strong> Nhập đầy đủ họ và tên của bạn.</li>
-                        <li><strong>Email:</strong> Nhập địa chỉ email chính xác.</li>
-                        <li><strong>Số điện thoại:</strong> Nhập số điện thoại di động.</li>
-                        <li><strong>Công ty:</strong> Nhập tên đầy đủ của công ty.
-                            <div class="note"><em>Nếu là cá nhân, điền "Cá nhân".</em></div>
-                        </li>
-                        <li><strong>Khu vực:</strong> Chọn Tỉnh/Thành phố.</li>
-                        <li><strong>Mã số thuế:</strong> Nhập Mã số thuế công ty.
-                            <div class="note"><em>Quan trọng để xuất hóa đơn VAT.</em></div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="guide-column">
-                    <h3>2. 📱 Chi tiết các đơn thuê</h3>
-                    <img src="image_3.png" alt="Khu vực chi tiết đơn thuê">
-                    <ul>
-                        <li><strong>Tên người dùng:</strong> Nhập tên người sử dụng.</li>
-                        <li><strong>IMEI:</strong> Nhập số IMEI (nếu có).
-                            <div class="note"><em>Bỏ trống để hệ thống tự điền.</em></div>
-                        </li>
-                        <li><strong>Từ ngày:</strong> Chọn ngày bắt đầu thuê.</li>
-                        <li><strong>Đến ngày:</strong> Chọn ngày kết thúc thuê.</li>
-                        <li><strong>Quốc gia:</strong> Chọn quốc gia sử dụng.</li>
-                        <li><strong>Gói data:</strong> Chọn gói cước phù hợp.</li>
-                    </ul>
-                    <div class="note">
-                        <strong>Thuê nhiều thiết bị?</strong><br>
-                        Nhấn nút <strong>"+ Thêm đơn đăng ký mới"</strong>.
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
+                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
                     </div>
                 </div>
 
-                <div class="guide-column">
-                    <h3>3. 🚚 Thông tin Vận chuyển</h3>
-                    <img src="image_4.png" alt="Khu vực thông tin vận chuyển">
-                    <ul>
-                        <li><strong>Tên người nhận:</strong> Nhập họ tên người nhận.</li>
-                        <li><strong>SĐT người nhận:</strong> Nhập số điện thoại người nhận.</li>
-                        <li><strong>Địa chỉ nhận hàng:</strong> Nhập chi tiết địa chỉ giao.</li>
-                        <li><strong>Ngày nhận mong muốn:</strong> Chọn ngày muốn nhận.</li>
-                        <li><strong>Hình thức vận chuyển:</strong> Chọn phương thức.</li>
-                    </ul>
+                <!-- STEP 2: RENTAL DETAILS -->
+                <div class="form-step" data-step="2">
+                    <h2>📱 Chi Tiết Đơn Đặt</h2>
+                    
+                    <div id="rental-requests-container"></div>
+
+                    <button type="button" class="btn-secondary add-rental-btn" onclick="addRentalRequest()">
+                        + Thêm đơn đặt mới
+                    </button>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
+                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
+                    </div>
                 </div>
-            </div>
+
+                <!-- STEP 3: SHIPPING INFO -->
+                <div class="form-step" data-step="3">
+                    <h2>🚚 Thông Tin Vận Chuyển</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Người nhận hàng:</label>
+                            <input type="text" name="shipping_recipient" placeholder="Nhập tên người nhận">
+                        </div>
+                        <div class="form-col">
+                            <label>Số điện thoại người nhận:</label>
+                            <input type="tel" name="shipping_phone" placeholder="0912345678">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col full">
+                            <label>Địa chỉ nhận hàng:</label>
+                            <textarea name="shipping_address" placeholder="Nhập địa chỉ đầy đủ" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Ngày nhận mong muốn:</label>
+                            <input type="date" name="shipping_date">
+                        </div>
+                        <div class="form-col">
+                            <label>Hình thức vận chuyển:</label>
+                            <select name="shipping_method">
+                                <option value="">-- Chọn --</option>
+                                <option value="Bình thường">Bình thường</option>
+                                <option value="Chuyển phát nhanh">Chuyển phát nhanh</option>
+                                <option value="Hỏa tốc">Hỏa tốc</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
+                        <button type="button" class="btn-primary" onclick="nextStep()">Tiếp tục →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: CONFIRMATION -->
+                <div class="form-step" data-step="4">
+                    <h2>✅ Xác Nhận Thông Tin</h2>
+                    
+                    <div id="confirmation-summary" class="confirmation-box"></div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep()">← Quay lại</button>
+                        <button type="submit" class="btn-primary" id="submit-btn">📤 Gửi Đơn Đặt</button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Modal Thêm Đơn Đặt -->
+    <div id="rental-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeRentalModal()">&times;</span>
+            <h2>➕ Thêm Đơn Đặt Mới</h2>
             
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+            <div class="form-group">
+                <label>Tên người dùng:</label>
+                <input type="text" id="modal_userName" placeholder="Nhập tên người dùng">
+            </div>
 
-            <h2>✅ Phần 3: Gửi Yêu Cầu</h2>
-            <p>1. Kiểm tra lại toàn bộ thông tin ở cả 3 phần.</p>
-            <p>2. Nhấn nút <strong>"Gửi Yêu Cầu (Submit Request)"</strong> màu đỏ ở cuối biểu mẫu để hoàn tất.</p>
+            <div class="form-group">
+                <label>IMEI (tuỳ chọn):</label>
+                <input type="text" id="modal_imei" placeholder="Nhập IMEI">
+            </div>
 
+            <div class="form-group">
+                <label>Từ ngày:</label>
+                <input type="date" id="modal_fromDate" required>
+            </div>
+
+            <div class="form-group">
+                <label>Đến ngày:</label>
+                <input type="date" id="modal_toDate" required>
+            </div>
+
+            <div class="form-group">
+                <label>Quốc gia:</label>
+                <select id="modal_country">
+                    <option value="">-- Chọn --</option>
+                    <option value="Việt Nam">Việt Nam</option>
+                    <option value="Thái Lan">Thái Lan</option>
+                    <option value="Campuchia">Campuchia</option>
+                    <option value="Lào">Lào</option>
+                    <option value="Myanmar">Myanmar</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Gói data:</label>
+                <input type="text" id="modal_dataPackage" placeholder="VD: 1GB/ngày">
+            </div>
+
+            <div class="form-group">
+                <label>Đơn giá/ngày (VNĐ):</label>
+                <input type="number" id="modal_unitPrice" placeholder="0" min="0">
+            </div>
+
+            <div class="form-group">
+                <label>Phí bảo hiểm (VNĐ):</label>
+                <input type="number" id="modal_insurance" placeholder="0" min="0" value="0">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-primary" onclick="saveRentalRequest()">💾 Lưu Đơn</button>
+                <button type="button" class="btn-secondary" onclick="closeRentalModal()">❌ Hủy</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        const container = document.getElementById('container');
-        const partnerBtn = document.getElementById('partner-btn');
-        const corpBtn = document.getElementById('corp-btn');
-        const guideModal = document.getElementById('guide-modal');
-        const modalCloseBtn = document.getElementById('modal-close-btn');
-        const guideButtons = document.querySelectorAll('[id^="guide-btn"]');
-
-        partnerBtn.addEventListener('click', () => {
-            container.classList.remove('right-panel-active');
-        });
-
-        corpBtn.addEventListener('click', () => {
-            container.classList.add('right-panel-active');
-        });
-
-        guideButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                guideModal.classList.add('active');
-            });
-        });
-
-        modalCloseBtn.addEventListener('click', () => {
-            guideModal.classList.remove('active');
-        });
-
-        guideModal.addEventListener('click', (e) => {
-            if (e.target === guideModal) {
-                guideModal.classList.remove('active');
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
