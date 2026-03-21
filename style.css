@@ -1,4 +1,4 @@
-/* === FILE: style.css (Xanh da trời + Đỏ - Modern & Clear) === */
+/* === FILE: style.css (Xanh da trời + Đỏ - Modern & Clear & Mobile Optimized) === */
 
 * {
     box-sizing: border-box;
@@ -132,7 +132,7 @@ body {
     opacity: 0; 
 }
 
-/* HIỆU ỨNG CHUYỂN FORM */
+/* HIỆU ỨNG CHUYỂN FORM DESKTOP */
 .container.right-panel-active .sign-in { 
     transform: translateX(100%); 
     opacity: 0; 
@@ -179,7 +179,6 @@ h1 {
     margin-bottom: 20px;
     letter-spacing: -0.8px;
     font-size: 2rem;
-    /* Gradient: Xanh da trời đậm */
     background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3F83C2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -188,7 +187,6 @@ h1 {
     text-shadow: none;
 }
 
-/* Ô NHẬP TÀI KHOẢN / MẬT KHẨU */
 input {
     background: rgba(227, 242, 253, 0.8);
     border: 2px solid rgba(63, 131, 194, 0.3);
@@ -218,11 +216,9 @@ input::placeholder {
     font-weight: 500; 
 }
 
-/* NÚT ĐĂNG NHẬP CHÍNH */
 button {
     border-radius: 12px;
     border: none;
-    /* Gradient: Xanh da trời sáng */
     background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 100%);
     color: #fff;
     font-size: 14px;
@@ -258,14 +254,6 @@ button:hover::before {
     left: 100%;
 }
 
-button:active { 
-    transform: translateY(0px); 
-}
-
-button:focus { 
-    outline: none; 
-}
-
 button.ghost {
     background-color: transparent;
     border: 2px solid rgba(255, 255, 255, 0.9);
@@ -282,7 +270,6 @@ button.ghost:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* VÙNG CHUYỂN FORM - GRADIENT ĐỎ */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -302,7 +289,6 @@ button.ghost:hover {
 }
 
 .overlay {
-    /* Gradient: Đỏ sáng đậm */
     background: linear-gradient(135deg, #DC2626 0%, #EF4444 50%, #F87171 100%);
     background-repeat: no-repeat;
     background-size: cover;
@@ -370,7 +356,6 @@ button.ghost:hover {
     transform: translateX(20%); 
 }
 
-/* === NÚT HƯỚNG DẪN === */
 .guide-button {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.8);
@@ -393,13 +378,10 @@ button.ghost:hover {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* === MODAL (POP-UP) HƯỚNG DẪN === */
+/* === MODAL HƯỚNG DẪN === */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -411,14 +393,9 @@ button.ghost:hover {
     animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.modal-overlay.active {
-    display: flex;
-}
+.modal-overlay.active { display: flex; }
 
 .modal-content {
     background: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
@@ -429,40 +406,24 @@ button.ghost:hover {
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 
-        0 30px 60px -15px rgba(37, 99, 235, 0.25),
-        0 0 0 2px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 30px 60px -15px rgba(37, 99, 235, 0.25), 0 0 0 2px rgba(37, 99, 235, 0.2);
     animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes slideUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 .modal-close {
     position: absolute;
-    top: 20px;
-    right: 25px;
+    top: 20px; right: 25px;
     font-size: 28px;
     font-weight: bold;
     color: #64748B;
     cursor: pointer;
     line-height: 1;
     transition: all 0.2s ease;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
     border-radius: 8px;
-    background-color: transparent;
 }
 
 .modal-close:hover { 
@@ -472,261 +433,148 @@ button.ghost:hover {
 }
 
 .modal-content h1 {
-    text-align: center;
-    border-bottom: 3px solid #DC2626;
-    padding-bottom: 20px;
-    font-size: 2rem;
-    margin-bottom: 30px;
-    color: #DC2626;
-    font-weight: 800;
-    letter-spacing: -0.8px;
+    text-align: center; border-bottom: 3px solid #DC2626; padding-bottom: 20px;
+    font-size: 2rem; margin-bottom: 30px; color: #DC2626;
 }
 
-.modal-content h2 {
-    color: #1E3A8A;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-}
+.modal-content h2 { color: #1E3A8A; margin: 30px 0 20px; font-size: 1.4rem; }
+.modal-content p { color: #1F2937; font-weight: 500; line-height: 1.6; margin-bottom: 15px; }
+.homepage-link { text-align: center; display: block; margin-bottom: 30px; font-size: 1.1em; font-weight: 600; }
+.homepage-link a { color: #2563EB; text-decoration: none; font-weight: 700; position: relative; }
+.homepage-link a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #2563EB, #1E40AF); transition: width 0.3s ease; }
+.homepage-link a:hover::after { width: 100%; }
 
-.modal-content p {
-    color: #1F2937;
-    font-weight: 500;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
+.guide-columns-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 25px; }
+.guide-column { background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border: 2px solid rgba(37, 99, 235, 0.2); border-radius: 16px; padding: 28px; transition: all 0.3s ease; }
+.guide-column:hover { border-color: rgba(37, 99, 235, 0.5); box-shadow: 0 16px 40px rgba(37, 99, 235, 0.18); transform: translateY(-6px); }
+.guide-column h3 { font-size: 1.15rem; color: #1E3A8A; margin-bottom: 15px; }
+.guide-column img { max-width: 100%; border-radius: 12px; margin: 15px 0; border: 2px solid rgba(37, 99, 235, 0.2); }
+.guide-column ul { padding-left: 20px; color: #1F2937; font-size: 0.95rem; line-height: 28px; font-weight: 500; }
+.guide-column li:hover { color: #2563EB; }
+.guide-column .note { background: linear-gradient(135deg, #DBEAFE 0%, #E0F2FE 100%); color: #1E40AF; padding: 14px; margin: 20px 0; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid #2563EB; }
 
-.homepage-link {
-    text-align: center;
-    display: block;
-    margin-bottom: 30px;
-    font-size: 1.1em;
-    font-weight: 600;
-}
 
-.homepage-link a { 
-    color: #2563EB; 
-    text-decoration: none;
-    transition: all 0.3s ease;
-    position: relative;
-    font-weight: 700;
-}
-
-.homepage-link a::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #2563EB, #1E40AF);
-    transition: width 0.3s ease;
-}
-
-.homepage-link a:hover::after { 
-    width: 100%;
-}
-
-/* Bố cục 3 cột trong Modal */
-.guide-columns-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 25px;
-}
-
-.guide-column {
-    /* Gradient: Xanh nhạt */
-    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-    border: 2px solid rgba(37, 99, 235, 0.2);
-    border-radius: 16px;
-    padding: 28px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
-}
-
-.guide-column:hover {
-    border-color: rgba(37, 99, 235, 0.5);
-    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.18);
-    transform: translateY(-6px);
-}
-
-.guide-column h3 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1E3A8A;
-    margin-bottom: 15px;
-    letter-spacing: -0.3px;
-}
-
-.guide-column img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin: 15px 0;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
-    transition: transform 0.3s ease;
-    border: 2px solid rgba(37, 99, 235, 0.2);
-}
-
-.guide-column img:hover {
-    transform: scale(1.04);
-}
-
-.guide-column ul {
-    padding-left: 20px;
-    color: #1F2937;
-    font-size: 0.95rem;
-    line-height: 28px;
-    font-weight: 500;
-}
-
-.guide-column li { 
-    margin-bottom: 12px;
-    transition: color 0.2s ease;
-}
-
-.guide-column li:hover {
-    color: #2563EB;
-}
-
-.guide-column .note {
-    background: linear-gradient(135deg, #DBEAFE 0%, #E0F2FE 100%);
-    color: #1E40AF;
-    padding: 14px 16px;
-    margin: 20px 0;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    border-left: 4px solid #2563EB;
-    font-weight: 600;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-    .guide-columns-container { 
-        grid-template-columns: repeat(2, 1fr); 
-    }
-
-    .language-selector {
-        top: 15px;
-        right: 15px;
-        gap: 8px;
-        padding: 10px 12px;
-    }
-
-    .lang-btn {
-        padding: 8px 14px;
-        font-size: 13px;
-    }
-}
-
+/* ========================================================= */
+/* THAY ĐỔI CẤU TRÚC: RESPONSIVE TỐI ƯU CHO ĐIỆN THOẠI       */
+/* (Chuyển từ trượt ngang sang trượt dọc)                    */
+/* ========================================================= */
 @media (max-width: 768px) {
     .container {
+        width: 90%;
+        min-height: 650px;
+        margin-top: 70px; /* Dành chỗ cho Language Selector */
+        border-radius: 20px;
+    }
+
+    /* 1. Form chiếm toàn bộ chiều ngang, chia đôi chiều dọc */
+    .sign-in, .sign-up {
         width: 100%;
-        min-height: 600px;
-        border-radius: 20px;
-        margin-top: 20px;
+        height: 50%;
+        left: 0;
+        top: 0;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s;
     }
 
-    .form-container { 
-        padding: 0 20px; 
+    /* Khi Active -> Form trượt XUỐNG DƯỚI */
+    .container.right-panel-active .sign-in { 
+        transform: translateY(100%); 
+        opacity: 0;
+    }
+    .container.right-panel-active .sign-up { 
+        transform: translateY(100%); 
+        opacity: 1;
     }
 
-    .guide-columns-container { 
-        grid-template-columns: 1fr; 
+    /* 2. Overlay chiếm nửa dưới màn hình */
+    .overlay-container {
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 50%;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
     }
 
-    .modal-content {
-        padding: 30px 20px;
-        border-radius: 20px;
+    /* Khi Active -> Overlay trượt LÊN TRÊN */
+    .container.right-panel-active .overlay-container {
+        transform: translateY(-100%);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
 
-    h1 {
-        font-size: 1.6rem;
+    /* 3. Cấu trúc nền Overlay dài gấp đôi để trượt */
+    .overlay {
+        left: 0;
+        top: -100%;
+        width: 100%;
+        height: 200%;
+        transform: translateY(0);
     }
 
-    .modal-content h1 {
-        font-size: 1.5rem;
+    .container.right-panel-active .overlay {
+        transform: translateY(50%);
     }
 
-    .modal-content h2 {
-        font-size: 1.15rem;
+    /* 4. Nội dung Panel bên trong Overlay */
+    .overlay-panel {
+        width: 100%;
+        height: 50%;
+        padding: 0 20px;
     }
 
-    .overlay-panel p {
-        font-size: 14px;
+    .overlay-left {
+        top: 0;
+        transform: translateY(-15%); /* Hiệu ứng Parallax nhẹ */
     }
 
+    .overlay-right {
+        top: 50%;
+        right: auto;
+        transform: translateY(0);
+    }
+
+    .container.right-panel-active .overlay-left {
+        transform: translateY(0);
+    }
+
+    .container.right-panel-active .overlay-right {
+        transform: translateY(15%);
+    }
+
+    /* Tinh chỉnh phần tử cho di động */
+    form { padding: 0 20px; }
+    .logo img { height: 45px; margin-bottom: 10px; }
+    h1 { font-size: 1.6rem; margin-bottom: 10px; }
+    .overlay-panel h1 { font-size: 1.5rem; }
+    
+    input { padding: 12px 15px; margin: 6px 0; font-size: 14px; }
+    button { padding: 12px 35px; font-size: 13px; margin-top: 5px; }
+    .overlay-panel p { font-size: 13px; margin: 10px 0 20px; line-height: 20px; }
+    .guide-button { margin-top: 10px; padding: 10px 24px; }
+
+    /* Fix Language Selector gọn gàng trên mobile */
     .language-selector {
-        position: fixed;
+        flex-direction: row;
         top: 10px;
-        right: 10px;
-        padding: 8px 10px;
-        gap: 6px;
+        right: 50%;
+        transform: translateX(50%);
+        padding: 8px 12px;
+        width: max-content;
     }
+    .lang-btn { padding: 6px 12px; font-size: 12px; }
 
-    .lang-btn {
-        padding: 7px 12px;
-        font-size: 12px;
-    }
+    /* Modal Responsive */
+    .guide-columns-container { grid-template-columns: 1fr; }
+    .modal-content { padding: 25px 20px; }
 }
 
-@media (max-width: 480px) {
-    .container {
-        border-radius: 16px;
-        min-height: 550px;
-    }
-
-    h1 {
-        font-size: 1.4rem;
-    }
-
-    input {
-        padding: 12px 14px;
-        font-size: 16px;
-    }
-
-    button {
-        padding: 12px 35px;
-        font-size: 13px;
-    }
-
-    .guide-button {
-        padding: 10px 20px;
-        font-size: 12px;
-    }
-
-    .language-selector {
-        flex-direction: column;
-        width: calc(100% - 20px);
-        right: 10px;
-        left: 10px;
-    }
-
-    .lang-btn {
-        width: 100%;
-        justify-content: center;
-    }
+@media (max-width: 380px) {
+    .container { min-height: 580px; }
+    h1 { font-size: 1.4rem; }
+    .overlay-panel h1 { font-size: 1.3rem; }
+    input { padding: 10px 12px; }
+    .logo img { height: 35px; }
 }
 
 /* Scrollbar tùy chỉnh */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: #F0F9FF;
-    border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #2563EB 0%, #1E40AF 100%);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #1E40AF 0%, #1E3A8A 100%);
-}
+.modal-content::-webkit-scrollbar { width: 8px; }
+.modal-content::-webkit-scrollbar-track { background: #F0F9FF; border-radius: 10px; }
+.modal-content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #2563EB 0%, #1E40AF 100%); border-radius: 10px; }
