@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đơn Đăng Ký Thuê Thiết Bị WIFI - CORPORATE</title>
+    <title>Đơn Đăng Ký Thuê Thiết Bị WIFI - Doanh Nghiệp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -10,515 +10,81 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script src="price-table.js"></script>
+    
+    <script src="./price-table.js"></script> 
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; min-height: 100vh; }
-        body { 
-            background: linear-gradient(135deg, #f8fafc 0%, #e8f1f8 100%);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
+        body { background: linear-gradient(135deg, #f8fafc 0%, #e8f1f8 100%); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .bg-logo-bg { pointer-events: none; position: fixed; z-index: -1; left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; }
+        .bg-logo-bg-inner { position: absolute; left: 50%; top: 50%; width: 200vw; height: 200vh; transform: translate(-50%, -50%) rotate(-10deg); background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); background-repeat: repeat; background-size: 120px auto; opacity: 0.03; }
+        .logo-on-top { display: flex; justify-content: center; position: relative; z-index: 2; padding: 2rem 0 1rem 0; }
+        .logo-on-top img { height: 60px; width: auto; opacity: 0.92; }
+        .form-container { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 32px rgba(51, 102, 153, 0.1); border: 1px solid #d9e8f5; padding: 2.5rem; position: relative; z-index: 3; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #e0e4f8; }
+        .lang-switcher { display: flex; gap: 0.5rem; }
+        .lang-btn { padding: 0.5rem 1rem; border: 2px solid #cbd5e0; background: #f9fafb; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; color: #2d3748; }
+        .lang-btn.active { background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; border-color: #3182ce; }
+        .section-title { font-size: 1.35rem; font-weight: 700; color: #1a365d; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2.5px solid #3182ce; display: flex; align-items: center; gap: 0.75rem; }
+        .section-icon { width: 38px; height: 38px; background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; }
+        .form-group label { display: block; color: #2d3748; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 0.95rem; color: #2d3748; background: #f9fafb; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3182ce; background: #ffffff; box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.08); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .rental-request { background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); padding: 1.5rem; border-radius: 12px; border: 1.5px solid #cbd5e0; margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .rental-request:hover { border-color: #a0aec0; box-shadow: 0 4px 16px rgba(49, 130, 206, 0.06); }
+        .request-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1.5px solid #cbd5e0; }
+        .request-title { font-size: 1.05rem; font-weight: 700; color: #1a365d; }
+        .remove-request-btn { background: #fed7d7; color: #c53030; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        #add-request-btn { background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; padding: 0.8rem 1.75rem; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25); border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        #submit-form-btn { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: #ffffff; padding: 0.9rem 2rem; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(237, 137, 54, 0.25); min-width: 180px; border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        .footer-company-info { font-size: 0.9rem; background: linear-gradient(135deg, #f9fafb 0%, #edf2f7 100%); color: #2d3748; border-radius: 12px; box-shadow: 0 4px 12px rgba(51, 102, 153, 0.1); padding: 1.5rem 2rem; margin: 2.5rem auto 1.5rem auto; text-align: center; max-width: 700px; border-top: 3px solid #3182ce; position: relative; z-index: 3; }
+        .loading-overlay, .success-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; }
+        .loading-overlay.active, .success-screen.active { display: flex; }
+        .loading-box, .success-box { background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideUp 0.4s ease; }
+        .spinner { width: 50px; height: 50px; margin: 0 auto 1.5rem; border: 4px solid #e0e4f8; border-top: 4px solid #3182ce; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
-        .bg-logo-bg { 
-            pointer-events: none; 
-            position: fixed; 
-            z-index: -1; 
-            left: 0; top: 0; width: 100vw; height: 100vh; overflow: hidden; 
-        }
-        
-        .bg-logo-bg-inner { 
-            position: absolute; 
-            left: 50%; top: 50%; width: 200vw; height: 200vh; 
-            transform: translate(-50%, -50%) rotate(-10deg); 
-            background-image: url('https://i.postimg.cc/yd4v4YHG/EZ-LOGO-31.png'); 
-            background-repeat: repeat; background-size: 120px auto; 
-            opacity: 0.03; 
-        }
-        
-        .logo-on-top { 
-            display: flex; justify-content: center; 
-            position: relative; z-index: 2; 
-            padding: 2rem 0 1rem 0;
-        }
-        
-        .logo-on-top img { 
-            height: 60px; width: auto; 
-            opacity: 0.92;
-        }
-        
-        .form-container { 
-            background: #ffffff; 
-            border-radius: 16px; 
-            box-shadow: 0 8px 32px rgba(51, 102, 153, 0.1); 
-            border: 1px solid #d9e8f5;
-            padding: 2.5rem; 
-            position: relative; 
-            z-index: 3;
-        }
-        
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e0e4f8;
-        }
-        
-        .lang-switcher {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .lang-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #cbd5e0;
-            background: #f9fafb;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: #2d3748;
-        }
-        
-        .lang-btn.active {
-            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
-            color: white;
-            border-color: #3182ce;
-        }
-        
-        .lang-btn:hover {
-            border-color: #3182ce;
-        }
-        
-        .section-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: #1a365d;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2.5px solid #3182ce;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .section-icon {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #2d3748;
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            color: #2d3748;
-            background: #f9fafb;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3182ce;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.08);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .discount-badge {
-            background: linear-gradient(135deg, #f0fdf4 0%, #e0f5e4 100%);
-            color: #059669;
-            padding: 0.8rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 600;
-            margin-top: 1rem;
-            display: block;
-            border: 1px solid #d1fae5;
-            font-size: 0.95rem;
-        }
-        
-        .rental-request {
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1.5px solid #cbd5e0;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .rental-request:hover {
-            border-color: #a0aec0;
-            box-shadow: 0 4px 16px rgba(49, 130, 206, 0.06);
-        }
-        
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1.5px solid #cbd5e0;
-        }
-        
-        .request-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #1a365d;
-        }
-        
-        .remove-request-btn {
-            background: #fed7d7;
-            color: #c53030;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-        
-        .remove-request-btn:hover {
-            background: #fc8181;
-            color: white;
-        }
-        
-        #add-request-btn {
-            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
-            color: white;
-            padding: 0.8rem 1.75rem;
-            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
-            border: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        #add-request-btn:hover {
-            background: linear-gradient(135deg, #2c5282 0%, #1e3a8a 100%);
-            transform: translateY(-2px);
-        }
-        
-        #submit-form-btn {
-            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-            color: #ffffff;
-            padding: 0.9rem 2rem;
-            font-size: 1.05rem;
-            box-shadow: 0 4px 12px rgba(237, 137, 54, 0.25);
-            min-width: 180px;
-            border: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        #submit-form-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #dd6b20 0%, #c05621 100%);
-            transform: translateY(-2px);
-        }
-        
-        #submit-form-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        
-        .footer-company-info { 
-            font-size: 0.9rem; 
-            background: linear-gradient(135deg, #f9fafb 0%, #edf2f7 100%); 
-            color: #2d3748; 
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(51, 102, 153, 0.1); 
-            padding: 1.5rem 2rem;
-            margin: 2.5rem auto 1.5rem auto; 
-            text-align: center; 
-            max-width: 700px; 
-            border-top: 3px solid #3182ce;
-            position: relative;
-            z-index: 3;
-        }
-        
-        .footer-company-info h2 { 
-            font-size: 1.1rem; 
-            font-weight: 800; 
-            color: #1a365d; 
-            text-transform: uppercase; 
-        }
-        
-        .choices__input {
-            background-color: #f9fafb !important;
-            border: 1.5px solid #cbd5e0 !important;
-            border-radius: 8px !important;
-            padding: 0.8rem 1rem !important;
-            color: #2d3748 !important;
-        }
-        
-        .choices__input:focus {
-            border-color: #3182ce !important;
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.08) !important;
-        }
-        
-        .choices__list--dropdown {
-            border-radius: 8px !important;
-            border: 1.5px solid #cbd5e0 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-        }
-        
-        .choices__item--selectable {
-            padding: 0.75rem 1rem !important;
-            color: #2d3748 !important;
-        }
-        
-        .choices__item--selectable.is-highlighted {
-            background-color: #ebf4ff !important;
-            color: #2c5282 !important;
-        }
-        
-        /* LOADING STYLES */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .loading-overlay.active {
-            display: flex;
-        }
-        
-        .loading-box {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease;
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 1.5rem;
-            border: 4px solid #e0e4f8;
-            border-top: 4px solid #3182ce;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-text {
-            font-size: 1.1rem;
-            color: #1a365d;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .loading-subtext {
-            font-size: 0.9rem;
-            color: #4a5568;
-        }
-        
-        /* SUCCESS SCREEN */
-        .success-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .success-screen.active {
-            display: flex;
-        }
-        
-        .success-box {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            animation: slideUp 0.4s ease;
-        }
-        
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin: 0 auto 1.5rem;
-            animation: scaleIn 0.5s ease;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-        
-        @keyframes scaleIn {
-            from {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        .success-title {
-            font-size: 1.5rem;
-            color: #10b981;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .success-message {
-            font-size: 0.95rem;
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-        
-        .success-code {
-            background: #f0fdf4;
-            border: 2px solid #d1fae5;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.85rem;
-        }
-        
-        .success-code-label {
-            color: #6b7280;
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .success-code-value {
-            font-weight: 700;
-            color: #059669;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-        }
-        
-        .success-btn {
-            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
-            color: white;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-        
-        .success-btn:hover {
-            background: linear-gradient(135deg, #2c5282 0%, #1e3a8a 100%);
-            transform: translateY(-2px);
-        }
-        
-        @media (max-width: 768px) {
-            .form-container { padding: 1.5rem; }
-            .header-top { flex-direction: column; gap: 1rem; }
-            #submit-form-btn { width: 100%; }
-            .loading-box { padding: 2rem 1.5rem; }
-            .success-box { padding: 2rem 1.5rem; }
-        }
+        /* STYLE CHO KHUYẾN MÃI DOANH NGHIỆP */
+        .discount-badge { background: linear-gradient(135deg, #f0fdf4 0%, #e0f5e4 100%); color: #059669; padding: 0.8rem 1.25rem; border-radius: 8px; font-weight: 600; margin-top: 1rem; display: block; border: 1px solid #d1fae5; font-size: 0.95rem; text-align: center;}
+        .price-preview-box { background-color: #ebf8ff; border: 1px dashed #3182ce; border-radius: 8px; padding: 12px; margin-top: 15px; text-align: right; font-size: 0.95rem; display: none; }
+        .price-preview-box.active { display: block; }
+        .price-amount { color: #c53030; font-weight: 700; font-size: 1.1rem; }
+        .original-price { text-decoration: line-through; color: #718096; font-size: 0.85rem; margin-right: 8px;}
     </style>
 </head>
 <body>
     <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
     <div class="logo-on-top"><img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo"></div>
     
-    <!-- LOADING OVERLAY -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-box">
             <div class="spinner"></div>
-            <div class="loading-text" id="loadingText">Đang xử lý yêu cầu...</div>
-            <div class="loading-subtext" id="loadingSubtext">Vui lòng chờ</div>
+            <div class="loading-text" id="loadingText" data-trans="loadingText">Đang xử lý yêu cầu...</div>
+            <div class="loading-subtext" id="loadingSubtext" data-trans="loadingSubtext">Vui lòng chờ</div>
         </div>
     </div>
     
-    <!-- SUCCESS SCREEN -->
     <div class="success-screen" id="successScreen">
         <div class="success-box">
-            <div class="success-icon">✓</div>
-            <h2 class="success-title" id="successTitle">Thành Công!</h2>
-            <p class="success-message" id="successMessage">Yêu cầu của bạn đã được gửi thành công. Chúng tôi sẽ liên hệ với bạn trong 24 giờ.</p>
-            <div class="success-code">
-                <div class="success-code-label" id="codeLabel">Mã Tham Chiếu:</div>
-                <div class="success-code-value" id="codeValue">#REQ20240321001</div>
+            <div style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;">✓</div>
+            <h2 id="successTitle" data-trans="successTitle" style="font-size: 1.5rem; color: #10b981; font-weight: bold;">Thành Công!</h2>
+            <p id="successMessage" data-trans="successMessage" style="margin: 1rem 0; color: #4a5568;">Yêu cầu của bạn đã được gửi thành công.</p>
+            <div style="background: #f0fdf4; border: 2px solid #d1fae5; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.85rem;">
+                <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 0.5rem;" data-trans="codeLabel">Mã Tham Chiếu:</div>
+                <div id="codeValue" style="font-weight: 700; color: #059669; font-family: 'Courier New', monospace; font-size: 1rem;"></div>
             </div>
-            <button class="success-btn" id="successBtn" onclick="location.reload()">
-                <span id="successBtnText">Tạo Đơn Mới</span>
-            </button>
+            <button id="successBtn" data-trans="successBtnText" onclick="location.reload()" style="background: #3182ce; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Tạo Đơn Mới</button>
         </div>
     </div>
     
     <main class="px-4 sm:px-6 py-4 sm:py-6">
         <div class="form-container max-w-4xl mx-auto">
             <div class="header-top">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="mainTitle">
-                    Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="mainTitle" data-trans="mainTitle">
+                    Đơn Đăng Ký Thuê Thiết Bị WIFI (Doanh Nghiệp)
                 </h1>
                 <div class="lang-switcher">
                     <button type="button" class="lang-btn active" data-lang="vi">Tiếng Việt</button>
@@ -527,581 +93,364 @@
             </div>
             
             <form id="wifi-form">
-                <!-- Thông tin người gửi -->
                 <div class="mb-8">
-                    <div class="section-title">
-                        <div class="section-icon">👤</div>
-                        <div id="sectionSender">Thông tin người gửi</div>
+                    <div class="section-title"><div class="section-icon">👤</div><div id="sectionSender" data-trans="sectionSender">Thông tin người gửi</div></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="form-group"><label data-trans="labelName">Họ và tên</label><input type="text" id="sender-name" required></div>
+                        <div class="form-group"><label data-trans="labelEmail">Email</label><input type="email" id="sender-email" required></div>
+                        <div class="form-group"><label data-trans="labelPhone">Số điện thoại</label><input type="tel" id="sender-phone" required></div>
+                        <div class="form-group"><label data-trans="labelCompany">Công ty</label><input type="text" id="sender-company" required></div>
+                        <div class="form-group">
+                            <label data-trans="labelRegion">Khu vực</label>
+                            <select id="sender-region" required><option value="" data-trans="selectRegion">-- Chọn --</option><option value="HN">HN</option><option value="HCM">HCM</option></select>
+                        </div>
+                        <div class="form-group"><label data-trans="labelTaxCode">Mã số thuế</label><input type="text" id="sender-taxcode" required></div>
                     </div>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div class="form-group">
-                            <label id="labelName">Họ và tên</label>
-                            <input type="text" id="sender-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelEmail">Email</label>
-                            <input type="email" id="sender-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelPhone">Số điện thoại</label>
-                            <input type="tel" id="sender-phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelCompany">Công ty</label>
-                            <input type="text" id="sender-company" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelRegion">Khu vực</label>
-                            <select id="sender-region" required>
-                                <option value="">-- Chọn --</option>
-                                <option value="HN">HN</option>
-                                <option value="HCM">HCM</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelTaxCode">Mã số thuế</label>
-                            <input type="text" id="sender-taxcode" required>
-                        </div>
-                    </div>
                     <div id="discountNotice" style="display:none;">
                         <div class="discount-badge" id="discountBadge"></div>
                     </div>
                 </div>
 
-                <!-- Chi tiết đơn thuê -->
                 <div class="mb-8">
-                    <div class="section-title">
-                        <div class="section-icon">📋</div>
-                        <div id="sectionRental">Chi tiết đơn thuê</div>
-                    </div>
-                    
-                    <div id="rental-requests-container" class="space-y-6 mb-8">
-                        <div class="rental-request">
-                            <div class="request-header">
-                                <h2 class="request-title">Đơn 1</h2>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="form-group">
-                                    <label id="labelFromDate1">Từ ngày</label>
-                                    <input type="date" class="date-from" required>
-                                </div>
-                                <div class="form-group">
-                                    <label id="labelToDate1">Đến ngày</label>
-                                    <input type="date" class="date-to" required>
-                                </div>
-                                <div class="form-group">
-                                    <label id="labelDays1">Số ngày sử dụng</label>
-                                    <input type="number" class="days-input" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label id="labelQuantity1">Số lượng máy</label>
-                                    <input type="number" class="quantity-input" value="1" min="1" required>
-                                </div>
-                                <div class="form-group">
-                                    <label id="labelCountry1">Quốc gia</label>
-                                    <select class="choices-country" required>
-                                        <option value="">-- Chọn quốc gia --</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label id="labelPackage1">Gói dữ liệu</label>
-                                    <select class="package-select" required>
-                                        <option value="">-- Chọn gói --</option>
-                                        <option value="500MB/ngày">500MB/ngày</option>
-                                        <option value="1GB/ngày">1GB/ngày</option>
-                                        <option value="5GB/ngày">5GB/ngày</option>
-                                    </select>
-                                </div>
-                                <div class="form-group md:col-span-2">
-                                    <label id="labelBudgetCode1">Budget Code</label>
-                                    <input type="text" class="budget-code-input">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-center">
-                        <button type="button" id="add-request-btn">
-                            ➕ Thêm đơn mới
-                        </button>
-                    </div>
+                    <div class="section-title"><div class="section-icon">📋</div><div id="sectionRental" data-trans="sectionRental">Chi tiết đơn thuê</div></div>
+                    <div id="rental-requests-container" class="space-y-6 mb-8"></div>
+                    <div class="flex justify-center"><button type="button" id="add-request-btn" data-trans="addRequest">➕ Thêm đơn mới</button></div>
                 </div>
 
-                <!-- Phần vận chuyển -->
                 <div class="mb-8">
-                    <div class="section-title">
-                        <div class="section-icon">🚚</div>
-                        <div id="sectionShipping">Thông tin vận chuyển</div>
-                    </div>
-                    
+                    <div class="section-title"><div class="section-icon">🚚</div><div id="sectionShipping" data-trans="sectionShipping">Thông tin vận chuyển</div></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="form-group"><label data-trans="labelShippingName">Tên người nhận</label><input type="text" id="shipping-name" required></div>
+                        <div class="form-group"><label data-trans="labelShippingPhone">SĐT người nhận</label><input type="tel" id="shipping-phone" required></div>
+                        <div class="form-group sm:col-span-2"><label data-trans="labelShippingAddress">Địa chỉ giao hàng</label><textarea id="shipping-address" required></textarea></div>
+                        <div class="form-group"><label data-trans="labelShippingDate">Ngày giao hàng</label><input type="date" id="shipping-date" required></div>
                         <div class="form-group">
-                            <label id="labelShippingName">Tên người nhận</label>
-                            <input type="text" id="shipping-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelShippingPhone">Số điện thoại người nhận</label>
-                            <input type="tel" id="shipping-phone" required>
-                        </div>
-                        <div class="form-group sm:col-span-2">
-                            <label id="labelShippingAddress">Địa chỉ giao hàng</label>
-                            <textarea id="shipping-address" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelShippingDate">Ngày giao hàng mong muốn</label>
-                            <input type="date" id="shipping-date" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="labelShippingMethod">Hình thức vận chuyển</label>
+                            <label data-trans="labelShippingMethod">Phương thức vận chuyển</label>
                             <select id="shipping-method" required>
-                                <option value="">-- Chọn phương thức --</option>
-                                <option value="Tiêu chuẩn">Tiêu chuẩn (3-5 ngày)</option>
-                                <option value="Chuyển phát nhanh">Chuyển phát nhanh (1-2 ngày)</option>
-                                <option value="Hỏa tốc">Hỏa tốc</option>
-                                <option value="Tự lấy">Tự lấy</option>
+                                <option value="" data-trans="selectShipping">-- Chọn phương thức --</option>
+                                <option value="Tiêu chuẩn" data-trans="shipStandard">Tiêu chuẩn (3-5 ngày)</option>
+                                <option value="Chuyển phát nhanh" data-trans="shipExpress">Chuyển phát nhanh (1-2 ngày)</option>
+                                <option value="Hỏa tốc" data-trans="shipUrgent">Hỏa tốc</option>
+                                <option value="Tự lấy" data-trans="shipPickup">Tự lấy</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Nút gửi -->
-                <div class="flex justify-center">
-                    <button type="submit" id="submit-form-btn">
-                        🚀 Gửi Yêu Cầu
-                    </button>
-                </div>
+                <div class="flex justify-center"><button type="submit" id="submit-form-btn" data-trans="submit">🚀 Gửi Yêu Cầu</button></div>
             </form>
         </div>
     </main>
     
     <footer>
         <div class="footer-company-info">
-            <h2 id="footerTitle">Công Ty TNHH Maya Vietnam</h2>
-            <div id="footerSubtitle" style="color: #3182ce; font-weight: 600; margin-bottom: 1rem;">MAYA VIETNAM CO., LTD</div>
+            <h2 id="footerTitle" data-trans="footerTitle">Công Ty TNHH Maya Vietnam</h2>
+            <div id="footerSubtitle" data-trans="footerSubtitle" style="color: #3182ce; font-weight: 600; margin-bottom: 1rem;">MAYA VIETNAM CO., LTD</div>
             <div style="margin-top: 1rem; line-height: 1.8;">
-                <div id="footerAddress"><strong id="footerAddrLabel">Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam</div>
-                <div id="footerHotline" style="margin-top: 0.8rem;"><strong id="footerHotlineLabel">Hotline:</strong> <span style="color:#1a365d; font-weight: bold;">0962 000 650</span> (Tiếng Việt) | <span style="color:#ed8936; font-weight: bold;">0365 399 288</span> (Tiếng Nhật)</div>
+                <div id="footerAddress"></div>
+                <div id="footerHotline" style="margin-top: 0.8rem;"></div>
             </div>
         </div>
     </footer>
-    
-    <script>
-        // ===== CONFIG =====
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec";
-        const UNIT_NAME = "CorporateOrders";
 
-        // ===== TRANSLATIONS =====
+    <script>
+        // ===== CẤU HÌNH =====
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec";
+        const UNIT_NAME = "CorporateOrders"; 
+        let requestCount = 0;
+        let currentLang = 'vi';
+        let corporateDiscountRate = 0; // Biến lưu % giảm giá
+
         const translations = {
             vi: {
                 mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)",
-                sectionSender: "Thông tin người gửi",
-                sectionRental: "Chi tiết đơn thuê",
-                sectionShipping: "Thông tin vận chuyển",
-                labelName: "Họ và tên",
-                labelEmail: "Email",
-                labelPhone: "Số điện thoại",
-                labelCompany: "Công ty",
-                labelRegion: "Khu vực",
-                labelTaxCode: "Mã số thuế",
-                labelFromDate: "Từ ngày",
-                labelToDate: "Đến ngày",
-                labelDays: "Số ngày sử dụng",
-                labelQuantity: "Số lượng máy",
-                labelCountry: "Quốc gia",
-                labelPackage: "Gói dữ liệu",
-                labelBudgetCode: "Budget Code",
-                labelShippingName: "Tên người nhận",
-                labelShippingPhone: "Số điện thoại người nhận",
-                labelShippingAddress: "Địa chỉ giao hàng",
-                labelShippingDate: "Ngày giao hàng mong muốn",
-                labelShippingMethod: "Hình thức vận chuyển",
-                selectCountry: "-- Chọn quốc gia --",
-                selectPackage: "-- Chọn gói --",
-                selectShipping: "-- Chọn phương thức --",
-                addRequest: "➕ Thêm đơn mới",
-                submit: "🚀 Gửi Yêu Cầu",
-                loadingText: "Đang xử lý yêu cầu...",
-                loadingSubtext: "Vui lòng chờ",
-                successTitle: "Thành Công!",
-                successMessage: "Yêu cầu của bạn đã được gửi thành công. Chúng tôi sẽ liên hệ với bạn trong 24 giờ.",
-                codeLabel: "Mã Tham Chiếu:",
-                successBtnText: "Tạo Đơn Mới",
-                footerTitle: "Công Ty TNHH Maya Vietnam",
-                footerSubtitle: "MAYA VIETNAM CO., LTD",
-                footerAddrLabel: "Địa chỉ:",
-                footerAddr: "Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội, Việt Nam",
-                footerHotlineLabel: "Hotline:",
-                footerHotlineText: "(Tiếng Việt) | ",
-                footerHotlineText2: "(Tiếng Nhật)",
-                discountApplied: "Chiết khấu doanh nghiệp được áp dụng"
+                sectionSender: "Thông tin người gửi", sectionRental: "Chi tiết đơn thuê", sectionShipping: "Thông tin vận chuyển",
+                labelName: "Họ và tên", labelEmail: "Email", labelPhone: "Số điện thoại", labelCompany: "Công ty", labelRegion: "Khu vực", labelTaxCode: "Mã số thuế",
+                labelShippingName: "Tên người nhận", labelShippingPhone: "SĐT người nhận", labelShippingAddress: "Địa chỉ", labelShippingDate: "Ngày nhận", labelShippingMethod: "Cách giao hàng",
+                selectRegion: "-- Chọn --", selectShipping: "-- Chọn --",
+                shipStandard: "Tiêu chuẩn (3-5 ngày)", shipExpress: "Chuyển phát nhanh (1-2 ngày)", shipUrgent: "Hỏa tốc", shipPickup: "Tự lấy",
+                addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ",
+                successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
+                footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD",
+                reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
+                selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa",
+                pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ",
+                discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
+                footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội",
+                footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
             en: {
-                mainTitle: "WIFI Device Rental Registration Form (Corporate Discount)",
-                sectionSender: "Sender Information",
-                sectionRental: "Rental Details",
-                sectionShipping: "Shipping Information",
-                labelName: "Full Name",
-                labelEmail: "Email",
-                labelPhone: "Phone Number",
-                labelCompany: "Company",
-                labelRegion: "Region",
-                labelTaxCode: "Tax Code",
-                labelFromDate: "From Date",
-                labelToDate: "To Date",
-                labelDays: "Usage Days",
-                labelQuantity: "Equipment Quantity",
-                labelCountry: "Country",
-                labelPackage: "Data Package",
-                labelBudgetCode: "Budget Code",
-                labelShippingName: "Recipient Name",
-                labelShippingPhone: "Recipient Phone",
-                labelShippingAddress: "Shipping Address",
-                labelShippingDate: "Desired Shipping Date",
-                labelShippingMethod: "Shipping Method",
-                selectCountry: "-- Select country --",
-                selectPackage: "-- Select package --",
-                selectShipping: "-- Select shipping method --",
-                addRequest: "➕ Add New Request",
-                submit: "🚀 Submit Request",
-                loadingText: "Processing your request...",
-                loadingSubtext: "Please wait",
-                successTitle: "Success!",
-                successMessage: "Your request has been sent successfully. We will contact you within 24 hours.",
-                codeLabel: "Reference Code:",
-                successBtnText: "Create New Request",
-                footerTitle: "MAYA VIETNAM CO., LTD",
-                footerSubtitle: "MAYA VIETNAM CO., LTD",
-                footerAddrLabel: "Address:",
-                footerAddr: "Room 1630, 16th Floor, DAEHA BUSINESS CENTER, 360 Kim Ma, Giang Vo, Hanoi, Vietnam",
-                footerHotlineLabel: "Hotline:",
-                footerHotlineText: "(Vietnamese) | ",
-                footerHotlineText2: "(Japanese)",
-                discountApplied: "Corporate discount applied"
+                mainTitle: "WIFI Device Rental (Corporate Discount)",
+                sectionSender: "Sender Info", sectionRental: "Rental Details", sectionShipping: "Shipping Info",
+                labelName: "Full Name", labelEmail: "Email", labelPhone: "Phone", labelCompany: "Company", labelRegion: "Region", labelTaxCode: "Tax Code",
+                labelShippingName: "Recipient Name", labelShippingPhone: "Recipient Phone", labelShippingAddress: "Address", labelShippingDate: "Delivery Date", labelShippingMethod: "Shipping Method",
+                selectRegion: "-- Select --", selectShipping: "-- Select --",
+                shipStandard: "Standard (3-5 days)", shipExpress: "Express (1-2 days)", shipUrgent: "Urgent", shipPickup: "Pick Up",
+                addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait",
+                successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
+                footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD",
+                reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
+                selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove",
+                pricePreview: "Est. Total (Inc. Discount & VAT): ",
+                discountApplied: "Corporate discount applied",
+                footerAddressHTML: "<strong>Address:</strong> Room 1630, 16th Fl, DAEHA BUSINESS CENTER, Hanoi",
+                footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Vietnamese) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Japanese)"
             }
         };
 
-        let currentLang = 'vi';
-        
-        const countryFlags = {
-            "Việt Nam": "🇻🇳",
-            "Thái Lan": "🇹🇭",
-            "Campuchia": "🇰🇭",
-            "Lào": "🇱🇦",
-            "Myanmar": "🇲🇲",
-            "Malaysia": "🇲🇾",
-            "Singapore": "🇸🇬",
-            "Indonesia": "🇮🇩",
-            "Hàn Quốc": "🇰🇷",
-            "Nhật Bản": "🇯🇵"
-        };
-
-        // ===== FUNCTIONS =====
-        function initializeCountries() {
-            if (typeof PRICE_TABLE === 'undefined') return;
-            
-            const countries = Object.keys(PRICE_TABLE["SUMITOMO"] || PRICE_TABLE["HIS"] || {}).sort();
-            const countrySelects = document.querySelectorAll('.choices-country');
-            
-            countrySelects.forEach(select => {
-                while (select.options.length > 1) {
-                    select.remove(1);
-                }
-                
-                countries.forEach(country => {
-                    const option = document.createElement('option');
-                    const flag = countryFlags[country] || '';
-                    option.value = country;
-                    option.textContent = `${flag} ${country}`;
-                    select.appendChild(option);
-                });
-            });
-            
-            document.querySelectorAll('.choices-country').forEach(select => {
-                new Choices(select, {
-                    searchEnabled: true,
-                    shouldSort: false,
-                    itemSelectText: 'Chọn'
-                });
-            });
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
         }
 
-        function updateAllText() {
-            const t = translations[currentLang];
-            
-            document.getElementById('mainTitle').textContent = t.mainTitle;
-            document.getElementById('sectionSender').textContent = t.sectionSender;
-            document.getElementById('sectionRental').textContent = t.sectionRental;
-            document.getElementById('sectionShipping').textContent = t.sectionShipping;
-            document.getElementById('labelName').textContent = t.labelName;
-            document.getElementById('labelEmail').textContent = t.labelEmail;
-            document.getElementById('labelPhone').textContent = t.labelPhone;
-            document.getElementById('labelCompany').textContent = t.labelCompany;
-            document.getElementById('labelRegion').textContent = t.labelRegion;
-            document.getElementById('labelTaxCode').textContent = t.labelTaxCode;
-            document.getElementById('labelShippingName').textContent = t.labelShippingName;
-            document.getElementById('labelShippingPhone').textContent = t.labelShippingPhone;
-            document.getElementById('labelShippingAddress').textContent = t.labelShippingAddress;
-            document.getElementById('labelShippingDate').textContent = t.labelShippingDate;
-            document.getElementById('labelShippingMethod').textContent = t.labelShippingMethod;
-            document.getElementById('add-request-btn').textContent = t.addRequest;
-            document.getElementById('submit-form-btn').textContent = t.submit;
-            document.getElementById('footerTitle').textContent = t.footerTitle;
-            document.getElementById('footerSubtitle').textContent = t.footerSubtitle;
-            document.getElementById('footerAddrLabel').textContent = t.footerAddrLabel;
-            document.getElementById('footerHotlineLabel').textContent = t.footerHotlineLabel;
-            document.getElementById('loadingText').textContent = t.loadingText;
-            document.getElementById('loadingSubtext').textContent = t.loadingSubtext;
-            document.getElementById('successTitle').textContent = t.successTitle;
-            document.getElementById('successMessage').textContent = t.successMessage;
-            document.getElementById('codeLabel').textContent = t.codeLabel;
-            document.getElementById('successBtnText').textContent = t.successBtnText;
-            
-            document.getElementById('footerAddress').innerHTML = 
-                `<strong>${t.footerAddrLabel}</strong> ${t.footerAddr}`;
-            
-            document.getElementById('footerHotline').innerHTML = 
-                `<strong>${t.footerHotlineLabel}</strong> <span style="color:#1a365d; font-weight: bold;">0962 000 650</span> ${t.footerHotlineText}<span style="color:#ed8936; font-weight: bold;">0365 399 288</span> ${t.footerHotlineText2}`;
-            
-            document.querySelectorAll('.rental-request').forEach((req, idx) => {
-                const labelFromDate = req.querySelector('[id^="labelFromDate"]');
-                const labelToDate = req.querySelector('[id^="labelToDate"]');
-                const labelDays = req.querySelector('[id^="labelDays"]');
-                const labelQuantity = req.querySelector('[id^="labelQuantity"]');
-                const labelCountry = req.querySelector('[id^="labelCountry"]');
-                const labelPackage = req.querySelector('[id^="labelPackage"]');
-                const labelBudgetCode = req.querySelector('[id^="labelBudgetCode"]');
-                
-                if (labelFromDate) labelFromDate.textContent = t.labelFromDate;
-                if (labelToDate) labelToDate.textContent = t.labelToDate;
-                if (labelDays) labelDays.textContent = t.labelDays;
-                if (labelQuantity) labelQuantity.textContent = t.labelQuantity;
-                if (labelCountry) labelCountry.textContent = t.labelCountry;
-                if (labelPackage) labelPackage.textContent = t.labelPackage;
-                if (labelBudgetCode) labelBudgetCode.textContent = t.labelBudgetCode;
-                
-                const countrySelect = req.querySelector('.choices-country');
-                const packageSelect = req.querySelector('.package-select');
-                
-                if (countrySelect && countrySelect.options[0]) {
-                    countrySelect.options[0].textContent = t.selectCountry;
+        // TẢI BẢNG GIẢM GIÁ TỪ GOOGLE SCRIPT MỘT LẦN KHI MỞ TRANG
+        async function fetchDiscounts() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL + '?action=getDiscounts');
+                const json = await response.json();
+                if (json.result === 'success') {
+                    window.DISCOUNT_DATA = json.data;
+                    checkDiscount(); // Kiểm tra ngay xem tax code từ login có được giảm không
                 }
-                
-                if (packageSelect && packageSelect.options[0]) {
-                    packageSelect.options[0].textContent = t.selectPackage;
-                }
-            });
-            
-            const regionSelect = document.getElementById('sender-region');
-            if (regionSelect && regionSelect.options[0]) {
-                regionSelect.options[0].textContent = currentLang === 'vi' ? '-- Chọn --' : '-- Select --';
-            }
-
-            const shippingSelect = document.getElementById('shipping-method');
-            if (shippingSelect && shippingSelect.options[0]) {
-                shippingSelect.options[0].textContent = t.selectShipping;
-            }
-            
-            if (currentLang === 'en') {
-                document.querySelector('option[value="Tiêu chuẩn"]').textContent = 'Standard (3-5 days)';
-                document.querySelector('option[value="Chuyển phát nhanh"]').textContent = 'Express (1-2 days)';
-                document.querySelector('option[value="Hỏa tốc"]').textContent = 'Urgent';
-                document.querySelector('option[value="Tự lấy"]').textContent = 'Pick up';
-            } else {
-                document.querySelector('option[value="Tiêu chuẩn"]').textContent = 'Tiêu chuẩn (3-5 ngày)';
-                document.querySelector('option[value="Chuyển phát nhanh"]').textContent = 'Chuyển phát nhanh (1-2 ngày)';
-                document.querySelector('option[value="Hỏa tốc"]').textContent = 'Hỏa tốc';
-                document.querySelector('option[value="Tự lấy"]').textContent = 'Tự lấy';
+            } catch (e) {
+                console.error("Không thể tải bảng chiết khấu.");
             }
         }
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
-            });
-            updateAllText();
-        }
-
-        function generateReferenceCode() {
-            return '#REQ' + new Date().getTime().toString().slice(-10);
-        }
-
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.add('active');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.remove('active');
-        }
-
-        function showSuccess() {
-            document.getElementById('codeValue').textContent = generateReferenceCode();
-            document.getElementById('successScreen').classList.add('active');
-        }
-
-        function hideSuccess() {
-            document.getElementById('successScreen').classList.remove('active');
-        }
-
+        // KIỂM TRA MST ĐỂ LẤY % GIẢM GIÁ
         function checkDiscount() {
             const taxCode = document.getElementById('sender-taxcode').value.trim();
-            const discountRate = getDiscountRate(taxCode);
+            if (!taxCode || typeof window.DISCOUNT_DATA === 'undefined') {
+                corporateDiscountRate = 0;
+            } else {
+                corporateDiscountRate = window.DISCOUNT_DATA[String(taxCode).trim()] || 0;
+            }
+
             const notice = document.getElementById('discountNotice');
             const badge = document.getElementById('discountBadge');
+            const t = translations[currentLang];
             
-            if (discountRate > 0) {
+            if (corporateDiscountRate > 0) {
                 notice.style.display = 'block';
-                badge.textContent = `✅ ${currentLang === 'vi' ? `Chiết khấu ${(discountRate * 100).toFixed(0)}% được áp dụng` : `${(discountRate * 100).toFixed(0)}% Discount Applied`}`;
+                badge.textContent = `✅ ${t.discountApplied}: ${(corporateDiscountRate * 100).toFixed(0)}%`;
             } else {
                 notice.style.display = 'none';
             }
+
+            // Cập nhật lại toàn bộ giá trên màn hình
+            document.querySelectorAll('.rental-request').forEach(req => updatePricePreview(req));
         }
 
-        function getDiscountRate(taxCode) {
-            if (!taxCode || typeof window.DISCOUNT_DATA === 'undefined') return 0;
-            return window.DISCOUNT_DATA[String(taxCode).trim()] || 0;
+        // TÍNH GIÁ DỰ KIẾN (Corporate)
+        function updatePricePreview(reqElement) {
+            const country = reqElement.querySelector('.choices-country').value;
+            const pkg = reqElement.querySelector('.package-select').value;
+            const days = parseInt(reqElement.querySelector('.days-input').value) || 0;
+            const quantity = parseInt(reqElement.querySelector('.quantity-input').value) || 1;
+            const previewBox = reqElement.querySelector('.price-preview-box');
+            const amountSpan = reqElement.querySelector('.price-amount');
+            const t = translations[currentLang];
+
+            if (!country || !pkg || days <= 0 || quantity <= 0) {
+                previewBox.classList.remove('active'); return;
+            }
+
+            // Lấy giá gốc từ thư viện chung (Giả sử dùng chung bảng giá với SUMI/HIS)
+            let unitPrice = 0;
+            if (typeof getPriceForUnit === 'function') {
+                // Tìm thử trong SUMITOMO trước, nếu không có thì thôi
+                unitPrice = getPriceForUnit("SUMITOMO", country, pkg); 
+            }
+
+            if (unitPrice > 0) {
+                const baseTotal = unitPrice * days * quantity;
+                const discountAmount = Math.round(baseTotal * corporateDiscountRate);
+                const afterDiscount = baseTotal - discountAmount;
+                const vat = Math.round(afterDiscount * 0.10);
+                const grandTotal = afterDiscount + vat;
+
+                let html = '';
+                if (corporateDiscountRate > 0) {
+                    html += `<span class="original-price">${formatMoney(baseTotal + Math.round(baseTotal*0.1))}</span>`;
+                }
+                html += formatMoney(grandTotal);
+
+                amountSpan.innerHTML = html;
+                previewBox.querySelector('.preview-label').textContent = t.pricePreview;
+                previewBox.classList.add('active');
+            } else {
+                previewBox.classList.remove('active');
+            }
         }
 
-        // ===== EVENT LISTENERS =====
+        // TẠO FORM ĐƠN MỚI
+        function addRentalRequest() {
+            requestCount++;
+            const t = translations[currentLang];
+            const container = document.getElementById('rental-requests-container');
+            const div = document.createElement('div');
+            div.className = 'rental-request';
+            
+            div.innerHTML = `
+                <div class="request-header">
+                    <h2 class="request-title" data-trans="reqTitle">${t.reqTitle} ${requestCount}</h2>
+                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();" data-trans="removeBtn">${t.removeBtn}</button>` : ''}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group"><label data-trans="fromDate">${t.fromDate}</label><input type="date" class="date-from" required></div>
+                    <div class="form-group"><label data-trans="toDate">${t.toDate}</label><input type="date" class="date-to" required></div>
+                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
+                    <div class="form-group"><label data-trans="quantity">${t.quantity}</label><input type="number" class="quantity-input" value="1" min="1" required></div>
+                    <div class="form-group">
+                        <label data-trans="country">${t.country}</label>
+                        <select class="choices-country" required><option value="">${t.selectCountry}</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-trans="package">${t.package}</label>
+                        <select class="package-select" required>
+                            <option value="">${t.selectPackage}</option>
+                            <option value="500MB/ngày">500MB/ngày</option>
+                            <option value="1GB/ngày">1GB/ngày</option>
+                            <option value="5GB/ngày">5GB/ngày</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 form-group"><label data-trans="budgetCode">${t.budgetCode}</label><input type="text" class="budget-code-input"></div>
+                </div>
+                <div class="price-preview-box">
+                    <span class="preview-label">${t.pricePreview}</span><span class="price-amount">0 đ</span>
+                </div>
+            `;
+            container.appendChild(div);
+
+            const calculateParams = () => {
+                const df = div.querySelector('.date-from').value;
+                const dt = div.querySelector('.date-to').value;
+                if(df && dt) {
+                    const d1 = new Date(df), d2 = new Date(dt);
+                    if(d1 <= d2) div.querySelector('.days-input').value = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+                }
+                updatePricePreview(div);
+            };
+
+            div.querySelector('.date-from').addEventListener('change', calculateParams);
+            div.querySelector('.date-to').addEventListener('change', calculateParams);
+            div.querySelector('.quantity-input').addEventListener('input', calculateParams);
+
+            loadCountriesIntoSelect(div.querySelector('.choices-country'));
+            div.querySelector('.choices-country').addEventListener('change', calculateParams);
+            div.querySelector('.package-select').addEventListener('change', calculateParams);
+        }
+
+        function updateRequestNumbers() {
+            const reqs = document.querySelectorAll('.rental-request');
+            reqs.forEach((r, idx) => r.querySelector('.request-title').textContent = `${translations[currentLang].reqTitle} ${idx + 1}`);
+            requestCount = reqs.length;
+        }
+
+        function loadCountriesIntoSelect(selectElem) {
+            if (typeof PRICE_TABLE === 'undefined' || typeof PRICE_TABLE["SUMITOMO"] === 'undefined') {
+                setTimeout(() => loadCountriesIntoSelect(selectElem), 100); return;
+            }
+            Object.keys(PRICE_TABLE["SUMITOMO"]).sort().forEach(c => {
+                const opt = document.createElement('option'); opt.value = c; opt.textContent = c; selectElem.appendChild(opt);
+            });
+            new Choices(selectElem, { searchEnabled: true, shouldSort: false, itemSelectText: 'Chọn' });
+        }
+
+        function applyTranslations() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-trans]').forEach(el => {
+                const key = el.getAttribute('data-trans');
+                if (t[key]) {
+                    if(el.tagName === 'OPTION') el.textContent = t[key];
+                    else if(el.tagName === 'INPUT') el.placeholder = t[key];
+                    else el.textContent = t[key];
+                }
+            });
+            document.getElementById('footerAddress').innerHTML = t.footerAddressHTML;
+            document.getElementById('footerHotline').innerHTML = t.footerHotlineHTML;
+            updateRequestNumbers();
+            checkDiscount(); // Cập nhật lại text của discount badge
+        }
+
+        // ===== KHỞI TẠO =====
         document.addEventListener('DOMContentLoaded', () => {
-            initializeCountries();
-            updateAllText();
-            
-            // Calculate days
-            document.querySelectorAll('.date-from, .date-to').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const req = e.target.closest('.rental-request');
-                    const fromDate = new Date(req.querySelector('.date-from').value);
-                    const toDate = new Date(req.querySelector('.date-to').value);
-                    if (fromDate && toDate && fromDate <= toDate) {
-                        const days = Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
-                        req.querySelector('.days-input').value = days;
-                    }
+            // Lấy MST từ trang đăng nhập nếu có
+            const savedTaxCode = sessionStorage.getItem('corpTaxCode');
+            if (savedTaxCode) {
+                document.getElementById('sender-taxcode').value = savedTaxCode;
+            }
+
+            // Gọi API lấy bảng giảm giá
+            fetchDiscounts();
+
+            applyTranslations(); 
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    currentLang = e.target.getAttribute('data-lang');
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    applyTranslations();
                 });
             });
-            
-            // Tax code listener
-            document.getElementById('sender-taxcode').addEventListener('change', checkDiscount);
-            document.getElementById('sender-taxcode').addEventListener('blur', checkDiscount);
-        });
 
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setLanguage(btn.dataset.lang);
-            });
-        });
+            document.getElementById('sender-taxcode').addEventListener('input', checkDiscount);
 
-        document.getElementById('add-request-btn').addEventListener('click', () => {
-            showLoading();
-            setTimeout(() => {
-                hideLoading();
-            }, 800);
-        });
+            document.getElementById('add-request-btn').addEventListener('click', addRentalRequest);
+            addRentalRequest();
 
-        document.getElementById('submit-form-btn').addEventListener('click', async (e) => {
-            e.preventDefault();
-            
-            const senderName = document.getElementById('sender-name').value.trim();
-            const senderEmail = document.getElementById('sender-email').value.trim();
-            const senderPhone = document.getElementById('sender-phone').value.trim();
-            const senderCompany = document.getElementById('sender-company').value.trim();
-            const senderRegion = document.getElementById('sender-region').value.trim();
-            const senderTaxCode = document.getElementById('sender-taxcode').value.trim();
-            
-            if (!senderName || !senderEmail || !senderPhone || !senderCompany || !senderRegion || !senderTaxCode) {
-                alert(currentLang === 'vi' ? 'Vui lòng điền đầy đủ thông tin người gửi' : 'Please fill in all sender information');
-                return;
-            }
-            
-            const rentalRequests = [];
-            document.querySelectorAll('.rental-request').forEach((req, idx) => {
-                const fromDate = req.querySelector('.date-from').value;
-                const toDate = req.querySelector('.date-to').value;
-                const days = parseInt(req.querySelector('.days-input').value) || 0;
-                const quantity = parseInt(req.querySelector('.quantity-input').value) || 1;
-                const country = req.querySelector('.choices-country').value;
-                const dataPackage = req.querySelector('.package-select').value;
-                const budgetCode = req.querySelector('.budget-code-input').value.trim();
+            document.getElementById('wifi-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
-                if (!fromDate || !toDate || !country || !dataPackage) {
-                    alert(currentLang === 'vi' ? `Vui lòng điền đầy đủ thông tin đơn ${idx + 1}` : `Please fill in request ${idx + 1}`);
-                    return false;
+                const senderInfo = {
+                    name: document.getElementById('sender-name').value,
+                    email: document.getElementById('sender-email').value,
+                    phone: document.getElementById('sender-phone').value,
+                    company: document.getElementById('sender-company').value,
+                    region: document.getElementById('sender-region').value,
+                    taxCode: document.getElementById('sender-taxcode').value
+                };
+
+                const requests = [];
+                document.querySelectorAll('.rental-request').forEach(req => {
+                    requests.push({
+                        fromDate: req.querySelector('.date-from').value,
+                        toDate: req.querySelector('.date-to').value,
+                        days: parseInt(req.querySelector('.days-input').value) || 0,
+                        quantity: parseInt(req.querySelector('.quantity-input').value) || 1,
+                        country: req.querySelector('.choices-country').value,
+                        dataPackage: req.querySelector('.package-select').value,
+                        budgetCode: req.querySelector('.budget-code-input').value,
+                        unitPrice: getPriceForUnit("SUMITOMO", req.querySelector('.choices-country').value, req.querySelector('.package-select').value),
+                    });
+                });
+
+                const shippingInfo = {
+                    recipient: document.getElementById('shipping-name').value,
+                    phone: document.getElementById('shipping-phone').value,
+                    address: document.getElementById('shipping-address').value,
+                    date: document.getElementById('shipping-date').value,
+                    method: document.getElementById('shipping-method').value
+                };
+
+                const payload = { unit: UNIT_NAME, submissionTime: new Date().toISOString(), globalSenderInfo: senderInfo, rentalRequests: requests, shippingInfo: shippingInfo };
+
+                document.getElementById('loadingOverlay').classList.add('active');
+
+                try {
+                    const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                    const result = await response.json();
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                    if (result.status === 'OK') {
+                        document.getElementById('codeValue').textContent = '#REQ' + new Date().getTime().toString().slice(-10);
+                        document.getElementById('successScreen').classList.add('active');
+                    } else alert("Lỗi máy chủ: " + result.message);
+                } catch (error) {
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                    alert("Lỗi kết nối mạng: " + error.message);
                 }
-                
-                const unitPrice = getPriceForUnit(UNIT_NAME, country, dataPackage);
-                
-                rentalRequests.push({
-                    fromDate, 
-                    toDate, 
-                    days, 
-                    quantity, 
-                    country, 
-                    dataPackage, 
-                    budgetCode, 
-                    unitPrice
-                });
             });
-            
-            if (rentalRequests.length === 0) return;
-            
-            const shippingInfo = {
-                recipient: document.getElementById('shipping-name').value.trim(),
-                phone: document.getElementById('shipping-phone').value.trim(),
-                address: document.getElementById('shipping-address').value.trim(),
-                date: document.getElementById('shipping-date').value,
-                method: document.getElementById('shipping-method').value
-            };
-            
-            if (!shippingInfo.recipient || !shippingInfo.phone || !shippingInfo.address || !shippingInfo.date || !shippingInfo.method) {
-                alert(currentLang === 'vi' ? 'Vui lòng điền đầy đủ thông tin vận chuyển' : 'Please fill in all shipping information');
-                return;
-            }
-            
-            const formData = {
-                unit: UNIT_NAME,
-                submissionTime: new Date().toISOString(),
-                globalSenderInfo: {
-                    name: senderName,
-                    email: senderEmail,
-                    phone: senderPhone,
-                    company: senderCompany,
-                    region: senderRegion,
-                    taxCode: senderTaxCode
-                },
-                shippingInfo: shippingInfo,
-                rentalRequests: rentalRequests
-            };
-            
-            showLoading();
-            
-            try {
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                hideLoading();
-                
-                if (result.status === 'OK' || result.result === 'success') {
-                    showSuccess();
-                    setTimeout(() => {
-                        hideSuccess();
-                        document.getElementById('wifi-form').reset();
-                        location.reload();
-                    }, 5000);
-                } else {
-                    alert(currentLang === 'vi' 
-                        ? `Lỗi: ${result.message || 'Không thể gửi yêu cầu'}` 
-                        : `Error: ${result.message || 'Failed to submit'}`);
-                }
-            } catch (error) {
-                hideLoading();
-                alert(`Error: ${error.message}`);
-                console.error('Error:', error);
-            }
         });
     </script>
 </body>
