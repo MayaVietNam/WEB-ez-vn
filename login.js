@@ -1,5 +1,6 @@
-/* === FILE: login.js (PHIÊN BẢN HOÀN THIỆN - FIX LỖI CORS & MULTI-LANGUAGE) === */
+/* === FILE: login.js (BẢN HOÀN THIỆN THEO CẤU TRÚC GITHUB) === */
 
+// ⚠️ NHỚ THAY BẰNG LINK DEPLOY MỚI NHẤT CỦA BẠN VÀO ĐÂY SAU KHI SỬA GOOGLE SCRIPT BÊN DƯỚI
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec';
 
 const translations = {
@@ -76,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const guideModal = document.getElementById('guide-modal');
     const langBtns = document.querySelectorAll('.lang-btn');
 
-    // --- 1. KHỞI TẠO NGÔN NGỮ ---
     const updatePageTranslations = (lang) => {
         const trans = translations[lang];
         document.querySelectorAll('[class^="lang-"]').forEach(el => {
@@ -98,11 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
     langBtns.forEach(btn => btn.addEventListener('click', () => switchLanguage(btn.dataset.lang)));
     switchLanguage(currentLanguage);
 
-    // --- 2. CHUYỂN ĐỔI FORM ---
     document.getElementById('corp-btn')?.addEventListener('click', () => container.classList.add('right-panel-active'));
     document.getElementById('partner-btn')?.addEventListener('click', () => container.classList.remove('right-panel-active'));
 
-    // --- 3. XỬ LÝ ĐĂNG NHẬP ĐỐI TÁC (FIX LỖI CORS) ---
+    // --- XỬ LÝ ĐĂNG NHẬP ĐỐI TÁC ---
     partnerForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('partner-user').value.trim().toUpperCase();
@@ -116,15 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
         Swal.fire({ title: trans['authenticating'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
         try {
-            // Sử dụng URLSearchParams để tránh lỗi Preflight CORS
             const params = new URLSearchParams({ action: 'login', username: user, password: pass });
-
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: params
             });
-
             const result = await response.json();
 
             if (result.status === 'OK') {
@@ -140,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 4. XỬ LÝ DOANH NGHIỆP ---
+    // --- XỬ LÝ DOANH NGHIỆP ---
     corpForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         const code = document.getElementById('corp-tax-code').value.trim();
@@ -150,10 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sessionStorage.setItem('corpTaxCode', code);
         Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
-            .then(() => window.location.href = './Corporate/Index.html');
+            .then(() => window.location.href = './Corporate/Index.html'); // KHỚP 100% VỚI ẢNH GITHUB CỦA BẠN
     });
 
-    // --- 5. MODAL HƯỚNG DẪN ---
+    // --- MODAL HƯỚNG DẪN ---
     const toggleModal = (show) => {
         guideModal.classList.toggle('active', show);
         document.body.style.overflow = show ? 'hidden' : 'auto';
