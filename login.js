@@ -1,6 +1,6 @@
 /* === FILE: login.js (PHIÊN BẢN HOÀN THIỆN - FIX LỖI CORS & MULTI-LANGUAGE) === */
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQMxpnrXHUQsf0Vo8Uos6hajXYXFIsfCaFiH8mGOgWwww7Gc5hFR54NczPaIs6EhPJ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec';
 
 const translations = {
     vi: {
