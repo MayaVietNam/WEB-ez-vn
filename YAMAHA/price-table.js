@@ -1,5 +1,5 @@
 const PRICE_TABLE = {
-  "SUMITOMO": {
+  "YAMAHA": {
     "Australia (Úc)": { "500MB/ngày": 157500, "5GB/ngày": 210000 },
     "Fiji (Fiji)": { "500MB/ngày": 210000, "5GB/ngày": 294000 },
     "Guam + Saipan (Guam + Saipan)": { "500MB/ngày": 210000, "1GB/ngày": 283500 },

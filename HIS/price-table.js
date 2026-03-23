@@ -1,5 +1,5 @@
 const PRICE_TABLE = {
-  "SUMITOMO": {
+  "HIS": {
     "Japan (Nhật Bản)": { "5GB/ngày": 110500 },
     "South Korea (Hàn Quốc)": { "5GB/ngày": 110500 },
     "Taiwan (Đài Loan)": { "5GB/ngày": 110500 },

@@ -1,5 +1,5 @@
 const PRICE_TABLE = {
-  "SUMITOMO": {
+  "TOYOTA": {
     "Australia": { "500MB/ngày": 150000, "1GB/ngày": 200000, "5GB/ngày": 252000 },
     "Ấn Độ": { "500MB/ngày": 130000, "5GB/ngày": 366000 },
     "Indonesia": { "500MB/ngày": 120000, "5GB/ngày": 140000 },
