@@ -1,5 +1,5 @@
 const PRICE_TABLE = {
-  "SUMITOMO": {
+  "MITSUBISHI": {
     "UAE": { "500MB/ngày": 255000, "1GB/ngày": 314500, "5GB/ngày": null },
     "Antigua và Barbuda": { "500MB/ngày": 374000, "1GB/ngày": 544000, "5GB/ngày": null },
     "Anguilla": { "500MB/ngày": 374000, "1GB/ngày": 544000, "5GB/ngày": null },
