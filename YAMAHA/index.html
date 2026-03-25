@@ -46,19 +46,32 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* STYLE CHO KHU VỰC HIỂN THỊ GIÁ DỰ KIẾN */
+        /* STYLE CHO KHU VỰC HIỂN THỊ GIÁ DỰ KIẾN CHI TIẾT (YAMAHA) */
         .price-preview-box {
-            background-color: #ebf8ff;
-            border: 1px dashed #3182ce;
+            background-color: transparent;
+            border: 1px dashed #73a9e8;
             border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-            text-align: right;
+            padding: 18px 24px;
+            margin-top: 24px;
             font-size: 0.95rem;
             display: none; 
         }
         .price-preview-box.active { display: block; }
-        .price-amount { color: #c53030; font-weight: 700; font-size: 1.1rem; }
+        .price-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 10px; 
+            color: #4b5563; 
+        }
+        .price-row span:last-child { font-weight: 500; }
+        .price-row.total { 
+            border-top: 1px solid #e5e7eb; 
+            margin-top: 12px; 
+            padding-top: 16px; 
+            font-weight: 700; 
+            color: #dc2626; 
+            font-size: 1.15rem; 
+        }
     </style>
 </head>
 <body>
@@ -109,7 +122,7 @@
                         <div class="form-group">
                             <label data-trans="labelRegion">Khu vực</label>
                             <select id="sender-region" required>
-                                <option value="" data-trans="selectRegion">-- Chọn --</option><option value="HN">HN</option><option value="HCM">HCM</option>
+                                <option value="" data-trans="selectRegion">-- Chọn --</option><option value="HN">Hà Nội (HN)</option><option value="HCM">Hồ Chí Minh (HCM)</option>
                             </select>
                         </div>
                         <div class="form-group"><label data-trans="labelTaxCode">Mã số thuế</label><input type="text" id="sender-taxcode"></div>
@@ -161,7 +174,7 @@
                 reqTitle: "Đơn", userName: "Tên người dùng", imei: "IMEI (Để trống hệ thống tự điền)",
                 fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", country: "Quốc gia", package: "Gói dữ liệu",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa đơn này",
-                pricePreview: "Tạm tính (Đã bao gồm 10% VAT): ",
+                labelRental: "Tiền thuê thiết bị", labelVat: "Thuế VAT (10%)", labelTotal: "Tổng cộng dự kiến",
                 footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội",
                 footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
@@ -179,23 +192,22 @@
                 reqTitle: "Request", userName: "User Name", imei: "IMEI (Leave blank to auto-fill)",
                 fromDate: "From Date", toDate: "To Date", days: "Days", country: "Country", package: "Data Package",
                 selectCountry: "-- Select Country --", selectPackage: "-- Select Package --", removeBtn: "Remove this request",
-                pricePreview: "Est. Total (Inc. 10% VAT): ",
+                labelRental: "Rental Fee", labelVat: "VAT (10%)", labelTotal: "Estimated Total",
                 footerAddressHTML: "<strong>Address:</strong> Room 1630, 16th Floor, DAEHA BUSINESS CENTER, 360 Kim Ma, Giang Vo, Hanoi",
                 footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Vietnamese) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Japanese)"
             }
         };
 
         function formatMoney(amount) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
         }
 
-        // TÍNH GIÁ DỰ KIẾN THEO CÔNG THỨC CHUNG (Không giảm 15% mặc định)
+        // TÍNH GIÁ DỰ KIẾN CHI TIẾT (YAMAHA)
         function updatePricePreview(reqElement) {
             const country = reqElement.querySelector('.choices-country').value;
             const pkg = reqElement.querySelector('.package-select').value;
             const days = parseInt(reqElement.querySelector('.days-input').value) || 0;
             const previewBox = reqElement.querySelector('.price-preview-box');
-            const amountSpan = reqElement.querySelector('.price-amount');
             const t = translations[currentLang];
 
             if (!country || !pkg || days <= 0) {
@@ -205,14 +217,18 @@
             let unitPrice = (typeof getPriceForUnit === 'function') ? getPriceForUnit(UNIT_NAME, country, pkg) : 0;
 
             if (unitPrice > 0) {
-                const dataTotal = unitPrice * days;
-                const insuranceTotal = 0; // YAMAHA không có bảo hiểm bắt buộc trên form
-                const preTax = dataTotal + insuranceTotal; 
-                const vat = Math.round(preTax * 0.10);
-                const grandTotal = preTax + vat;
+                const rentalTotal = unitPrice * days;
+                const vat = Math.round(rentalTotal * 0.10);
+                const grandTotal = rentalTotal + vat;
 
-                amountSpan.textContent = formatMoney(grandTotal);
-                previewBox.querySelector('.preview-label').textContent = t.pricePreview;
+                const lblRental = currentLang === 'vi' ? `${t.labelRental} (${formatMoney(unitPrice)} x ${days} ngày):` : `${t.labelRental} (${formatMoney(unitPrice)} x ${days} days):`;
+
+                // Render bảng giá chi tiết
+                previewBox.innerHTML = `
+                    <div class="price-row"><span>${lblRental}</span><span>${formatMoney(rentalTotal)}</span></div>
+                    <div class="price-row"><span>${t.labelVat}:</span><span>${formatMoney(vat)}</span></div>
+                    <div class="price-row total"><span>${t.labelTotal}:</span><span>${formatMoney(grandTotal)}</span></div>
+                `;
                 previewBox.classList.add('active');
             } else {
                 previewBox.classList.remove('active');
@@ -229,8 +245,8 @@
             
             div.innerHTML = `
                 <div class="request-header">
-                    <h2 class="request-title" data-trans="reqTitle">${t.reqTitle} ${requestCount}</h2>
-                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();" data-trans="removeBtn">${t.removeBtn}</button>` : ''}
+                    <h2 class="request-title">${t.reqTitle} ${requestCount}</h2>
+                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();">${t.removeBtn}</button>` : ''}
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="form-group"><label data-trans="userName">${t.userName}</label><input type="text" class="user-name-input" required></div>
@@ -242,7 +258,7 @@
                         <label data-trans="country">${t.country}</label>
                         <select class="choices-country" required><option value="">${t.selectCountry}</option></select>
                     </div>
-                    <div class="md:col-span-2 form-group">
+                    <div class="form-group md:col-span-2">
                         <label data-trans="package">${t.package}</label>
                         <select class="package-select" required>
                             <option value="">${t.selectPackage}</option>
@@ -252,9 +268,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="price-preview-box">
-                    <span class="preview-label">${t.pricePreview}</span><span class="price-amount">0 đ</span>
-                </div>
+                <div class="price-preview-box"></div>
             `;
             container.appendChild(div);
 
@@ -269,8 +283,7 @@
                     }
                 }
             };
-            div.querySelector('.date-from').addEventListener('change', checkDates);
-            div.querySelector('.date-to').addEventListener('change', checkDates);
+            div.querySelectorAll('.date-from, .date-to').forEach(el => el.addEventListener('change', checkDates));
 
             loadCountriesIntoSelect(div.querySelector('.choices-country'));
             div.querySelector('.choices-country').addEventListener('change', () => updatePricePreview(div));
@@ -299,13 +312,17 @@
                 const key = el.getAttribute('data-trans');
                 if (t[key]) {
                     if(el.tagName === 'OPTION') el.textContent = t[key];
-                    else if(el.tagName === 'INPUT') el.placeholder = t[key];
+                    else if(el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+                        if (el.tagName === 'INPUT' && el.type === 'button') el.value = t[key];
+                        else el.textContent = t[key];
+                    }
                     else el.textContent = t[key];
                 }
             });
             document.getElementById('footerAddress').innerHTML = t.footerAddressHTML;
             document.getElementById('footerHotline').innerHTML = t.footerHotlineHTML;
             updateRequestNumbers();
+            document.querySelectorAll('.rental-request').forEach(req => updatePricePreview(req));
         }
 
         // ===== KHỞI TẠO =====
