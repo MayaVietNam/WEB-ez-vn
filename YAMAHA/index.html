@@ -172,6 +172,7 @@
                 codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
                 footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD",
                 reqTitle: "Đơn", userName: "Tên người dùng", imei: "IMEI (Để trống hệ thống tự điền)",
+                budgetCode: "Mã thanh toán (Budget Code)", 
                 fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", country: "Quốc gia", package: "Gói dữ liệu",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa đơn này",
                 labelRental: "Tiền thuê thiết bị", labelVat: "Thuế VAT (10%)", labelTotal: "Tổng cộng dự kiến",
@@ -190,6 +191,7 @@
                 codeLabel: "Reference Code:", successBtnText: "Create New Request",
                 footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD",
                 reqTitle: "Request", userName: "User Name", imei: "IMEI (Leave blank to auto-fill)",
+                budgetCode: "Budget Code", 
                 fromDate: "From Date", toDate: "To Date", days: "Days", country: "Country", package: "Data Package",
                 selectCountry: "-- Select Country --", selectPackage: "-- Select Package --", removeBtn: "Remove this request",
                 labelRental: "Rental Fee", labelVat: "VAT (10%)", labelTotal: "Estimated Total",
@@ -250,15 +252,16 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="form-group"><label data-trans="userName">${t.userName}</label><input type="text" class="user-name-input" required></div>
+                    <div class="form-group"><label data-trans="budgetCode">${t.budgetCode || 'Mã thanh toán (Budget Code)'}</label><input type="text" class="budget-code-input" required></div>
                     <div class="form-group"><label data-trans="imei">${t.imei}</label><input type="text" class="imei-input"></div>
+                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
                     <div class="form-group"><label data-trans="fromDate">${t.fromDate}</label><input type="date" class="date-from" required></div>
                     <div class="form-group"><label data-trans="toDate">${t.toDate}</label><input type="date" class="date-to" required></div>
-                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
                     <div class="form-group">
                         <label data-trans="country">${t.country}</label>
                         <select class="choices-country" required><option value="">${t.selectCountry}</option></select>
                     </div>
-                    <div class="form-group md:col-span-2">
+                    <div class="form-group">
                         <label data-trans="package">${t.package}</label>
                         <select class="package-select" required>
                             <option value="">${t.selectPackage}</option>
@@ -357,6 +360,7 @@
                 document.querySelectorAll('.rental-request').forEach(req => {
                     requests.push({
                         userName: req.querySelector('.user-name-input').value,
+                        budgetCode: req.querySelector('.budget-code-input').value, // Lấy giá trị Budget Code
                         imei: req.querySelector('.imei-input').value,
                         fromDate: req.querySelector('.date-from').value,
                         toDate: req.querySelector('.date-to').value,

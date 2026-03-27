@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đơn Đăng Ký Thuê Thiết Bị WIFI - TOYOTA</title>
+    <title>Đơn Đăng Ký Thuê Thiết Bị WIFI - YAMAHA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -39,7 +39,6 @@
         #add-request-btn { background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; padding: 0.8rem 1.75rem; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25); border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
         #submit-form-btn { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: #ffffff; padding: 0.9rem 2rem; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(237, 137, 54, 0.25); min-width: 180px; border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
         .footer-company-info { font-size: 0.9rem; background: linear-gradient(135deg, #f9fafb 0%, #edf2f7 100%); color: #2d3748; border-radius: 12px; box-shadow: 0 4px 12px rgba(51, 102, 153, 0.1); padding: 1.5rem 2rem; margin: 2.5rem auto 1.5rem auto; text-align: center; max-width: 700px; border-top: 3px solid #3182ce; position: relative; z-index: 3; }
-        
         .loading-overlay, .success-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; }
         .loading-overlay.active, .success-screen.active { display: flex; }
         .loading-box, .success-box { background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideUp 0.4s ease; }
@@ -47,7 +46,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* STYLE CHO KHU VỰC HIỂN THỊ GIÁ DỰ KIẾN CHI TIẾT (TOYOTA) */
+        /* STYLE CHO KHU VỰC HIỂN THỊ GIÁ DỰ KIẾN CHI TIẾT (YAMAHA) */
         .price-preview-box {
             background-color: transparent;
             border: 1px dashed #73a9e8;
@@ -104,7 +103,7 @@
         <div class="form-container max-w-4xl mx-auto">
             <div class="header-top">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="mainTitle" data-trans="mainTitle">
-                    Đơn Đăng Ký Thuê Thiết Bị WIFI - TOYOTA
+                    Đơn Đăng Ký Thuê Thiết Bị WIFI - YAMAHA
                 </h1>
                 <div class="lang-switcher">
                     <button type="button" class="lang-btn active" data-lang="vi">Tiếng Việt</button>
@@ -155,14 +154,14 @@
     <script>
         // ===== CẤU HÌNH =====
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec";
-        const UNIT_NAME = "TOYOTA"; // Khớp với price-table.js
+        const UNIT_NAME = "YAMAHA"; // Khớp với price-table.js
         let requestCount = 0;
         let currentLang = 'vi';
 
         // ===== NGÔN NGỮ =====
         const translations = {
             vi: {
-                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI - TOYOTA",
+                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI - YAMAHA",
                 sectionSender: "Thông tin người gửi",
                 sectionRental: "Chi tiết đơn thuê",
                 labelName: "Họ và tên", labelEmail: "Email", labelPhone: "Số điện thoại", labelCompany: "Công ty", labelRegion: "Khu vực", labelTaxCode: "Mã số thuế",
@@ -173,6 +172,7 @@
                 codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
                 footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD",
                 reqTitle: "Đơn", userName: "Tên người dùng", imei: "IMEI (Để trống hệ thống tự điền)",
+                budgetCode: "Mã thanh toán (Budget Code)", // Đã thêm ngôn ngữ
                 fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", country: "Quốc gia", package: "Gói dữ liệu",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa đơn này",
                 labelRental: "Tiền thuê thiết bị", labelVat: "Thuế VAT (10%)", labelTotal: "Tổng cộng dự kiến",
@@ -180,7 +180,7 @@
                 footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
             en: {
-                mainTitle: "WIFI Rental Registration - TOYOTA",
+                mainTitle: "WIFI Rental Registration - YAMAHA",
                 sectionSender: "Sender Information",
                 sectionRental: "Rental Details",
                 labelName: "Full Name", labelEmail: "Email", labelPhone: "Phone Number", labelCompany: "Company", labelRegion: "Region", labelTaxCode: "Tax Code",
@@ -191,6 +191,7 @@
                 codeLabel: "Reference Code:", successBtnText: "Create New Request",
                 footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD",
                 reqTitle: "Request", userName: "User Name", imei: "IMEI (Leave blank to auto-fill)",
+                budgetCode: "Budget Code", // Đã thêm ngôn ngữ
                 fromDate: "From Date", toDate: "To Date", days: "Days", country: "Country", package: "Data Package",
                 selectCountry: "-- Select Country --", selectPackage: "-- Select Package --", removeBtn: "Remove this request",
                 labelRental: "Rental Fee", labelVat: "VAT (10%)", labelTotal: "Estimated Total",
@@ -203,8 +204,7 @@
             return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
         }
 
-        // TÍNH GIÁ DỰ KIẾN THEO CÔNG THỨC CHUNG (TOYOTA - BẢNG CHI TIẾT)
-        // Lưu ý: TOYOTA chiết khấu bên backend, frontend chỉ hiện (Giá gốc * Ngày) + VAT
+        // TÍNH GIÁ DỰ KIẾN CHI TIẾT (YAMAHA)
         function updatePricePreview(reqElement) {
             const country = reqElement.querySelector('.choices-country').value;
             const pkg = reqElement.querySelector('.package-select').value;
@@ -225,7 +225,7 @@
 
                 const lblRental = currentLang === 'vi' ? `${t.labelRental} (${formatMoney(unitPrice)} x ${days} ngày):` : `${t.labelRental} (${formatMoney(unitPrice)} x ${days} days):`;
 
-                // Render chi tiết
+                // Render bảng giá chi tiết
                 previewBox.innerHTML = `
                     <div class="price-row"><span>${lblRental}</span><span>${formatMoney(rentalTotal)}</span></div>
                     <div class="price-row"><span>${t.labelVat}:</span><span>${formatMoney(vat)}</span></div>
@@ -252,15 +252,16 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="form-group"><label data-trans="userName">${t.userName}</label><input type="text" class="user-name-input" required></div>
+                    <div class="form-group"><label data-trans="budgetCode">${t.budgetCode || 'Mã thanh toán (Budget Code)'}</label><input type="text" class="budget-code-input" required></div>
                     <div class="form-group"><label data-trans="imei">${t.imei}</label><input type="text" class="imei-input"></div>
+                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
                     <div class="form-group"><label data-trans="fromDate">${t.fromDate}</label><input type="date" class="date-from" required></div>
                     <div class="form-group"><label data-trans="toDate">${t.toDate}</label><input type="date" class="date-to" required></div>
-                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
                     <div class="form-group">
                         <label data-trans="country">${t.country}</label>
                         <select class="choices-country" required><option value="">${t.selectCountry}</option></select>
                     </div>
-                    <div class="form-group md:col-span-2">
+                    <div class="form-group">
                         <label data-trans="package">${t.package}</label>
                         <select class="package-select" required>
                             <option value="">${t.selectPackage}</option>
@@ -359,6 +360,7 @@
                 document.querySelectorAll('.rental-request').forEach(req => {
                     requests.push({
                         userName: req.querySelector('.user-name-input').value,
+                        budgetCode: req.querySelector('.budget-code-input').value, // Lấy giá trị Budget Code
                         imei: req.querySelector('.imei-input').value,
                         fromDate: req.querySelector('.date-from').value,
                         toDate: req.querySelector('.date-to').value,
@@ -366,7 +368,7 @@
                         country: req.querySelector('.choices-country').value,
                         dataPackage: req.querySelector('.package-select').value,
                         unitPrice: getPriceForUnit(UNIT_NAME, req.querySelector('.choices-country').value, req.querySelector('.package-select').value),
-                        insuranceCost: 0 // TOYOTA không fix bảo hiểm trên UI
+                        insuranceCost: 0 // YAMAHA không fix bảo hiểm
                     });
                 });
 
