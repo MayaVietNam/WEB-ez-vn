@@ -1,7 +1,9 @@
-/* === FILE: login.js (BẢN HOÀN THIỆN THEO CẤU TRÚC GITHUB) === */
+/* === FILE: login.js (BẢN HOÀN THIỆN - TÁCH BIỆT LUỒNG ĐỐI TÁC & DOANH NGHIỆP) === */
 
-// ⚠️ NHỚ THAY BẰNG LINK DEPLOY MỚI NHẤT CỦA BẠN VÀO ĐÂY SAU KHI SỬA GOOGLE SCRIPT BÊN DƯỚI
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec';
+// ⚠️ CHÚ Ý QUAN TRỌNG: 
+// ĐÂY LÀ CHỖ ĐỂ ĐIỀN LINK APPS SCRIPT SỐ 1 (CHUYÊN KIỂM TRA ĐĂNG NHẬP USER/PASS CỦA ĐỐI TÁC).
+// TUYỆT ĐỐI KHÔNG ĐIỀN LINK CỦA TRANG DOANH NGHIỆP VÀO ĐÂY.
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec'; // <--- Sửa link Apps Script 1 của bạn vào đây
 
 const translations = {
     vi: {
@@ -33,7 +35,7 @@ const translations = {
         'missing-info': 'Thiếu thông tin',
         'login-required': 'Vui lòng nhập đầy đủ thông tin.',
         'invalid-tax': 'Lỗi định dạng',
-        'invalid-tax-msg': 'Mã số thuế chỉ được chứa số.'
+        'invalid-tax-msg': 'Mã số thuế chỉ được chứa số, khoảng trắng hoặc dấu gạch ngang.'
     },
     en: {
         'partner-user-placeholder': 'Username',
@@ -64,7 +66,7 @@ const translations = {
         'missing-info': 'Missing Info',
         'login-required': 'Please enter all fields.',
         'invalid-tax': 'Invalid Format',
-        'invalid-tax-msg': 'Tax ID must contain only numbers.'
+        'invalid-tax-msg': 'Tax ID must contain only numbers, spaces, or hyphens.'
     }
 };
 
@@ -101,7 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('corp-btn')?.addEventListener('click', () => container.classList.add('right-panel-active'));
     document.getElementById('partner-btn')?.addEventListener('click', () => container.classList.remove('right-panel-active'));
 
-    // --- XỬ LÝ ĐĂNG NHẬP ĐỐI TÁC ---
+    // ==========================================
+    // 1. XỬ LÝ LUỒNG ĐỐI TÁC (GỌI APPS SCRIPT 1)
+    // ==========================================
     partnerForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = document.getElementById('partner-user').value.trim().toUpperCase();
@@ -136,17 +140,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- XỬ LÝ DOANH NGHIỆP ---
+    // ==========================================
+    // 2. XỬ LÝ LUỒNG DOANH NGHIỆP (KHÔNG GỌI APPS SCRIPT Ở ĐÂY)
+    // ==========================================
     corpForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         const code = document.getElementById('corp-tax-code').value.trim();
         const trans = translations[currentLanguage];
 
-        if (!/^\d+$/.test(code)) return Swal.fire(trans['invalid-tax'], trans['invalid-tax-msg'], 'warning');
+        // ĐÃ SỬA CHUẨN: Cho phép nhập số, khoảng trắng, dấu gạch ngang, dấu chấm
+        if (!/^[\d\-\.\s]+$/.test(code)) {
+            return Swal.fire(trans['invalid-tax'], trans['invalid-tax-msg'], 'warning');
+        }
 
+        // Lưu vào Session và chuyển thẳng sang trang form (nơi có Apps Script 2)
         sessionStorage.setItem('corpTaxCode', code);
         Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
-            .then(() => window.location.href = './Corporate/Index.html'); // KHỚP 100% VỚI ẢNH GITHUB CỦA BẠN
+            .then(() => window.location.href = './Corporate/Index.html'); 
     });
 
     // --- MODAL HƯỚNG DẪN ---
