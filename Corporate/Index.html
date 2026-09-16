@@ -209,7 +209,12 @@
                 const response = await fetch(APPS_SCRIPT_URL + '?action=getDiscounts');
                 const json = await response.json();
                 if (json.result === 'success') {
-                    window.DISCOUNT_DATA = json.data;
+                    // Chuẩn hóa key bằng cách xóa tất cả số 0 ở đầu
+                    window.DISCOUNT_DATA = {};
+                    for (let key in json.data) {
+                        let normalizedKey = String(key).trim().replace(/^0+/, ''); 
+                        window.DISCOUNT_DATA[normalizedKey] = json.data[key];
+                    }
                     checkDiscount(); // Kiểm tra ngay xem tax code từ login có được giảm không
                 }
             } catch (e) {
@@ -223,7 +228,9 @@
             if (!taxCode || typeof window.DISCOUNT_DATA === 'undefined') {
                 corporateDiscountRate = 0;
             } else {
-                corporateDiscountRate = window.DISCOUNT_DATA[String(taxCode).trim()] || 0;
+                // Xóa số 0 ở đầu của MST người dùng nhập vào để so khớp
+                let normalizedTaxCode = String(taxCode).replace(/^0+/, '');
+                corporateDiscountRate = window.DISCOUNT_DATA[normalizedTaxCode] || 0;
             }
 
             const notice = document.getElementById('discountNotice');
