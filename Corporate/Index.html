@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <title>Đơn Đăng Ký Thuê Thiết Bị WIFI - Doanh Nghiệp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     
-    <!-- FILE BẢNG GIÁ CỦA BẠN -->
     <script src="./price-table.js"></script> 
     
     <style>
@@ -32,14 +30,12 @@
         .form-group label { display: block; color: #2d3748; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 0.95rem; color: #2d3748; background: #f9fafb; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3182ce; background: #ffffff; box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.08); }
-        .form-group textarea { resize: vertical; min-height: 80px; }
         .rental-request { background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); padding: 1.5rem; border-radius: 12px; border: 1.5px solid #cbd5e0; margin-bottom: 1.5rem; transition: all 0.3s ease; }
-        .rental-request:hover { border-color: #a0aec0; box-shadow: 0 4px 16px rgba(49, 130, 206, 0.06); }
         .request-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1.5px solid #cbd5e0; }
         .request-title { font-size: 1.05rem; font-weight: 700; color: #1a365d; }
         .remove-request-btn { background: #fed7d7; color: #c53030; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-        #add-request-btn { background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; padding: 0.8rem 1.75rem; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25); border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-        #submit-form-btn { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: #ffffff; padding: 0.9rem 2rem; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(237, 137, 54, 0.25); min-width: 180px; border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        #add-request-btn { background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; padding: 0.8rem 1.75rem; border: none; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        #submit-form-btn { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: #ffffff; padding: 0.9rem 2rem; font-size: 1.05rem; min-width: 180px; border: none; font-weight: 600; border-radius: 8px; cursor: pointer; }
         .footer-company-info { font-size: 0.9rem; background: linear-gradient(135deg, #f9fafb 0%, #edf2f7 100%); color: #2d3748; border-radius: 12px; box-shadow: 0 4px 12px rgba(51, 102, 153, 0.1); padding: 1.5rem 2rem; margin: 2.5rem auto 1.5rem auto; text-align: center; max-width: 700px; border-top: 3px solid #3182ce; position: relative; z-index: 3; }
         .loading-overlay, .success-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; }
         .loading-overlay.active, .success-screen.active { display: flex; }
@@ -47,7 +43,6 @@
         .spinner { width: 50px; height: 50px; margin: 0 auto 1.5rem; border: 4px solid #e0e4f8; border-top: 4px solid #3182ce; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
         .discount-badge { background: linear-gradient(135deg, #f0fdf4 0%, #e0f5e4 100%); color: #059669; padding: 0.8rem 1.25rem; border-radius: 8px; font-weight: 600; margin-top: 1rem; display: block; border: 1px solid #d1fae5; font-size: 0.95rem; text-align: center;}
         .price-preview-box { background-color: #ebf8ff; border: 1px dashed #3182ce; border-radius: 8px; padding: 12px; margin-top: 15px; text-align: right; font-size: 0.95rem; display: none; }
         .price-preview-box.active { display: block; }
@@ -59,13 +54,7 @@
     <div class="bg-logo-bg"><div class="bg-logo-bg-inner"></div></div>
     <div class="logo-on-top"><img src="https://i.postimg.cc/VvSyGkBV/EZ-LOGO-08.png" alt="Logo"></div>
     
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-box">
-            <div class="spinner"></div>
-            <div class="loading-text" id="loadingText" data-trans="loadingText">Đang xử lý yêu cầu...</div>
-            <div class="loading-subtext" id="loadingSubtext" data-trans="loadingSubtext">Vui lòng chờ</div>
-        </div>
-    </div>
+    <div class="loading-overlay" id="loadingOverlay"><div class="loading-box"><div class="spinner"></div><div class="loading-text" id="loadingText" data-trans="loadingText">Đang xử lý yêu cầu...</div></div></div>
     
     <div class="success-screen" id="successScreen">
         <div class="success-box">
@@ -83,9 +72,7 @@
     <main class="px-4 sm:px-6 py-4 sm:py-6">
         <div class="form-container max-w-4xl mx-auto">
             <div class="header-top">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="mainTitle" data-trans="mainTitle">
-                    Đơn Đăng Ký Thuê Thiết Bị WIFI (Doanh Nghiệp)
-                </h1>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="mainTitle" data-trans="mainTitle">Đơn Đăng Ký Thuê Thiết Bị WIFI (Doanh Nghiệp)</h1>
                 <div class="lang-switcher">
                     <button type="button" class="lang-btn active" data-lang="vi">Tiếng Việt</button>
                     <button type="button" class="lang-btn" data-lang="en">English</button>
@@ -106,10 +93,7 @@
                             <select id="sender-region" required><option value="" data-trans="selectRegion">-- Chọn --</option><option value="HN">HN</option><option value="HCM">HCM</option></select>
                         </div>
                     </div>
-                    
-                    <div id="discountNotice" style="display:none;">
-                        <div class="discount-badge" id="discountBadge"></div>
-                    </div>
+                    <div id="discountNotice" style="display:none;"><div class="discount-badge" id="discountBadge"></div></div>
                 </div>
 
                 <div class="mb-8">
@@ -137,7 +121,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="flex justify-center"><button type="submit" id="submit-form-btn" data-trans="submit">🚀 Gửi Yêu Cầu</button></div>
             </form>
         </div>
@@ -147,16 +130,13 @@
         <div class="footer-company-info">
             <h2 id="footerTitle" data-trans="footerTitle">Công Ty TNHH Maya Vietnam</h2>
             <div id="footerSubtitle" data-trans="footerSubtitle" style="color: #3182ce; font-weight: 600; margin-bottom: 1rem;">MAYA VIETNAM CO., LTD</div>
-            <div style="margin-top: 1rem; line-height: 1.8;">
-                <div id="footerAddress"></div>
-                <div id="footerHotline" style="margin-top: 0.8rem;"></div>
-            </div>
+            <div style="margin-top: 1rem; line-height: 1.8;"><div id="footerAddress"></div><div id="footerHotline" style="margin-top: 0.8rem;"></div></div>
         </div>
     </footer>
 
     <script>
         // ==========================================
-        // CẤU HÌNH APPS SCRIPT URL
+        // ĐIỀN LINK APPS SCRIPT CỦA BẠN VÀO ĐÂY (TRANG DOANH NGHIỆP)
         // ==========================================
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVw7Xy1zoyQZUdGoHNy5ux6piCKnGBhCxIzWyDeAuKtMOQtfiEoB233jSzpUjfVxs95Q/exec"; 
         
@@ -165,76 +145,43 @@
         let currentLang = 'vi';
         let corporateDiscountRate = 0; 
 
-        // ==========================================
-        // ĐỌC BẢNG GIÁ TỪ PRICE_TABLE ("Corporate")
-        // ==========================================
         function getPriceForUnit(unitName, country, dataPackage) {
             try {
-                if (typeof PRICE_TABLE !== 'undefined' && 
-                    PRICE_TABLE[unitName] && 
-                    PRICE_TABLE[unitName][country] && 
-                    PRICE_TABLE[unitName][country][dataPackage]) {
-                    
+                if (typeof PRICE_TABLE !== 'undefined' && PRICE_TABLE[unitName] && PRICE_TABLE[unitName][country] && PRICE_TABLE[unitName][country][dataPackage]) {
                     let price = PRICE_TABLE[unitName][country][dataPackage];
                     return price !== null ? price : 0;
                 }
-            } catch (e) {
-                console.error("Lỗi khi đọc bảng giá: ", e);
-            }
-            return 0; 
+            } catch (e) {} return 0; 
         }
 
         const translations = {
             vi: {
-                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)",
-                sectionSender: "Thông tin người gửi", sectionRental: "Chi tiết đơn thuê", sectionShipping: "Thông tin vận chuyển",
+                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)", sectionSender: "Thông tin người gửi", sectionRental: "Chi tiết đơn thuê", sectionShipping: "Thông tin vận chuyển",
                 labelName: "Họ và tên", labelEmail: "Email", labelPhone: "Số điện thoại", labelCompany: "Công ty", labelRegion: "Khu vực", labelTaxCode: "Mã số thuế",
                 labelShippingName: "Tên người nhận", labelShippingPhone: "SĐT người nhận", labelShippingAddress: "Địa chỉ", labelShippingDate: "Ngày nhận", labelShippingMethod: "Cách giao hàng",
-                selectRegion: "-- Chọn --", selectShipping: "-- Chọn --",
-                shipStandard: "Tiêu chuẩn (3-5 ngày)", shipExpress: "Chuyển phát nhanh (1-2 ngày)", shipUrgent: "Hỏa tốc", shipPickup: "Tự lấy",
-                addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ",
-                successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
-                footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD",
-                reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
-                selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa",
-                pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ",
-                discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
-                footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội",
-                footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
+                selectRegion: "-- Chọn --", selectShipping: "-- Chọn --", shipStandard: "Tiêu chuẩn (3-5 ngày)", shipExpress: "Chuyển phát nhanh (1-2 ngày)", shipUrgent: "Hỏa tốc", shipPickup: "Tự lấy",
+                addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ", successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
+                footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
+                selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa", pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ", discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
+                footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội", footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
             en: {
-                mainTitle: "WIFI Device Rental (Corporate Discount)",
-                sectionSender: "Sender Info", sectionRental: "Rental Details", sectionShipping: "Shipping Info",
+                mainTitle: "WIFI Device Rental (Corporate Discount)", sectionSender: "Sender Info", sectionRental: "Rental Details", sectionShipping: "Shipping Info",
                 labelName: "Full Name", labelEmail: "Email", labelPhone: "Phone", labelCompany: "Company", labelRegion: "Region", labelTaxCode: "Tax Code",
                 labelShippingName: "Recipient Name", labelShippingPhone: "Recipient Phone", labelShippingAddress: "Address", labelShippingDate: "Delivery Date", labelShippingMethod: "Shipping Method",
-                selectRegion: "-- Select --", selectShipping: "-- Select --",
-                shipStandard: "Standard (3-5 days)", shipExpress: "Express (1-2 days)", shipUrgent: "Urgent", shipPickup: "Pick Up",
-                addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait",
-                successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
-                footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD",
-                reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
-                selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove",
-                pricePreview: "Est. Total (Inc. Discount & VAT): ",
-                discountApplied: "Corporate discount applied",
-                footerAddressHTML: "<strong>Address:</strong> Room 1630, 16th Fl, DAEHA BUSINESS CENTER, Hanoi",
-                footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Vietnamese) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Japanese)"
+                selectRegion: "-- Select --", selectShipping: "-- Select --", shipStandard: "Standard (3-5 days)", shipExpress: "Express (1-2 days)", shipUrgent: "Urgent", shipPickup: "Pick Up",
+                addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait", successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
+                footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
+                selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove", pricePreview: "Est. Total (Inc. Discount & VAT): ", discountApplied: "Corporate discount applied",
+                footerAddressHTML: "<strong>Address:</strong> Room 1630, 16th Fl, DAEHA BUSINESS CENTER, Hanoi", footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Vietnamese) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Japanese)"
             }
         };
 
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-        }
+        function formatMoney(amount) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount); }
 
-        // ==========================================
-        // CẬP NHẬT: ÉP LÀM SẠCH MỌI KÝ TỰ LẠ TRONG MÃ SỐ THUẾ (DẤU -, DẤU ., KHOẢNG TRẮNG)
-        // ==========================================
         function normalizeTaxCode(code) {
             if (!code) return "";
-            return String(code)
-                .trim()
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, '') // Xóa BẤT KỲ ký tự nào không phải là chữ cái hoặc số (Bao gồm xóa luôn cả -, .)
-                .replace(/^0+/, '');       // Xóa số 0 ở đầu
+            return String(code).trim().toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^0+/, '');
         }
 
         function parseDiscount(val) {
@@ -248,37 +195,25 @@
             try {
                 const response = await fetch(APPS_SCRIPT_URL + '?action=getDiscounts');
                 const json = await response.json();
-                
                 if (json.result === 'success') {
                     window.DISCOUNT_DATA = {};
-                    
                     for (let key in json.data) {
-                        let normalizedKey = normalizeTaxCode(key); // Làm sạch key từ Sheet
+                        let normalizedKey = normalizeTaxCode(key);
                         let item = json.data[key];
-                        
                         if (typeof item === 'object') {
-                            window.DISCOUNT_DATA[normalizedKey] = {
-                                discount: parseDiscount(item.discountRate || item.discount || 0),
-                                companyName: item.companyName || ""
-                            };
+                            window.DISCOUNT_DATA[normalizedKey] = { discount: parseDiscount(item.discountRate || item.discount || 0), companyName: item.companyName || "" };
                         } else {
-                            window.DISCOUNT_DATA[normalizedKey] = {
-                                discount: parseDiscount(item),
-                                companyName: ""
-                            };
+                            window.DISCOUNT_DATA[normalizedKey] = { discount: parseDiscount(item), companyName: "" };
                         }
                     }
-                    console.log("Đã tải dữ liệu khuyến mãi thành công!");
                     checkDiscount(); 
                 }
-            } catch (e) {
-                console.error("Lỗi khi tải bảng chiết khấu từ Google Sheet:", e);
-            }
+            } catch (e) {}
         }
 
         function checkDiscount() {
             const rawTaxCode = document.getElementById('sender-taxcode').value;
-            const normalizedInput = normalizeTaxCode(rawTaxCode); // Làm sạch mã người dùng nhập
+            const normalizedInput = normalizeTaxCode(rawTaxCode);
             const companyInput = document.getElementById('sender-company');
             
             if (!normalizedInput || typeof window.DISCOUNT_DATA === 'undefined' || !window.DISCOUNT_DATA[normalizedInput]) {
@@ -286,7 +221,6 @@
             } else {
                 let matchData = window.DISCOUNT_DATA[normalizedInput];
                 corporateDiscountRate = matchData.discount;
-                
                 if (matchData.companyName) {
                     companyInput.value = matchData.companyName;
                     companyInput.style.backgroundColor = "#e6fffa"; 
@@ -298,12 +232,11 @@
             
             if (corporateDiscountRate > 0) {
                 notice.style.display = 'block';
-                badge.textContent = `✅ Chiết khấu doanh nghiệp được áp dụng: ${(corporateDiscountRate * 100).toFixed(0)}%`;
+                badge.textContent = `✅ ${translations[currentLang].discountApplied}: ${(corporateDiscountRate * 100).toFixed(0)}%`;
             } else {
                 notice.style.display = 'none';
                 companyInput.style.backgroundColor = ""; 
             }
-
             document.querySelectorAll('.rental-request').forEach(req => updatePricePreview(req));
         }
 
@@ -319,7 +252,6 @@
                 previewBox.classList.remove('active'); return;
             }
 
-            // Gọi tên "Corporate" thay vì "SUMITOMO"
             let unitPrice = getPriceForUnit("Corporate", country, pkg); 
 
             if (unitPrice > 0) {
@@ -330,13 +262,11 @@
                 const grandTotal = afterDiscount + vat;
 
                 let html = '';
-                if (corporateDiscountRate > 0) {
-                    html += `<span class="original-price">${formatMoney(baseTotal + Math.round(baseTotal*0.1))}</span>`;
-                }
+                if (corporateDiscountRate > 0) { html += `<span class="original-price">${formatMoney(baseTotal + Math.round(baseTotal*0.1))}</span>`; }
                 html += formatMoney(grandTotal);
 
                 amountSpan.innerHTML = html;
-                previewBox.querySelector('.preview-label').textContent = "Tạm tính (Đã áp dụng giảm giá & VAT): ";
+                previewBox.querySelector('.preview-label').textContent = translations[currentLang].pricePreview;
                 previewBox.classList.add('active');
             } else {
                 previewBox.classList.remove('active');
@@ -345,55 +275,35 @@
 
         function addRentalRequest() {
             requestCount++;
+            const t = translations[currentLang];
             const container = document.getElementById('rental-requests-container');
             const div = document.createElement('div');
             div.className = 'rental-request';
-            
             div.innerHTML = `
-                <div class="request-header">
-                    <h2 class="request-title">Đơn ${requestCount}</h2>
-                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();">Xóa</button>` : ''}
-                </div>
+                <div class="request-header"><h2 class="request-title">${t.reqTitle} ${requestCount}</h2>${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();">${t.removeBtn}</button>` : ''}</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="form-group"><label>Từ ngày</label><input type="date" class="date-from" required></div>
-                    <div class="form-group"><label>Đến ngày</label><input type="date" class="date-to" required></div>
-                    <div class="form-group"><label>Số ngày</label><input type="number" class="days-input" readonly></div>
-                    <div class="form-group"><label>Số lượng máy</label><input type="number" class="quantity-input" value="1" min="1" required></div>
-                    <div class="form-group">
-                        <label>Quốc gia</label>
-                        <select class="choices-country" required><option value="">-- Chọn quốc gia --</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Gói dữ liệu</label>
-                        <select class="package-select" required>
-                            <option value="">-- Chọn gói --</option>
-                            <option value="500MB/ngày">500MB/ngày</option>
-                            <option value="1GB/ngày">1GB/ngày</option>
-                            <option value="5GB/ngày">5GB/ngày</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2 form-group"><label>Budget Code</label><input type="text" class="budget-code-input"></div>
+                    <div class="form-group"><label>${t.fromDate}</label><input type="date" class="date-from" required></div>
+                    <div class="form-group"><label>${t.toDate}</label><input type="date" class="date-to" required></div>
+                    <div class="form-group"><label>${t.days}</label><input type="number" class="days-input" readonly></div>
+                    <div class="form-group"><label>${t.quantity}</label><input type="number" class="quantity-input" value="1" min="1" required></div>
+                    <div class="form-group"><label>${t.country}</label><select class="choices-country" required><option value="">${t.selectCountry}</option></select></div>
+                    <div class="form-group"><label>${t.package}</label><select class="package-select" required><option value="">${t.selectPackage}</option><option value="500MB/ngày">500MB/ngày</option><option value="1GB/ngày">1GB/ngày</option><option value="5GB/ngày">5GB/ngày</option></select></div>
+                    <div class="md:col-span-2 form-group"><label>${t.budgetCode}</label><input type="text" class="budget-code-input"></div>
                 </div>
-                <div class="price-preview-box">
-                    <span class="preview-label">Tạm tính (Đã áp dụng giảm giá & VAT): </span><span class="price-amount">0 đ</span>
-                </div>
-            `;
+                <div class="price-preview-box"><span class="preview-label">${t.pricePreview}</span><span class="price-amount">0 đ</span></div>`;
             container.appendChild(div);
 
             const calculateParams = () => {
-                const df = div.querySelector('.date-from').value;
-                const dt = div.querySelector('.date-to').value;
+                const df = div.querySelector('.date-from').value, dt = div.querySelector('.date-to').value;
                 if(df && dt) {
                     const d1 = new Date(df), d2 = new Date(dt);
                     if(d1 <= d2) div.querySelector('.days-input').value = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
                 }
                 updatePricePreview(div);
             };
-
             div.querySelector('.date-from').addEventListener('change', calculateParams);
             div.querySelector('.date-to').addEventListener('change', calculateParams);
             div.querySelector('.quantity-input').addEventListener('input', calculateParams);
-
             loadCountriesIntoSelect(div.querySelector('.choices-country'));
             div.querySelector('.choices-country').addEventListener('change', calculateParams);
             div.querySelector('.package-select').addEventListener('change', calculateParams);
@@ -401,21 +311,16 @@
 
         function updateRequestNumbers() {
             const reqs = document.querySelectorAll('.rental-request');
-            reqs.forEach((r, idx) => r.querySelector('.request-title').textContent = `Đơn ${idx + 1}`);
+            reqs.forEach((r, idx) => r.querySelector('.request-title').textContent = `${translations[currentLang].reqTitle} ${idx + 1}`);
             requestCount = reqs.length;
         }
 
         let retryCount = 0;
         function loadCountriesIntoSelect(selectElem) {
-            // Kiểm tra "Corporate" 
             if (typeof PRICE_TABLE === 'undefined' || typeof PRICE_TABLE["Corporate"] === 'undefined') {
                 retryCount++;
-                if (retryCount > 20) {
-                    console.error("LỖI: Không đọc được file price-table.js. Đảm bảo file này nằm cùng thư mục và có chứa key 'Corporate'.");
-                    return;
-                }
-                setTimeout(() => loadCountriesIntoSelect(selectElem), 100); 
-                return;
+                if (retryCount > 20) return;
+                setTimeout(() => loadCountriesIntoSelect(selectElem), 100); return;
             }
             Object.keys(PRICE_TABLE["Corporate"]).sort().forEach(c => {
                 const opt = document.createElement('option'); opt.value = c; opt.textContent = c; selectElem.appendChild(opt);
@@ -423,60 +328,66 @@
             new Choices(selectElem, { searchEnabled: true, shouldSort: false, itemSelectText: 'Chọn' });
         }
 
-        // ===== KHỞI TẠO =====
+        function applyTranslations() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-trans]').forEach(el => {
+                const key = el.getAttribute('data-trans');
+                if (t[key]) {
+                    if(el.tagName === 'OPTION') el.textContent = t[key];
+                    else if(el.tagName === 'INPUT') el.placeholder = t[key];
+                    else el.textContent = t[key];
+                }
+            });
+            document.getElementById('footerAddress').innerHTML = t.footerAddressHTML;
+            document.getElementById('footerHotline').innerHTML = t.footerHotlineHTML;
+            updateRequestNumbers();
+            checkDiscount();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedTaxCode = sessionStorage.getItem('corpTaxCode');
-            if (savedTaxCode) {
-                document.getElementById('sender-taxcode').value = savedTaxCode;
-            }
+            if (savedTaxCode) document.getElementById('sender-taxcode').value = savedTaxCode;
 
             fetchDiscounts();
-            document.getElementById('sender-taxcode').addEventListener('input', checkDiscount);
+            applyTranslations(); 
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    currentLang = e.target.getAttribute('data-lang');
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    applyTranslations();
+                });
+            });
 
+            document.getElementById('sender-taxcode').addEventListener('input', checkDiscount);
             document.getElementById('add-request-btn').addEventListener('click', addRentalRequest);
             addRentalRequest();
 
             document.getElementById('wifi-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
                 const senderInfo = {
-                    name: document.getElementById('sender-name').value,
-                    email: document.getElementById('sender-email').value,
-                    phone: document.getElementById('sender-phone').value,
-                    company: document.getElementById('sender-company').value,
-                    region: document.getElementById('sender-region').value,
-                    taxCode: document.getElementById('sender-taxcode').value
+                    name: document.getElementById('sender-name').value, email: document.getElementById('sender-email').value,
+                    phone: document.getElementById('sender-phone').value, company: document.getElementById('sender-company').value,
+                    region: document.getElementById('sender-region').value, taxCode: document.getElementById('sender-taxcode').value
                 };
 
                 const requests = [];
                 document.querySelectorAll('.rental-request').forEach(req => {
-                    const country = req.querySelector('.choices-country').value;
-                    const pkg = req.querySelector('.package-select').value;
-                    
-                    let unitPrice = getPriceForUnit("Corporate", country, pkg);
-
+                    const country = req.querySelector('.choices-country').value, pkg = req.querySelector('.package-select').value;
                     requests.push({
-                        fromDate: req.querySelector('.date-from').value,
-                        toDate: req.querySelector('.date-to').value,
-                        days: parseInt(req.querySelector('.days-input').value) || 0,
-                        quantity: parseInt(req.querySelector('.quantity-input').value) || 1,
-                        country: country,
-                        dataPackage: pkg,
-                        budgetCode: req.querySelector('.budget-code-input').value,
-                        unitPrice: unitPrice,
+                        fromDate: req.querySelector('.date-from').value, toDate: req.querySelector('.date-to').value,
+                        days: parseInt(req.querySelector('.days-input').value) || 0, quantity: parseInt(req.querySelector('.quantity-input').value) || 1,
+                        country: country, dataPackage: pkg, budgetCode: req.querySelector('.budget-code-input').value,
+                        unitPrice: getPriceForUnit("Corporate", country, pkg),
                     });
                 });
 
                 const shippingInfo = {
-                    recipient: document.getElementById('shipping-name').value,
-                    phone: document.getElementById('shipping-phone').value,
-                    address: document.getElementById('shipping-address').value,
-                    date: document.getElementById('shipping-date').value,
-                    method: document.getElementById('shipping-method').value
+                    recipient: document.getElementById('shipping-name').value, phone: document.getElementById('shipping-phone').value,
+                    address: document.getElementById('shipping-address').value, date: document.getElementById('shipping-date').value, method: document.getElementById('shipping-method').value
                 };
 
                 const payload = { unit: UNIT_NAME, submissionTime: new Date().toISOString(), globalSenderInfo: senderInfo, rentalRequests: requests, shippingInfo: shippingInfo };
-
                 document.getElementById('loadingOverlay').classList.add('active');
 
                 try {
