@@ -156,14 +156,33 @@
 
     <script>
         // ==========================================
-        // CẤU HÌNH APPS SCRIPT URL CỦA BẠN VÀO ĐÂY
+        // CẤU HÌNH APPS SCRIPT URL
         // ==========================================
-        const APPS_SCRIPT_URL = "https://script.google.com/a/macros/ez-vn.com/s/AKfycbwVw7Xy1zoyQZUdGoHNy5ux6piCKnGBhCxIzWyDeAuKtMOQtfiEoB233jSzpUjfVxs95Q/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/a/macros/ez-vn.com/s/AKfycbwVw7Xy1zoyQZUdGoHNy5ux6piCKnGBhCxIzWyDeAuKtMOQtfiEoB233jSzpUjfVxs95Q/exec"; 
         
         const UNIT_NAME = "CorporateOrders"; 
         let requestCount = 0;
         let currentLang = 'vi';
-        let corporateDiscountRate = 0; // Biến lưu % giảm giá
+        let corporateDiscountRate = 0; 
+
+        // ==========================================
+        // ĐỌC BẢNG GIÁ TỪ PRICE_TABLE ("Corporate")
+        // ==========================================
+        function getPriceForUnit(unitName, country, dataPackage) {
+            try {
+                if (typeof PRICE_TABLE !== 'undefined' && 
+                    PRICE_TABLE[unitName] && 
+                    PRICE_TABLE[unitName][country] && 
+                    PRICE_TABLE[unitName][country][dataPackage]) {
+                    
+                    let price = PRICE_TABLE[unitName][country][dataPackage];
+                    return price !== null ? price : 0;
+                }
+            } catch (e) {
+                console.error("Lỗi khi đọc bảng giá: ", e);
+            }
+            return 0; 
+        }
 
         const translations = {
             vi: {
@@ -206,13 +225,18 @@
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
         }
 
-        // HÀM LÀM SẠCH MÃ SỐ THUẾ (Xóa khoảng trắng, dấu gạch ngang, số 0 ở đầu)
+        // ==========================================
+        // CẬP NHẬT: ÉP LÀM SẠCH MỌI KÝ TỰ LẠ TRONG MÃ SỐ THUẾ (DẤU -, DẤU ., KHOẢNG TRẮNG)
+        // ==========================================
         function normalizeTaxCode(code) {
             if (!code) return "";
-            return String(code).trim().toLowerCase().replace(/[\s-]/g, '').replace(/^0+/, '');
+            return String(code)
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '') // Xóa BẤT KỲ ký tự nào không phải là chữ cái hoặc số (Bao gồm xóa luôn cả -, .)
+                .replace(/^0+/, '');       // Xóa số 0 ở đầu
         }
 
-        // HÀM XỬ LÝ SỐ % TRẢ VỀ TỪ SHEET (Hỗ trợ: "10%", 10, 0.1)
         function parseDiscount(val) {
             if (!val) return 0;
             let num = typeof val === 'string' ? parseFloat(val.replace('%', '')) : parseFloat(val);
@@ -220,9 +244,6 @@
             return num > 1 ? num / 100 : num;
         }
 
-        // ==========================================
-        // CẬP NHẬT: KẾT NỐI API LẤY GIẢM GIÁ VÀ TÊN CÔNG TY
-        // ==========================================
         async function fetchDiscounts() {
             try {
                 const response = await fetch(APPS_SCRIPT_URL + '?action=getDiscounts');
@@ -232,37 +253,32 @@
                     window.DISCOUNT_DATA = {};
                     
                     for (let key in json.data) {
-                        let normalizedKey = normalizeTaxCode(key);
+                        let normalizedKey = normalizeTaxCode(key); // Làm sạch key từ Sheet
                         let item = json.data[key];
                         
-                        // Lấy giá trị Object (có cả discount và companyName từ Apps Script mới)
                         if (typeof item === 'object') {
                             window.DISCOUNT_DATA[normalizedKey] = {
                                 discount: parseDiscount(item.discountRate || item.discount || 0),
                                 companyName: item.companyName || ""
                             };
                         } else {
-                            // Dự phòng nếu Sheet trả về kiểu cũ (chỉ có số)
                             window.DISCOUNT_DATA[normalizedKey] = {
                                 discount: parseDiscount(item),
                                 companyName: ""
                             };
                         }
                     }
-                    console.log("Đã tải dữ liệu khuyến mãi:", window.DISCOUNT_DATA);
-                    checkDiscount(); // Kiểm tra ngay xem tax code có hợp lệ không
+                    console.log("Đã tải dữ liệu khuyến mãi thành công!");
+                    checkDiscount(); 
                 }
             } catch (e) {
-                console.error("Không thể tải bảng chiết khấu:", e);
+                console.error("Lỗi khi tải bảng chiết khấu từ Google Sheet:", e);
             }
         }
 
-        // ==========================================
-        // CẬP NHẬT: KIỂM TRA MÃ SỐ THUẾ VÀ ĐIỀN TÊN CÔNG TY
-        // ==========================================
         function checkDiscount() {
             const rawTaxCode = document.getElementById('sender-taxcode').value;
-            const normalizedInput = normalizeTaxCode(rawTaxCode);
+            const normalizedInput = normalizeTaxCode(rawTaxCode); // Làm sạch mã người dùng nhập
             const companyInput = document.getElementById('sender-company');
             
             if (!normalizedInput || typeof window.DISCOUNT_DATA === 'undefined' || !window.DISCOUNT_DATA[normalizedInput]) {
@@ -271,30 +287,26 @@
                 let matchData = window.DISCOUNT_DATA[normalizedInput];
                 corporateDiscountRate = matchData.discount;
                 
-                // Tự động điền tên công ty nếu có dữ liệu
                 if (matchData.companyName) {
                     companyInput.value = matchData.companyName;
-                    companyInput.style.backgroundColor = "#e6fffa"; // Màu xanh nhạt báo hiệu tự điền
+                    companyInput.style.backgroundColor = "#e6fffa"; 
                 }
             }
 
             const notice = document.getElementById('discountNotice');
             const badge = document.getElementById('discountBadge');
-            const t = translations[currentLang];
             
             if (corporateDiscountRate > 0) {
                 notice.style.display = 'block';
-                badge.textContent = `✅ ${t.discountApplied}: ${(corporateDiscountRate * 100).toFixed(0)}%`;
+                badge.textContent = `✅ Chiết khấu doanh nghiệp được áp dụng: ${(corporateDiscountRate * 100).toFixed(0)}%`;
             } else {
                 notice.style.display = 'none';
-                companyInput.style.backgroundColor = ""; // Xóa màu nền xanh
+                companyInput.style.backgroundColor = ""; 
             }
 
-            // Cập nhật lại toàn bộ giá trên màn hình
             document.querySelectorAll('.rental-request').forEach(req => updatePricePreview(req));
         }
 
-        // TÍNH GIÁ DỰ KIẾN (Corporate)
         function updatePricePreview(reqElement) {
             const country = reqElement.querySelector('.choices-country').value;
             const pkg = reqElement.querySelector('.package-select').value;
@@ -302,19 +314,13 @@
             const quantity = parseInt(reqElement.querySelector('.quantity-input').value) || 1;
             const previewBox = reqElement.querySelector('.price-preview-box');
             const amountSpan = reqElement.querySelector('.price-amount');
-            const t = translations[currentLang];
 
             if (!country || !pkg || days <= 0 || quantity <= 0) {
                 previewBox.classList.remove('active'); return;
             }
 
-            // KIỂM TRA KẾT NỐI price-table.js
-            let unitPrice = 0;
-            if (typeof getPriceForUnit === 'function') {
-                unitPrice = getPriceForUnit("orporate", country, pkg); 
-            } else {
-                console.error("LỖI: Không tìm thấy hàm getPriceForUnit trong file price-table.js");
-            }
+            // Gọi tên "Corporate" thay vì "SUMITOMO"
+            let unitPrice = getPriceForUnit("Corporate", country, pkg); 
 
             if (unitPrice > 0) {
                 const baseTotal = unitPrice * days * quantity;
@@ -330,48 +336,46 @@
                 html += formatMoney(grandTotal);
 
                 amountSpan.innerHTML = html;
-                previewBox.querySelector('.preview-label').textContent = t.pricePreview;
+                previewBox.querySelector('.preview-label').textContent = "Tạm tính (Đã áp dụng giảm giá & VAT): ";
                 previewBox.classList.add('active');
             } else {
                 previewBox.classList.remove('active');
             }
         }
 
-        // TẠO FORM ĐƠN MỚI
         function addRentalRequest() {
             requestCount++;
-            const t = translations[currentLang];
             const container = document.getElementById('rental-requests-container');
             const div = document.createElement('div');
             div.className = 'rental-request';
             
             div.innerHTML = `
                 <div class="request-header">
-                    <h2 class="request-title" data-trans="reqTitle">${t.reqTitle} ${requestCount}</h2>
-                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();" data-trans="removeBtn">${t.removeBtn}</button>` : ''}
+                    <h2 class="request-title">Đơn ${requestCount}</h2>
+                    ${requestCount > 1 ? `<button type="button" class="remove-request-btn" onclick="this.closest('.rental-request').remove(); updateRequestNumbers();">Xóa</button>` : ''}
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="form-group"><label data-trans="fromDate">${t.fromDate}</label><input type="date" class="date-from" required></div>
-                    <div class="form-group"><label data-trans="toDate">${t.toDate}</label><input type="date" class="date-to" required></div>
-                    <div class="form-group"><label data-trans="days">${t.days}</label><input type="number" class="days-input" readonly></div>
-                    <div class="form-group"><label data-trans="quantity">${t.quantity}</label><input type="number" class="quantity-input" value="1" min="1" required></div>
+                    <div class="form-group"><label>Từ ngày</label><input type="date" class="date-from" required></div>
+                    <div class="form-group"><label>Đến ngày</label><input type="date" class="date-to" required></div>
+                    <div class="form-group"><label>Số ngày</label><input type="number" class="days-input" readonly></div>
+                    <div class="form-group"><label>Số lượng máy</label><input type="number" class="quantity-input" value="1" min="1" required></div>
                     <div class="form-group">
-                        <label data-trans="country">${t.country}</label>
-                        <select class="choices-country" required><option value="">${t.selectCountry}</option></select>
+                        <label>Quốc gia</label>
+                        <select class="choices-country" required><option value="">-- Chọn quốc gia --</option></select>
                     </div>
                     <div class="form-group">
-                        <label data-trans="package">${t.package}</label>
+                        <label>Gói dữ liệu</label>
                         <select class="package-select" required>
-                            <option value="">${t.selectPackage}</option>
+                            <option value="">-- Chọn gói --</option>
                             <option value="500MB/ngày">500MB/ngày</option>
                             <option value="1GB/ngày">1GB/ngày</option>
                             <option value="5GB/ngày">5GB/ngày</option>
                         </select>
                     </div>
-                    <div class="md:col-span-2 form-group"><label data-trans="budgetCode">${t.budgetCode}</label><input type="text" class="budget-code-input"></div>
+                    <div class="md:col-span-2 form-group"><label>Budget Code</label><input type="text" class="budget-code-input"></div>
                 </div>
                 <div class="price-preview-box">
-                    <span class="preview-label">${t.pricePreview}</span><span class="price-amount">0 đ</span>
+                    <span class="preview-label">Tạm tính (Đã áp dụng giảm giá & VAT): </span><span class="price-amount">0 đ</span>
                 </div>
             `;
             container.appendChild(div);
@@ -397,44 +401,26 @@
 
         function updateRequestNumbers() {
             const reqs = document.querySelectorAll('.rental-request');
-            reqs.forEach((r, idx) => r.querySelector('.request-title').textContent = `${translations[currentLang].reqTitle} ${idx + 1}`);
+            reqs.forEach((r, idx) => r.querySelector('.request-title').textContent = `Đơn ${idx + 1}`);
             requestCount = reqs.length;
         }
 
-        // ==========================================
-        // CẬP NHẬT: KIỂM TRA LỖI KẾT NỐI VỚI BẢNG GIÁ
-        // ==========================================
         let retryCount = 0;
         function loadCountriesIntoSelect(selectElem) {
-            if (typeof PRICE_TABLE === 'undefined' || typeof PRICE_TABLE["SUMITOMO"] === 'undefined') {
+            // Kiểm tra "Corporate" 
+            if (typeof PRICE_TABLE === 'undefined' || typeof PRICE_TABLE["Corporate"] === 'undefined') {
                 retryCount++;
                 if (retryCount > 20) {
-                    console.error("LỖI NGHIÊM TRỌNG: Không thể tải danh sách quốc gia vì thiếu file price-table.js hoặc PRICE_TABLE['SUMITOMO'] không tồn tại.");
+                    console.error("LỖI: Không đọc được file price-table.js. Đảm bảo file này nằm cùng thư mục và có chứa key 'Corporate'.");
                     return;
                 }
                 setTimeout(() => loadCountriesIntoSelect(selectElem), 100); 
                 return;
             }
-            Object.keys(PRICE_TABLE["orporate"]).sort().forEach(c => {
+            Object.keys(PRICE_TABLE["Corporate"]).sort().forEach(c => {
                 const opt = document.createElement('option'); opt.value = c; opt.textContent = c; selectElem.appendChild(opt);
             });
             new Choices(selectElem, { searchEnabled: true, shouldSort: false, itemSelectText: 'Chọn' });
-        }
-
-        function applyTranslations() {
-            const t = translations[currentLang];
-            document.querySelectorAll('[data-trans]').forEach(el => {
-                const key = el.getAttribute('data-trans');
-                if (t[key]) {
-                    if(el.tagName === 'OPTION') el.textContent = t[key];
-                    else if(el.tagName === 'INPUT') el.placeholder = t[key];
-                    else el.textContent = t[key];
-                }
-            });
-            document.getElementById('footerAddress').innerHTML = t.footerAddressHTML;
-            document.getElementById('footerHotline').innerHTML = t.footerHotlineHTML;
-            updateRequestNumbers();
-            checkDiscount(); // Cập nhật lại text của discount badge
         }
 
         // ===== KHỞI TẠO =====
@@ -445,18 +431,6 @@
             }
 
             fetchDiscounts();
-            applyTranslations(); 
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    currentLang = e.target.getAttribute('data-lang');
-                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    applyTranslations();
-                });
-            });
-
-            // Lắng nghe sự kiện gõ mã số thuế để tự điền tên công ty
             document.getElementById('sender-taxcode').addEventListener('input', checkDiscount);
 
             document.getElementById('add-request-btn').addEventListener('click', addRentalRequest);
@@ -475,18 +449,11 @@
                 };
 
                 const requests = [];
-                let hasPriceError = false;
-
                 document.querySelectorAll('.rental-request').forEach(req => {
                     const country = req.querySelector('.choices-country').value;
                     const pkg = req.querySelector('.package-select').value;
                     
-                    let unitPrice = 0;
-                    if (typeof getPriceForUnit === 'function') {
-                        unitPrice = getPriceForUnit("orporate", country, pkg);
-                    } else {
-                        hasPriceError = true;
-                    }
+                    let unitPrice = getPriceForUnit("Corporate", country, pkg);
 
                     requests.push({
                         fromDate: req.querySelector('.date-from').value,
@@ -499,10 +466,6 @@
                         unitPrice: unitPrice,
                     });
                 });
-
-                if (hasPriceError) {
-                    alert("Cảnh báo: Lỗi kết nối bảng giá (price-table.js). Giá trị gửi đi có thể là 0đ.");
-                }
 
                 const shippingInfo = {
                     recipient: document.getElementById('shipping-name').value,
