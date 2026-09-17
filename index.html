@@ -87,21 +87,78 @@
         </div>
     </div>
 
-    <!-- MODAL HƯỚNG DẪN -->
+  <!-- MODAL HƯỚNG DẪN -->
     <div class="modal-overlay" id="guide-modal">
         <div class="modal-content">
             <span class="modal-close" id="modal-close-btn">&times;</span>
-            <h1 class="lang-guide-title text-2xl font-bold text-[#002c5c] mb-2">📄 Hướng dẫn Đăng ký Thuê thiết bị</h1>
-            <div class="mb-6">
+            <h1 class="lang-guide-title text-2xl font-bold text-[#002c5c] mb-2 text-center border-b-2 border-red-500 pb-4">📄 Hướng dẫn Đăng ký Thuê thiết bị</h1>
+            
+            <div class="mb-6 text-center mt-4">
                 <p class="lang-guide-link text-sm text-gray-600 inline-block">Truy cập trang chủ:</p>
-                <a href="https://ez-vn.com/" target="_blank" class="text-blue-600 hover:underline font-medium ml-1">🌐 https://ez-vn.com/</a>
+                <a href="https://ez-vn.com/" target="_blank" class="text-blue-600 hover:underline font-bold ml-1">🌐 https://ez-vn.com/</a>
             </div>
 
-            <h2 class="lang-guide-part1 text-lg font-bold text-gray-800 mt-4 mb-2">🧑‍💼 Phần 1: Đăng nhập</h2>
-            <p class="lang-guide-part1-desc text-gray-600 text-sm mb-2">Sử dụng tài khoản và mật khẩu được cấp để truy cập hệ thống EZ.</p>
-            <img src="image_1.png" alt="Minh họa" class="max-w-full md:max-w-md mx-auto block rounded-lg border my-4">
-            
-            <hr class="my-6 border-gray-200">
+            <!-- PHẦN 1: ĐĂNG NHẬP -->
+            <div class="mb-8">
+                <h2 class="lang-guide-part1 text-lg font-bold text-gray-800 mb-2">🧑‍💼 Phần 1: Đăng nhập Hệ thống</h2>
+                <p class="lang-guide-part1-desc text-gray-600 text-sm mb-4">Chọn đúng Tab (Đối tác / Nhân viên / Doanh nghiệp) và sử dụng tài khoản được cấp để truy cập hệ thống.</p>
+                <!-- ĐÃ CHÈN ẢNH BẠN VỪA GỬI VÀO ĐÂY -->
+                <img src="image_6f9d6a.png" alt="Màn hình đăng nhập" class="w-full max-w-2xl mx-auto rounded-xl border border-gray-200 shadow-md block">
+            </div>
+
+            <hr class="my-8 border-gray-200">
+
+            <!-- PHẦN 2: BIỂU MẪU ĐĂNG KÝ -->
+            <div class="mb-8">
+                <h2 class="lang-guide-part2 text-lg font-bold text-gray-800 mb-4">📝 Phần 2: Điền Biểu mẫu Đăng ký</h2>
+                <p class="text-sm text-gray-600 mb-6">Hoàn tất biểu mẫu đăng ký gồm 3 phần chính sau:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Cột 1 -->
+                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                        <h3 class="font-bold text-[#002c5c] mb-3 text-base">1. ℹ️ Thông tin người gửi</h3>
+                        <img src="image_2.png" alt="Thông tin người gửi" class="w-full rounded border border-gray-200 mb-4 bg-white object-cover" onerror="this.src='https://placehold.co/400x250/e2e8f0/64748b?text=Anh+Thong+Tin'">
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc pl-4">
+                            <li><strong>Họ tên / Email / SĐT:</strong> Nhập chính xác thông tin.</li>
+                            <li><strong>Công ty:</strong> Tên công ty (hoặc "Cá nhân").</li>
+                            <li><strong>Mã số thuế:</strong> Quan trọng để xuất hóa đơn VAT.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Cột 2 -->
+                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                        <h3 class="font-bold text-[#002c5c] mb-3 text-base">2. 📱 Chi tiết các đơn thuê</h3>
+                        <img src="image_3.png" alt="Chi tiết đơn thuê" class="w-full rounded border border-gray-200 mb-4 bg-white object-cover" onerror="this.src='https://placehold.co/400x250/e2e8f0/64748b?text=Anh+Don+Thue'">
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc pl-4">
+                            <li><strong>Tên người dùng:</strong> Nhập tên khách sử dụng.</li>
+                            <li><strong>IMEI:</strong> Bỏ trống để hệ thống tự điền.</li>
+                            <li><strong>Quốc gia & Gói cước:</strong> Chọn chính xác.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Cột 3 -->
+                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                        <h3 class="font-bold text-[#002c5c] mb-3 text-base">3. 🚚 Thông tin Vận chuyển</h3>
+                        <img src="image_4.png" alt="Thông tin vận chuyển" class="w-full rounded border border-gray-200 mb-4 bg-white object-cover" onerror="this.src='https://placehold.co/400x250/e2e8f0/64748b?text=Anh+Van+Chuyen'">
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc pl-4">
+                            <li><strong>Người nhận & SĐT:</strong> Điền thông tin người nhận.</li>
+                            <li><strong>Địa chỉ giao:</strong> Ghi rõ chi tiết địa chỉ.</li>
+                            <li><strong>Ngày nhận:</strong> Chọn ngày mong muốn.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-8 border-gray-200">
+
+            <!-- PHẦN 3: HOÀN TẤT -->
+            <div class="mb-4">
+                <h2 class="lang-guide-part3 text-lg font-bold text-gray-800 mb-2">✅ Phần 3: Gửi Yêu Cầu</h2>
+                <ul class="text-gray-700 text-sm space-y-2 list-decimal pl-5 mb-6">
+                    <li>Kiểm tra lại toàn bộ thông tin ở các bước trên.</li>
+                    <li>Nhấn nút <strong>"Gửi Yêu Cầu (Submit Request)"</strong> để hoàn tất.</li>
+                </ul>
+            </div>
 
             <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mt-6 text-center">
                 <strong class="lang-guide-note text-red-700">✨ Sau khi gửi biểu mẫu, bạn sẽ nhận được email xác nhận trong vòng 24 giờ.</strong>
