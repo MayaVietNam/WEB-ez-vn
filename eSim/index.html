@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ gửi Email eSIM - EZ Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dash-border:hover { border-color: #6366f1; background-color: #f5f8ff; }
+        .table-container { max-height: 400px; overflow-y: auto; }
+        
+        /* Toast notification animations */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 text-indigo-700 font-bold text-xl tracking-tight">
+                <div class="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center text-sm shadow-md">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <span>EZ eSIM Pro v3</span>
+            </div>
+            
+            <div class="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+                <button onclick="setLang('vi')" id="btn_lang_vi" class="px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all bg-white shadow-sm text-indigo-700">VI</button>
+                <button onclick="setLang('en')" id="btn_lang_en" class="px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all text-slate-500 hover:text-slate-700">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow p-4 md:p-8">
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-indigo-600 to-blue-700 p-6 sm:p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-2xl"></div>
+                    <div class="relative z-10">
+                        <h1 class="text-2xl sm:text-3xl font-bold mb-1 tracking-tight" data-i18n="ui_title">Công cụ gửi Email eSIM</h1>
+                        <p class="text-indigo-100 text-sm sm:text-base font-medium" data-i18n="ui_desc">Gom nhiều eSIM vào 1 Email - Lịch sử đồng bộ Google Sheets</p>
+                    </div>
+                    <button type="button" onclick="confirmClearForm()" class="relative z-10 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white py-2.5 px-5 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center">
+                        <i class="fas fa-redo-alt mr-2 text-indigo-100"></i> <span data-i18n="btn_clear">Làm mới Form</span>
+                    </button>
+                </div>
+
+                <div class="p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
+                    
+                    <!-- LEFT COLUMN: Email & Source -->
+                    <div class="w-full lg:w-1/3 flex flex-col gap-5">
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl">
+                            <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center"><i class="fas fa-envelope text-indigo-500 mr-2"></i> 1. Cấu hình Email</h3>
+                            
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lbl_email">Email khách nhận <span class="text-red-500">*</span></label>
+                                <input type="email" id="customer_email" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="khachhang@gmail.com">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lbl_cc_email">CC Email</label>
+                                <input type="text" id="cc_email" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="cc1@mail.com, cc2@mail.com">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lbl_name">Tên khách hàng</label>
+                                <input type="text" id="customer_name" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Không bắt buộc">
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-2" data-i18n="lbl_mail_lang">Ngôn ngữ thư</label>
+                                <select id="email_language" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-semibold text-indigo-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                    <option value="vi">Tiếng Việt</option>
+                                    <option value="en">Tiếng Anh</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Nguồn Đơn Hàng -->
+                        <div class="bg-indigo-50/50 border border-indigo-100 p-5 rounded-xl">
+                            <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center"><i class="fas fa-shopping-cart text-indigo-500 mr-2"></i> <span data-i18n="lbl_source">2. Nguồn Đơn Hàng</span></h3>
+                            
+                            <div class="flex gap-4 mb-4">
+                                <label class="flex items-center text-sm cursor-pointer font-semibold text-slate-700">
+                                    <input type="radio" name="order_source" value="Traveloka" checked class="mr-2 accent-indigo-600" onchange="toggleOrderSource()">
+                                    Traveloka
+                                </label>
+                                <label class="flex items-center text-sm cursor-pointer font-semibold text-slate-700">
+                                    <input type="radio" name="order_source" value="Đơn Ngoài" class="mr-2 accent-indigo-600" onchange="toggleOrderSource()">
+                                    Đơn Ngoài
+                                </label>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5 flex justify-between">
+                                    <span data-i18n="lbl_sys_id">Mã hệ thống nội bộ</span>
+                                    <button type="button" onclick="generateSysId()" class="text-indigo-600 hover:text-indigo-800" title="Tạo mã ngẫu nhiên"><i class="fas fa-random"></i></button>
+                                </label>
+                                <input type="text" id="sys_order_id" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none" onkeyup="syncSysId()" placeholder="EZ-...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: eSIM Data -->
+                    <div class="w-full lg:w-2/3 border-l border-slate-100 lg:pl-8 flex flex-col">
+                        <div class="flex justify-between items-center mb-5">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center"><i class="fas fa-sim-card text-indigo-500 mr-2"></i> <span data-i18n="lbl_add_esim">3. Thêm eSIM vào đơn</span></h3>
+                            <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-md">Đã thêm: <span id="bundleCount">0</span> eSIM</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="lbl_partner_order">Mã đơn đối tác (Partner Order)</span> <span class="text-red-500">*</span></label>
+                                <input type="text" id="order_number" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-indigo-900" placeholder="VD: TVLK-123456">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="lbl_iccid">Mã số ICCID</span> <span class="text-red-500">*</span></label>
+                                <input type="text" id="iccid" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="89852...">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lbl_pkg_name">Tên gói cước</label>
+                                <input type="text" id="package_name" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="VD: Thái Lan 5 Ngày">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5" data-i18n="lbl_pkg_type">Loại gói</label>
+                                <input type="text" id="package_type" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="VD: Data Only">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="lbl_lpa">Mã LPA (Tự sinh QR) hoặc Upload Ảnh QR</span> <span class="text-red-500">*</span></label>
+                            <input type="text" id="single_lpa_input" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none mb-3" placeholder="LPA:1$...">
+                            
+                            <input type="file" id="qr_file_input" accept="image/*" class="hidden">
+                            <div id="qr_dropzone" onclick="document.getElementById('qr_file_input').click()" class="w-full bg-slate-50 border-2 border-dashed border-slate-300 dash-border rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[120px] shadow-sm">
+                                <div id="qr_placeholder" class="flex flex-col items-center">
+                                    <i class="fas fa-qrcode text-2xl text-indigo-400 mb-2"></i>
+                                    <p class="text-xs font-semibold text-slate-500" data-i18n="qr_prompt">Nhập LPA ở trên hoặc Click/Dán ảnh QR vào đây</p>
+                                </div>
+                                <div id="qr_preview_container" class="hidden flex flex-col items-center w-full">
+                                    <img id="qr_preview" src="" alt="QR Preview" class="max-h-24 object-contain rounded-lg border border-slate-200">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto flex gap-3">
+                            <button type="button" onclick="addEsimToBundle()" class="flex-1 bg-white border-2 border-indigo-600 text-indigo-700 hover:bg-indigo-50 font-bold py-2.5 px-4 rounded-xl transition-all">
+                                <i class="fas fa-plus-circle mr-1"></i> <span data-i18n="btn_add_this">Thêm eSIM này</span>
+                            </button>
+                            <button type="button" onclick="submitBundle()" id="btnSubmitBundle" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg transition-all opacity-50 cursor-not-allowed" disabled>
+                                <i class="fas fa-paper-plane mr-1"></i> <span data-i18n="btn_submit_bundle">Gửi Đơn</span> (<span id="btnBundleCount">0</span>)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LỊCH SỬ TỪ GOOGLE SHEETS -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                        <i class="fas fa-history text-indigo-500 mr-2"></i> Lịch sử Hệ thống Chung
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="fetchHistory()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-1.5 px-4 rounded-lg shadow-sm transition-all text-sm flex items-center">
+                            <i class="fas fa-sync-alt mr-2" id="syncIcon"></i> Làm mới
+                        </button>
+                        <a id="btn_export" href="#" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-1.5 px-4 rounded-lg shadow-sm transition-all text-sm flex items-center cursor-pointer" onclick="exportCSV(); return false;">
+                            <i class="fas fa-file-csv mr-2"></i> Xuất CSV
+                        </a>
+                    </div>
+                </div>
+                <div class="table-container p-0">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-50 sticky top-0 shadow-sm z-10">
+                            <tr>
+                                <th class="px-6 py-3" data-i18n="tbl_time">Thời gian</th>
+                                <th class="px-6 py-3" data-i18n="tbl_source">Nguồn / Mã HT</th>
+                                <th class="px-6 py-3" data-i18n="tbl_partner">Mã Đối Tác</th>
+                                <th class="px-6 py-3" data-i18n="tbl_email">Gửi Tới Email (CC)</th>
+                                <th class="px-6 py-3" data-i18n="tbl_pkg">Gói / ICCID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-slate-100">
+                            <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400"><i class="fas fa-circle-notch fa-spin mr-2"></i> Đang kết nối máy chủ...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Xác nhận -->
+    <div id="confirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center z-50 transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="modalCard">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center mb-4 text-xl"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Xác nhận</h3>
+            <p class="text-slate-600 mb-6 text-sm">Bạn có chắc muốn xóa sạch toàn bộ Form hiện tại?</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-5 py-2.5 text-slate-600 font-semibold hover:bg-slate-100 rounded-xl transition-colors text-sm">Hủy</button>
+                <button onclick="executeClearForm()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-colors text-sm shadow-sm">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // =========================================================================
+        // CẤU HÌNH HỆ THỐNG - NHỚ SỬA LẠI ĐÚNG LINK CỦA BẠN NHÉ
+        // =========================================================================
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwA6FwKH9eQzzfzmnu5r7I_5XrJ19bhhAnew2H_qOg8Yiw9Q4Wou-f-fyYQwpT54T6o/exec"; 
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/18XtBhNZW8J9CAL-L_XMUcIEYiX4_l0wR8br5Pi-cKoY/edit?gid=0#gid=0"; 
+        const SHEET_TAB_NAME = "NeweSim"; 
+        
+        const DEFAULT_PROMO_BANNER_IMAGE = "https://cdn.phototourl.com/free/2026-08-06-21cf3c46-0a2b-4e5d-856d-48c8d30d9d13.png"; 
+        const DEFAULT_PROMO_BANNER_LINK = "https://global-ez.com/"; 
+
+        // State Variables
+        let currentLang = 'vi';
+        let qrUploadData = null; 
+        let currentBundle = [];
+        let historyData = [];
+
+        // --- TỪ ĐIỂN SONG NGỮ ---
+        const i18n_dict = {
+            vi: {
+                "ui_title": "Công cụ gửi Email eSIM",
+                "ui_desc": "Gom nhiều eSIM vào 1 Email - Lịch sử đồng bộ Google Sheets",
+                "btn_clear": "Làm mới Form",
+                "lbl_email": "Email khách nhận",
+                "lbl_cc_email": "CC Email",
+                "lbl_name": "Tên khách hàng",
+                "lbl_mail_lang": "Ngôn ngữ thư",
+                "lbl_source": "2. Nguồn Đơn Hàng",
+                "lbl_sys_id": "Mã hệ thống nội bộ",
+                "lbl_add_esim": "3. Thêm eSIM vào đơn",
+                "lbl_partner_order": "Mã đơn đối tác (Partner Order)",
+                "lbl_iccid": "Mã số ICCID",
+                "lbl_pkg_name": "Tên gói cước",
+                "lbl_pkg_type": "Loại gói",
+                "lbl_lpa": "Mã LPA (Tự sinh QR) hoặc Upload Ảnh QR",
+                "qr_prompt": "Nhập LPA ở trên hoặc Click/Dán ảnh QR vào đây",
+                "btn_add_this": "Thêm eSIM này",
+                "btn_submit_bundle": "Gửi Đơn",
+                "tbl_time": "Thời gian",
+                "tbl_source": "Nguồn / Mã HT",
+                "tbl_partner": "Mã Đối Tác",
+                "tbl_email": "Gửi Tới Email (CC)",
+                "tbl_pkg": "Gói / ICCID"
+            },
+            en: {
+                "ui_title": "eSIM Email Sender",
+                "ui_desc": "Bundle multiple eSIMs in 1 Email - Google Sheets sync",
+                "btn_clear": "Clear Form",
+                "lbl_email": "Customer Email",
+                "lbl_cc_email": "CC Email",
+                "lbl_name": "Customer Name",
+                "lbl_mail_lang": "Email Language",
+                "lbl_source": "2. Order Source",
+                "lbl_sys_id": "Internal System ID",
+                "lbl_add_esim": "3. Add eSIM to Bundle",
+                "lbl_partner_order": "Partner Order ID",
+                "lbl_iccid": "ICCID Number",
+                "lbl_pkg_name": "Package Name",
+                "lbl_pkg_type": "Package Type",
+                "lbl_lpa": "LPA Code (Auto QR) or Upload QR Image",
+                "qr_prompt": "Enter LPA above or Click/Paste QR here",
+                "btn_add_this": "Add this eSIM",
+                "btn_submit_bundle": "Send Bundle",
+                "tbl_time": "Time",
+                "tbl_source": "Source / Sys ID",
+                "tbl_partner": "Partner ID",
+                "tbl_email": "Sent to Email (CC)",
+                "tbl_pkg": "Package / ICCID"
+            }
+        };
+
+        // --- Hệ thống Thông báo (Toast) ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let colorClasses = type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 
+                               type === 'error' ? 'bg-red-50 text-red-600 border-red-200' : 
+                               'bg-blue-50 text-blue-600 border-blue-200';
+            let icon = type === 'success' ? 'fa-check-circle' : 
+                       type === 'error' ? 'fa-exclamation-triangle' : 
+                       'fa-info-circle';
+
+            toast.className = `toast-enter pointer-events-auto flex items-center px-4 py-3 rounded-lg border shadow-lg max-w-sm ${colorClasses}`;
+            toast.innerHTML = `<i class="fas ${icon} text-lg mr-3"></i> <span class="text-sm font-semibold">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-exit');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Khởi tạo & I18n ---
+        document.addEventListener('DOMContentLoaded', () => {
+            generateSysId();
+            fetchHistory();
+        });
+
+        function setLang(lang) {
+            currentLang = lang;
+            if (lang === 'vi') {
+                document.getElementById('btn_lang_vi').className = "px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all bg-white shadow-sm text-indigo-700";
+                document.getElementById('btn_lang_en').className = "px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all text-slate-500 hover:text-slate-700";
+            } else {
+                document.getElementById('btn_lang_en').className = "px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all bg-white shadow-sm text-indigo-700";
+                document.getElementById('btn_lang_vi').className = "px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all text-slate-500 hover:text-slate-700";
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n_dict[lang][key]) {
+                    el.innerHTML = i18n_dict[lang][key];
+                }
+            });
+            resetBtnState(); // Cập nhật lại ngôn ngữ trên nút Submit
+        }
+
+        const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : '';
+
+        // --- Logic Nguồn Đơn Hàng ---
+        function generateSysId() {
+            const random = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('sys_order_id').value = `EZ-${random}`;
+            toggleOrderSource();
+        }
+
+        function syncSysId() {
+            toggleOrderSource();
+        }
+
+        function toggleOrderSource() {
+            const isOutside = document.querySelector('input[name="order_source"]:checked').value === 'Đơn Ngoài';
+            const orderInput = document.getElementById('order_number');
+            const sysId = document.getElementById('sys_order_id').value;
+            
+            if (isOutside) {
+                orderInput.value = sysId;
+                orderInput.readOnly = true;
+                orderInput.classList.add('bg-slate-100', 'text-slate-500');
+            } else {
+                if (orderInput.readOnly) {
+                    orderInput.value = '';
+                }
+                orderInput.readOnly = false;
+                orderInput.classList.remove('bg-slate-100', 'text-slate-500');
+            }
+        }
+
+        // --- Xử lý Hình ảnh QR ---
+        function processImageInput(source) {
+            qrUploadData = null;
+            const previewImg = document.getElementById('qr_preview');
+            const container = document.getElementById('qr_preview_container');
+            const placeholder = document.getElementById('qr_placeholder');
+
+            if (typeof source === 'string' && source.startsWith('http')) {
+                qrUploadData = source; 
+                previewImg.src = source;
+                container.classList.remove('hidden'); placeholder.classList.add('hidden');
+                return;
+            }
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width, height = img.height;
+                const MAX_SIZE = 600;
+                if (width > height && width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } 
+                else if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                previewImg.src = dataUrl;
+                qrUploadData = dataUrl; 
+                container.classList.remove('hidden'); placeholder.classList.add('hidden');
+            };
+            if (source instanceof File || source instanceof Blob) {
+                const reader = new FileReader();
+                reader.onload = (e) => { img.src = e.target.result; };
+                reader.readAsDataURL(source);
+            } else if (typeof source === 'string' && source.startsWith('data:image')) {
+                img.src = source;
+            }
+        }
+
+        document.getElementById('single_lpa_input').addEventListener('input', function(e) {
+            let rawLpa = e.target.value.replace(/\s/g, '');
+            if (!rawLpa) return;
+            if (rawLpa.startsWith('1$')) rawLpa = 'LPA:' + rawLpa;
+            if (rawLpa.startsWith('LPA:1$')) {
+                try {
+                    const qr = new QRious({ value: rawLpa, size: 600, level: 'M' });
+                    processImageInput(qr.toDataURL());
+                } catch (err) {}
+            }
+        });
+
+        document.getElementById('qr_file_input').addEventListener('change', e => {
+            if (e.target.files[0]) processImageInput(e.target.files[0]);
+        });
+
+        document.addEventListener('paste', e => {
+            const cb = e.clipboardData || window.clipboardData;
+            if (!cb) return;
+            const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+            if (activeTag === 'input' || activeTag === 'textarea') return;
+            for (let i = 0; i < cb.items.length; i++) {
+                if (cb.items[i].type.indexOf('image') !== -1) {
+                    processImageInput(cb.items[i].getAsFile()); e.preventDefault(); return;
+                }
+            }
+        });
+
+        // --- LOGIC GIỎ HÀNG (BUNDLE) ---
+        function addEsimToBundle() {
+            const orderNum = getVal('order_number');
+            const iccid = getVal('iccid');
+            
+            if (!orderNum) { showToast("Vui lòng nhập Mã đơn hàng!", "error"); return; }
+            if (!iccid) { showToast("Vui lòng nhập ICCID!", "error"); return; }
+            if (!qrUploadData) { showToast("Vui lòng nhập LPA hoặc Upload QR!", "error"); return; }
+
+            let rawLpa = getVal('single_lpa_input').replace(/\s/g, ''); 
+            let final_ios_link = '#', final_android_lpa = '#';
+            if (rawLpa) {
+                if (rawLpa.startsWith('http')) { final_ios_link = rawLpa; final_android_lpa = rawLpa; } 
+                else {
+                    if (rawLpa.startsWith('1$')) rawLpa = 'LPA:' + rawLpa;
+                    if (rawLpa.startsWith('LPA:1$')) {
+                        final_ios_link = 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=' + rawLpa;
+                        final_android_lpa = 'https://esimsetup.android.com/esim_qrcode_provisioning?carddata=' + rawLpa; 
+                    } else { final_ios_link = rawLpa; final_android_lpa = rawLpa; }
+                }
+            }
+
+            const esimItem = {
+                order_number: orderNum,
+                package_name: getVal('package_name') || '-',
+                package_type: getVal('package_type') || '-',
+                iccid: iccid,
+                qr_code_image: qrUploadData, 
+                ios_link: final_ios_link,     
+                android_lpa: final_android_lpa,
+                check_data_link: ''
+            };
+
+            currentBundle.push(esimItem);
+            
+            document.getElementById('bundleCount').innerText = currentBundle.length;
+            resetBtnState();
+
+            showToast(`Đã thêm eSIM (ICCID: ${iccid}) vào đơn.`, "success");
+
+            // Làm sạch input QR để điền tiếp
+            document.getElementById('iccid').value = '';
+            document.getElementById('single_lpa_input').value = '';
+            qrUploadData = null; 
+            document.getElementById('qr_preview').src = "";
+            document.getElementById('qr_preview_container').classList.add('hidden'); 
+            document.getElementById('qr_placeholder').classList.remove('hidden');
+        }
+
+        async function submitBundle() {
+            const email = getVal('customer_email');
+            if (!email) { showToast("Vui lòng nhập Email khách hàng bên cột trái!", "error"); return; }
+            if (currentBundle.length === 0) { showToast("Giỏ hàng đang trống!", "error"); return; }
+
+            const btnSubmit = document.getElementById('btnSubmitBundle');
+            const loadingText = currentLang === 'vi' ? 'Đang Gửi...' : 'Sending...';
+            
+            // Giữ lại thẻ số lượng để không bị lỗi null pointer khi Reset Form
+            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> ${loadingText} (<span id="btnBundleCount">${currentBundle.length}</span>)`;
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+
+            const orderPayload = {
+                sheet_url: SHEET_URL.trim(), 
+                sheet_tab_name: SHEET_TAB_NAME, 
+                email_language: getVal('email_language'),
+                customer_email: email,
+                cc_email: getVal('cc_email'),
+                customer_name: getVal('customer_name'),
+                order_source_type: document.querySelector('input[name="order_source"]:checked').value,
+                sys_order_id: getVal('sys_order_id'),
+                esims: currentBundle,
+                promo_banner_image: DEFAULT_PROMO_BANNER_IMAGE,
+                promo_banner_link: DEFAULT_PROMO_BANNER_LINK
+            };
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(orderPayload)
+                });
+                
+                const result = await response.json();
+                if(result.status === 'success') {
+                    showToast(`Đã gửi thành công ${currentBundle.length} eSIM tới ${email}!`, "success");
+                    executeClearForm(); // Reset giao diện
+                    resetBtnState();    // Khôi phục nút
+                    fetchHistory();     // Cập nhật bảng
+                } else {
+                    showToast(`Lỗi gửi: ${result.message}`, "error");
+                    resetBtnState();
+                }
+            } catch (error) {
+                showToast("Lỗi kết nối máy chủ! Vui lòng kiểm tra lại mạng hoặc link Apps Script.", "error");
+                resetBtnState();
+            }
+        }
+
+        function resetBtnState() {
+            const btnSubmit = document.getElementById('btnSubmitBundle');
+            // Cập nhật lại html bên trong đảm bảo luôn tồn tại #btnBundleCount
+            btnSubmit.innerHTML = `<i class="fas fa-paper-plane mr-1"></i> <span data-i18n="btn_submit_bundle">${i18n_dict[currentLang]["btn_submit_bundle"]}</span> (<span id="btnBundleCount">${currentBundle.length}</span>)`;
+            
+            if(currentBundle.length > 0) {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-75', 'opacity-50', 'cursor-not-allowed');
+            } else {
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- API LẤY LỊCH SỬ TỪ GOOGLE SHEETS ---
+        async function fetchHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            const syncIcon = document.getElementById('syncIcon');
+            
+            syncIcon.classList.add('fa-spin');
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-indigo-500"><i class="fas fa-circle-notch fa-spin mr-2"></i> Đang đồng bộ máy chủ...</td></tr>`;
+            
+            try {
+                const url = GAS_URL + "?api=history&sheet_url=" + encodeURIComponent(SHEET_URL) + "&sheet_tab_name=" + encodeURIComponent(SHEET_TAB_NAME);
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    historyData = result.data;
+                    renderHistory(historyData);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Lỗi đọc Sheet: ${result.message}</td></tr>`;
+                }
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Lỗi kết nối tới Máy chủ Apps Script.</td></tr>`;
+            } finally {
+                syncIcon.classList.remove('fa-spin');
+            }
+        }
+
+        function renderHistory(dataList) {
+            const tbody = document.getElementById('historyTableBody');
+            if (dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Chưa có lịch sử gửi nào trên Sheet này.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = dataList.map(item => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-3 text-xs text-slate-500 whitespace-nowrap">${item.time}</td>
+                    <td class="px-6 py-3">
+                        <div class="font-bold text-slate-700 text-xs uppercase">${item.source}</div>
+                        <div class="text-xs text-slate-400">${item.sys_order_id}</div>
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="font-bold text-slate-800 text-sm max-w-[150px] truncate" title="${item.order_number}">${item.order_number}</div>
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="text-slate-800 text-sm max-w-[180px] truncate" title="${item.email}">${item.email}</div>
+                        ${item.cc ? `<div class="text-xs text-slate-400 max-w-[180px] truncate" title="${item.cc}">CC: ${item.cc}</div>` : ''}
+                    </td>
+                    <td class="px-6 py-3">
+                        <div class="text-xs text-indigo-700 font-semibold max-w-[200px] truncate" title="${item.package_name}">${item.package_name}</div>
+                        <div class="font-mono text-xs text-slate-500 max-w-[200px] truncate" title="${item.iccid}">${item.iccid}</div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- XUẤT CSV ---
+        function exportCSV() {
+            if(historyData.length === 0) {
+                showToast("Không có dữ liệu để xuất!", "error");
+                return;
+            }
+            let csvContent = "\uFEFF"; 
+            csvContent += "Thời gian,Nguồn Đơn,Mã Hệ Thống,Mã Đối Tác,Tên Khách,Email,CC Email,Tên Gói,ICCID\n";
+            historyData.forEach(item => {
+                let row = [
+                    `"${item.time}"`, `"${item.source}"`, `"${item.sys_order_id}"`, 
+                    `"${item.order_number}"`, `"${item.customer_name}"`, `"${item.email}"`, 
+                    `"${item.cc}"`, `"${item.package_name}"`, `"${item.iccid}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Lich_Su_Gui_eSIM_${new Date().getTime()}.csv`;
+            link.click();
+        }
+
+        // --- MODAL LÀM MỚI FORM ---
+        function confirmClearForm() { 
+            document.getElementById('confirmModal').classList.remove('hidden'); 
+            document.getElementById('confirmModal').classList.add('flex'); 
+            setTimeout(() => { 
+                document.getElementById('confirmModal').classList.remove('opacity-0'); 
+                document.getElementById('modalCard').classList.remove('scale-95'); 
+            }, 10); 
+        }
+        function closeModal() { 
+            document.getElementById('confirmModal').classList.add('opacity-0'); 
+            document.getElementById('modalCard').classList.add('scale-95'); 
+            setTimeout(() => { 
+                document.getElementById('confirmModal').classList.add('hidden'); 
+                document.getElementById('confirmModal').classList.remove('flex'); 
+            }, 300); 
+        }
+        function executeClearForm() {
+            // Xóa giá trị input
+            ['customer_email', 'cc_email', 'customer_name', 'order_number', 'package_name', 'package_type', 'iccid', 'single_lpa_input'].forEach(id => { 
+                const el = document.getElementById(id);
+                if(el) el.value = ''; 
+            });
+            
+            // Xóa giỏ hàng
+            currentBundle = [];
+            document.getElementById('bundleCount').innerText = '0';
+            
+            // An toàn kiểm tra phần tử trước khi gán
+            const btnBundleCountEl = document.getElementById('btnBundleCount');
+            if (btnBundleCountEl) {
+                btnBundleCountEl.innerText = '0';
+            }
+
+            // Xóa QR preview
+            qrUploadData = null; 
+            document.getElementById('qr_preview').src = "";
+            document.getElementById('qr_preview_container').classList.add('hidden'); 
+            document.getElementById('qr_placeholder').classList.remove('hidden');
+            
+            // Reset trạng thái nút (bắt buộc gọi lại)
+            resetBtnState();
+
+            // Reset mã hệ thống
+            generateSysId(); 
+            closeModal();
+        }
+    </script>
+</body>
+</html>
