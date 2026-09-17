@@ -18,7 +18,7 @@
 </head>
 <body class="antialiased min-h-screen flex items-center justify-center relative">
 
-    <!-- Background (CSS nằm trong style.css) -->
+    <!-- Background -->
     <div class="brand-bg"></div>
 
     <!-- Nút Đổi Ngôn Ngữ -->
@@ -42,7 +42,7 @@
             </p>
         </div>
 
-        <!-- Cột Phải (Form Đăng Nhập) -->
+        <!-- Cột Phải (Form Đăng Nhập 3 Tab) -->
         <div class="w-full md:w-1/2">
             <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl relative border border-gray-100">
                 
@@ -61,25 +61,21 @@
 
                 <!-- FORM NHẬP LIỆU -->
                 <form id="loginForm" class="space-y-5">
-                    <!-- Tài khoản / MST -->
                     <div id="username-group">
                         <label id="username-label" class="lang-lbl-user-partner block text-sm font-bold text-gray-700 mb-2">Tên tài khoản</label>
                         <input type="text" id="username-input" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#002c5c] focus:border-transparent transition" placeholder="Nhập tài khoản..." required autocomplete="off">
                     </div>
 
-                    <!-- Mật khẩu -->
                     <div id="password-group">
                         <label class="lang-password-label block text-sm font-bold text-gray-700 mb-2">Mật khẩu</label>
                         <input type="password" id="password-input" class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#002c5c] focus:border-transparent transition" placeholder="••••••••" autocomplete="current-password">
                     </div>
 
-                    <!-- Nút Submit -->
                     <button type="submit" id="submit-btn" class="lang-btn-partner w-full bg-[#002c5c] hover:bg-blue-900 text-white font-bold py-3.5 px-4 rounded-lg transition duration-200 shadow-md mt-4">
                         Vào form tạo đơn Wifi
                     </button>
                 </form>
 
-                <!-- Nút Hướng Dẫn -->
                 <div class="mt-6 text-center">
                     <button id="guide-btn" class="lang-guide-btn text-[#002c5c] hover:text-[#f01f2f] text-sm font-semibold transition">
                         ❓ Hướng dẫn sử dụng hệ thống
