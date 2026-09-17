@@ -134,9 +134,9 @@
 
     <script>
         // ==========================================
-        // ĐIỀN LINK APPS SCRIPT CỦA BẠN VÀO ĐÂY
+        // DÁN ĐƯỜNG LINK WEB APP MỚI CỦA BẠN VÀO ĐÂY SAU KHI DEPLOY
         // ==========================================
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUwVOAqD0SphZa-8C6eOTbPtgHpVtN3E4ZJLIEAXYL3dltMYABH8xVywju6kNrgOf2hw/exec"; 
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhCHWTVS1NLP564Df13klBJU2_KvBR3CziW_Hw7_OKuD_rwZdcOk8dX3sqYZM584SWsw/exec"; 
         
         const UNIT_NAME = "CorporateOrders"; 
         let requestCount = 0;
@@ -191,7 +191,6 @@
 
         async function fetchDiscounts() {
             try {
-                console.log("Đang lấy bảng giá từ Sheet...");
                 const response = await fetch(APPS_SCRIPT_URL + '?action=getDiscounts');
                 const json = await response.json();
                 if (json.result === 'success') {
@@ -205,12 +204,9 @@
                             window.DISCOUNT_DATA[normalizedKey] = { discount: parseDiscount(item), companyName: "" };
                         }
                     }
-                    console.log("Tải dữ liệu hoàn tất:", window.DISCOUNT_DATA);
                     checkDiscount(); 
                 }
-            } catch (e) {
-                console.error("Lỗi khi tải bảng chiết khấu:", e);
-            }
+            } catch (e) {}
         }
 
         function checkDiscount() {
@@ -218,7 +214,6 @@
             if (!rawTaxCode) return;
 
             const normalizedInput = normalizeTaxCode(rawTaxCode);
-            // Cắt lấy mã công ty mẹ nếu gõ thêm đuôi chi nhánh (vd: -001)
             const baseCode = rawTaxCode.split('-')[0];
             const baseNormalizedInput = normalizeTaxCode(baseCode);
 
@@ -230,7 +225,6 @@
                     matchData = window.DISCOUNT_DATA[normalizedInput];
                 } else if (window.DISCOUNT_DATA[baseNormalizedInput]) {
                     matchData = window.DISCOUNT_DATA[baseNormalizedInput];
-                    console.log("Khớp mã công ty mẹ:", baseNormalizedInput);
                 }
             }
 
