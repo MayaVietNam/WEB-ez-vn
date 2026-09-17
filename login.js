@@ -1,172 +1,260 @@
-/* === FILE: login.js (BẢN HOÀN THIỆN - TÁCH BIỆT LUỒNG ĐỐI TÁC & DOANH NGHIỆP) === */
+// === CẤU HÌNH CÁC ĐƯỜNG DẪN API (APPS SCRIPT) ===
 
-// ⚠️ CHÚ Ý QUAN TRỌNG: 
-// ĐÂY LÀ CHỖ ĐỂ ĐIỀN LINK APPS SCRIPT SỐ 1 (CHUYÊN KIỂM TRA ĐĂNG NHẬP USER/PASS CỦA ĐỐI TÁC).
-// TUYỆT ĐỐI KHÔNG ĐIỀN LINK CỦA TRANG DOANH NGHIỆP VÀO ĐÂY.
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec'; // <--- Sửa link Apps Script 1 của bạn vào đây
+// 1. Apps Script xử lý ĐỐI TÁC (Giữ nguyên của bạn)
+const SCRIPT_URL_PARTNER = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec'; 
 
+// 2. Apps Script xử lý NHÂN VIÊN (Bạn sẽ tạo sau và dán link vào đây)
+const SCRIPT_URL_STAFF = 'https://script.google.com/macros/s/AKfycbwA6FwKH9eQzzfzmnu5r7I_5XrJ19bhhAnew2H_qOg8Yiw9Q4Wou-f-fyYQwpT54T6o/exec'; 
+
+let currentRole = 'partner';
+let currentLanguage = localStorage.getItem('selectedLanguage') || 'vi';
+
+// --- TỪ ĐIỂN ĐA NGÔN NGỮ (Giữ nguyên) ---
 const translations = {
     vi: {
-        'partner-user-placeholder': 'Tài khoản đăng nhập',
-        'partner-pass-placeholder': 'Mật khẩu',
-        'partner-login-btn': 'Đăng Nhập',
-        'partner-title': 'Đối Tác',
-        'corp-tax-placeholder': 'Mã số thuế doanh nghiệp',
-        'corp-submit-btn': 'Tiếp Tục',
-        'corp-title': 'Doanh Nghiệp',
-        'welcome-partner': 'Chào mừng trở lại, Đối Tác!',
-        'welcome-partner-desc': 'Nếu bạn là đối tác, vui lòng đăng nhập bằng tài khoản của bạn tại đây.',
-        'partner-btn': 'Đăng nhập Đối Tác',
-        'welcome-corp': 'Chào mừng, Doanh Nghiệp!',
-        'welcome-corp-desc': 'Nhập mã số thuế của bạn để truy cập cổng thông tin dành cho doanh nghiệp.',
-        'corp-btn': 'Chuyển sang Doanh Nghiệp',
-        'guide-btn': '❓ Hướng dẫn',
+        'main-title': 'Hệ sinh thái<br>Wifi & eSIM',
+        'main-desc': 'Nền tảng quản lý và phân phối thông minh. Tối ưu hóa trải nghiệm cho cá nhân và tối đa hiệu suất cho đối tác.',
+        'tab-partner': 'Đối Tác',
+        'tab-staff': 'Nhân viên',
+        'tab-corp': 'Doanh nghiệp',
+        'form-subtitle': 'Vui lòng đăng nhập để truy cập cổng thông tin.',
+        'password-label': 'Mật khẩu',
+        'guide-btn': '❓ Hướng dẫn sử dụng hệ thống',
         'guide-title': '📄 Hướng dẫn Đăng ký Thuê thiết bị',
-        'homepage': 'Trang chủ: https://ez-vn.com/',
-        'authenticating': 'Đang xác thực...',
-        'authenticating-desc': 'Vui lòng chờ hệ thống kiểm tra.',
-        'success': 'Thành công!',
-        'success-login': 'Đăng nhập thành công, đang chuyển hướng...',
-        'success-tax': 'Đã lưu mã số thuế, đang chuyển hướng...',
-        'auth-error': 'Lỗi xác thực',
-        'invalid-credentials': 'Tài khoản hoặc mật khẩu không đúng.',
-        'connection-error': 'Lỗi kết nối',
-        'connection-error-msg': 'Không thể kết nối đến máy chủ. Hãy đảm bảo bạn đã Deploy Google Script đúng cách.',
+        'guide-link': 'Truy cập trang chủ:',
+        'guide-part1': '🧑‍💼 Phần 1: Đăng nhập',
+        'guide-part1-desc': 'Sử dụng tài khoản và mật khẩu được cấp để truy cập hệ thống EZ.',
+        'guide-note': '✨ Sau khi gửi biểu mẫu, bạn sẽ nhận được email xác nhận trong vòng 24 giờ.',
+        'title-partner': 'Đối Tác Đăng Nhập',
+        'title-staff': 'Portal Quản trị eSIM',
+        'title-corp': 'Khách Hàng Doanh Nghiệp',
+        'lbl-user-partner': 'Tên tài khoản (Đối tác)',
+        'lbl-user-staff': 'Mã nhân viên (Staff ID)',
+        'lbl-user-corp': 'Mã số thuế',
+        'btn-partner': 'Vào form tạo đơn Wifi',
+        'btn-staff': 'Đăng nhập gửi eSIM',
+        'btn-corp': 'Tiếp tục vào Cổng doanh nghiệp',
+        'ph-partner': 'Nhập tài khoản...',
+        'ph-staff': 'Nhập mã nhân viên...',
+        'ph-corp': 'Nhập mã số thuế doanh nghiệp...',
+        'auth-title': 'Đang xác thực...',
         'missing-info': 'Thiếu thông tin',
-        'login-required': 'Vui lòng nhập đầy đủ thông tin.',
-        'invalid-tax': 'Lỗi định dạng',
-        'invalid-tax-msg': 'Mã số thuế chỉ được chứa số, khoảng trắng hoặc dấu gạch ngang.'
+        'missing-desc': 'Vui lòng điền đầy đủ thông tin.',
+        'success': 'Thành công!',
+        'success-desc': 'Đang chuyển hướng...',
+        'success-tax': 'Đã lưu MST, đang chuyển hướng...',
+        'error-auth': 'Sai tài khoản hoặc mật khẩu.',
+        'error-conn': 'Không kết nối được máy chủ Apps Script.',
+        'error-tax': 'Mã số thuế không hợp lệ.'
     },
     en: {
-        'partner-user-placeholder': 'Username',
-        'partner-pass-placeholder': 'Password',
-        'partner-login-btn': 'Sign In',
-        'partner-title': 'Partner',
-        'corp-tax-placeholder': 'Tax ID',
-        'corp-submit-btn': 'Continue',
-        'corp-title': 'Enterprise',
-        'welcome-partner': 'Welcome back, Partner!',
-        'welcome-partner-desc': 'If you are a partner, please log in with your account here.',
-        'partner-btn': 'Partner Sign In',
-        'welcome-corp': 'Welcome, Enterprise!',
-        'welcome-corp-desc': 'Enter your tax ID to access the enterprise portal.',
-        'corp-btn': 'Switch to Enterprise',
-        'guide-btn': '❓ Guide',
+        'main-title': 'Wifi & eSIM<br>Ecosystem',
+        'main-desc': 'Smart management and distribution platform. Optimizing personal experience and maximizing partner performance.',
+        'tab-partner': 'Partner',
+        'tab-staff': 'Staff',
+        'tab-corp': 'Enterprise',
+        'form-subtitle': 'Please log in to access the portal.',
+        'password-label': 'Password',
+        'guide-btn': '❓ System Usage Guide',
         'guide-title': '📄 Equipment Rental Registration Guide',
-        'homepage': 'Homepage: https://ez-vn.com/',
-        'authenticating': 'Authenticating...',
-        'authenticating-desc': 'Please wait...',
+        'guide-link': 'Visit homepage:',
+        'guide-part1': '🧑‍💼 Part 1: Login',
+        'guide-part1-desc': 'Use your provided account and password to access the EZ system.',
+        'guide-note': '✨ After submitting the form, you will receive a confirmation email within 24 hours.',
+        'title-partner': 'Partner Login',
+        'title-staff': 'eSIM Management Portal',
+        'title-corp': 'Enterprise Customer',
+        'lbl-user-partner': 'Account Username',
+        'lbl-user-staff': 'Staff ID',
+        'lbl-user-corp': 'Tax ID',
+        'btn-partner': 'Go to Wifi Order Form',
+        'btn-staff': 'Login to send eSIM',
+        'btn-corp': 'Continue to Enterprise Portal',
+        'ph-partner': 'Enter account...',
+        'ph-staff': 'Enter staff ID...',
+        'ph-corp': 'Enter business tax ID...',
+        'auth-title': 'Authenticating...',
+        'missing-info': 'Missing Information',
+        'missing-desc': 'Please fill in all required fields.',
         'success': 'Success!',
-        'success-login': 'Login successful, redirecting...',
+        'success-desc': 'Redirecting...',
         'success-tax': 'Tax ID saved, redirecting...',
-        'auth-error': 'Authentication Error',
-        'invalid-credentials': 'Invalid username or password.',
-        'connection-error': 'Connection Error',
-        'connection-error-msg': 'Unable to connect to server. Check your Script Deployment.',
-        'missing-info': 'Missing Info',
-        'login-required': 'Please enter all fields.',
-        'invalid-tax': 'Invalid Format',
-        'invalid-tax-msg': 'Tax ID must contain only numbers, spaces, or hyphens.'
+        'error-auth': 'Invalid account or password.',
+        'error-conn': 'Unable to connect to Apps Script server.',
+        'error-tax': 'Invalid Tax ID format.'
     }
 };
 
-let currentLanguage = localStorage.getItem('selectedLanguage') || 'vi';
+// --- LOGIC ĐỔI TAB ---
+function switchRole(role) {
+    currentRole = role;
+    const trans = translations[currentLanguage];
+    
+    ['partner', 'staff', 'corp'].forEach(r => {
+        document.getElementById('tab-' + r).className = "lang-tab-" + r + " w-full py-2.5 text-sm font-semibold rounded-lg text-gray-500 hover:text-gray-800 transition";
+    });
+    
+    const activeBtn = document.getElementById('tab-' + role);
+    if (role === 'corp') {
+        activeBtn.className = "lang-tab-corp w-full py-2.5 text-sm font-bold rounded-lg text-white bg-[#f01f2f] shadow transition";
+    } else {
+        activeBtn.className = "lang-tab-" + role + " w-full py-2.5 text-sm font-bold rounded-lg text-white bg-[#002c5c] shadow transition";
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('container');
-    const partnerForm = document.getElementById('partner-form');
-    const corpForm = document.getElementById('corp-form');
-    const guideModal = document.getElementById('guide-modal');
+    const passwordGroup = document.getElementById('password-group');
+    const usernameLabel = document.getElementById('username-label');
+    const usernameInput = document.getElementById('username-input');
+    const passwordInput = document.getElementById('password-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const formTitle = document.getElementById('form-title');
+
+    if (role === 'partner') {
+        formTitle.innerText = trans['title-partner'];
+        passwordGroup.style.display = 'block';
+        passwordInput.required = true;
+        usernameLabel.innerText = trans['lbl-user-partner'];
+        usernameInput.placeholder = trans['ph-partner'];
+        submitBtn.innerText = trans['btn-partner'];
+        submitBtn.className = "w-full bg-[#002c5c] hover:bg-blue-900 text-white font-bold py-3.5 px-4 rounded-lg shadow-md mt-4 transition";
+    } 
+    else if (role === 'staff') {
+        formTitle.innerText = trans['title-staff'];
+        passwordGroup.style.display = 'block';
+        passwordInput.required = true;
+        usernameLabel.innerText = trans['lbl-user-staff'];
+        usernameInput.placeholder = trans['ph-staff'];
+        submitBtn.innerText = trans['btn-staff'];
+        submitBtn.className = "w-full bg-gray-800 hover:bg-black text-white font-bold py-3.5 px-4 rounded-lg shadow-md mt-4 transition";
+    } 
+    else if (role === 'corp') {
+        formTitle.innerText = trans['title-corp'];
+        passwordGroup.style.display = 'none';
+        passwordInput.required = false;
+        usernameLabel.innerText = trans['lbl-user-corp'];
+        usernameInput.placeholder = trans['ph-corp'];
+        submitBtn.innerText = trans['btn-corp'];
+        submitBtn.className = "w-full bg-[#f01f2f] hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-lg shadow-md mt-4 transition";
+    }
+}
+
+// --- LOGIC NGÔN NGỮ ---
+function updateTranslations(lang) {
+    const trans = translations[lang];
+    document.querySelectorAll('[class*="lang-"]').forEach(el => {
+        const key = Array.from(el.classList).find(c => c.startsWith('lang-')).replace('lang-', '');
+        if (trans[key]) {
+            if (el.tagName === 'INPUT') el.placeholder = trans[key];
+            else el.innerHTML = trans[key];
+        }
+    });
+    switchRole(currentRole);
+}
+
+function initLanguage() {
     const langBtns = document.querySelectorAll('.lang-btn');
+    langBtns.forEach(btn => {
+        if(btn.dataset.lang === currentLanguage) {
+            btn.classList.add('bg-blue-100', 'text-blue-900');
+            btn.classList.remove('text-gray-500');
+        } else {
+            btn.classList.remove('bg-blue-100', 'text-blue-900');
+            btn.classList.add('text-gray-500');
+        }
 
-    const updatePageTranslations = (lang) => {
-        const trans = translations[lang];
-        document.querySelectorAll('[class^="lang-"]').forEach(el => {
-            const key = el.className.split(' ').find(c => c.startsWith('lang-')).replace('lang-', '');
-            if (trans[key]) {
-                if (el.tagName === 'INPUT') el.placeholder = trans[key];
-                else el.innerHTML = trans[key];
-            }
+        btn.addEventListener('click', (e) => {
+            currentLanguage = e.currentTarget.dataset.lang;
+            localStorage.setItem('selectedLanguage', currentLanguage);
+            initLanguage(); 
+            updateTranslations(currentLanguage); 
         });
-    };
+    });
+    updateTranslations(currentLanguage);
+}
 
-    const switchLanguage = (lang) => {
-        currentLanguage = lang;
-        localStorage.setItem('selectedLanguage', lang);
-        langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-        updatePageTranslations(lang);
-    };
+// --- KHỞI TẠO & XỬ LÝ SUBMIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    initLanguage();
+    switchRole(currentRole);
 
-    langBtns.forEach(btn => btn.addEventListener('click', () => switchLanguage(btn.dataset.lang)));
-    switchLanguage(currentLanguage);
-
-    document.getElementById('corp-btn')?.addEventListener('click', () => container.classList.add('right-panel-active'));
-    document.getElementById('partner-btn')?.addEventListener('click', () => container.classList.remove('right-panel-active'));
-
-    // ==========================================
-    // 1. XỬ LÝ LUỒNG ĐỐI TÁC (GỌI APPS SCRIPT 1)
-    // ==========================================
-    partnerForm?.addEventListener('submit', async (e) => {
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const user = document.getElementById('partner-user').value.trim().toUpperCase();
-        const pass = document.getElementById('partner-pass').value.trim();
-        const submitBtn = partnerForm.querySelector('button[type="submit"]');
+        const inputValue = document.getElementById('username-input').value.trim();
+        const passValue = document.getElementById('password-input').value.trim();
+        const submitBtn = document.getElementById('submit-btn');
         const trans = translations[currentLanguage];
 
-        if (!user || !pass) return Swal.fire(trans['missing-info'], trans['login-required'], 'warning');
+        // 1. LUỒNG ĐỐI TÁC
+        if (currentRole === 'partner') {
+            if (!inputValue || !passValue) return Swal.fire(trans['missing-info'], trans['missing-desc'], 'warning');
+            submitBtn.disabled = true;
+            Swal.fire({ title: trans['auth-title'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            try {
+                const params = new URLSearchParams({ action: 'login', username: inputValue.toUpperCase(), password: passValue });
+                const response = await fetch(SCRIPT_URL_PARTNER, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                const result = await response.json();
 
-        submitBtn.disabled = true;
-        Swal.fire({ title: trans['authenticating'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-        try {
-            const params = new URLSearchParams({ action: 'login', username: user, password: pass });
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params
-            });
-            const result = await response.json();
-
-            if (result.status === 'OK') {
-                Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-login'], timer: 1500, showConfirmButton: false })
-                    .then(() => window.location.href = result.redirect);
-            } else {
-                Swal.fire(trans['auth-error'], result.message || trans['invalid-credentials'], 'error');
+                if (result.status === 'OK') {
+                    Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-desc'], timer: 1500, showConfirmButton: false })
+                        .then(() => window.location.href = result.redirect);
+                } else {
+                    Swal.fire('Lỗi', result.message || trans['error-auth'], 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi', trans['error-conn'], 'error');
+            } finally {
+                submitBtn.disabled = false;
             }
-        } catch (error) {
-            Swal.fire(trans['connection-error'], trans['connection-error-msg'], 'error');
-        } finally {
-            submitBtn.disabled = false;
+        } 
+        
+        // 2. LUỒNG DOANH NGHIỆP (Chuyển vào ./Corporate/Index.html)
+        else if (currentRole === 'corp') {
+            if (!/^[\d\-\.\s]+$/.test(inputValue)) {
+                return Swal.fire('Lỗi', trans['error-tax'], 'warning');
+            }
+            sessionStorage.setItem('corpTaxCode', inputValue);
+            Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
+                .then(() => window.location.href = './Corporate/Index.html'); 
+        }
+
+        // 3. LUỒNG NHÂN VIÊN - eSIM (Chuyển vào thư mục ./eSim/)
+        else if (currentRole === 'staff') {
+            if (!inputValue || !passValue) return Swal.fire(trans['missing-info'], trans['missing-desc'], 'warning');
+            submitBtn.disabled = true;
+            Swal.fire({ title: trans['auth-title'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            
+            try {
+                // TẠM THỜI BỎ QUA GỌI APPS SCRIPT ĐỂ TEST ĐIỀU HƯỚNG VÀO THƯ MỤC
+                // Khi nào có Apps Script 2, bạn bỏ dấu comment phần fetch này nhé
+                /*
+                const params = new URLSearchParams({ action: 'login', username: inputValue.toUpperCase(), password: passValue });
+                const response = await fetch(SCRIPT_URL_STAFF, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                const result = await response.json();
+                if (result.status !== 'OK') throw new Error(result.message);
+                */
+
+                // ĐIỀU HƯỚNG VÀO THƯ MỤC eSIM BẠN VỪA TẠO
+                Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-desc'], timer: 1500, showConfirmButton: false })
+                    .then(() => window.location.href = './eSim/index.html');
+
+            } catch (error) {
+                Swal.fire('Lỗi', error.message || trans['error-conn'], 'error');
+            } finally {
+                submitBtn.disabled = false;
+            }
         }
     });
 
-    // ==========================================
-    // 2. XỬ LÝ LUỒNG DOANH NGHIỆP (KHÔNG GỌI APPS SCRIPT Ở ĐÂY)
-    // ==========================================
-    corpForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const code = document.getElementById('corp-tax-code').value.trim();
-        const trans = translations[currentLanguage];
-
-        // ĐÃ SỬA CHUẨN: Cho phép nhập số, khoảng trắng, dấu gạch ngang, dấu chấm
-        if (!/^[\d\-\.\s]+$/.test(code)) {
-            return Swal.fire(trans['invalid-tax'], trans['invalid-tax-msg'], 'warning');
-        }
-
-        // Lưu vào Session và chuyển thẳng sang trang form (nơi có Apps Script 2)
-        sessionStorage.setItem('corpTaxCode', code);
-        Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
-            .then(() => window.location.href = './Corporate/Index.html'); 
-    });
-
-    // --- MODAL HƯỚNG DẪN ---
-    const toggleModal = (show) => {
-        guideModal.classList.toggle('active', show);
-        document.body.style.overflow = show ? 'hidden' : 'auto';
-    };
-
-    document.getElementById('guide-btn-left')?.addEventListener('click', () => toggleModal(true));
-    document.getElementById('guide-btn-right')?.addEventListener('click', () => toggleModal(true));
-    document.getElementById('modal-close-btn')?.addEventListener('click', () => toggleModal(false));
-    guideModal?.addEventListener('click', (e) => e.target === guideModal && toggleModal(false));
+    // Modal
+    const guideModal = document.getElementById('guide-modal');
+    document.getElementById('guide-btn').addEventListener('click', (e) => { e.preventDefault(); guideModal.classList.add('active'); });
+    document.getElementById('modal-close-btn').addEventListener('click', () => guideModal.classList.remove('active'));
+    guideModal.addEventListener('click', (e) => { if(e.target === guideModal) guideModal.classList.remove('active'); });
 });
