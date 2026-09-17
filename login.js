@@ -1,15 +1,15 @@
-// === CẤU HÌNH CÁC ĐƯỜNG DẪN API (APPS SCRIPT) ===
+/* === FILE: login.js (GIAO DIỆN 3 TAB - 2 APPS SCRIPT RIÊNG BIỆT) === */
 
-// 1. Apps Script xử lý ĐỐI TÁC (Giữ nguyên của bạn)
+// 1. Link Apps Script dành cho ĐỐI TÁC (Tạo đơn Wifi)
 const SCRIPT_URL_PARTNER = 'https://script.google.com/macros/s/AKfycbzr2if7QLKh5ApiCzFUR9_4wvNa7qXvbzceSLGlVg4R99tYMmGT1HSEoRp8vsICc4xl/exec'; 
 
-// 2. Apps Script xử lý NHÂN VIÊN (Bạn sẽ tạo sau và dán link vào đây)
+// 2. Link Apps Script dành riêng cho NHÂN VIÊN (Quản lý eSIM)
 const SCRIPT_URL_STAFF = 'https://script.google.com/macros/s/AKfycbwA6FwKH9eQzzfzmnu5r7I_5XrJ19bhhAnew2H_qOg8Yiw9Q4Wou-f-fyYQwpT54T6o/exec'; 
 
 let currentRole = 'partner';
 let currentLanguage = localStorage.getItem('selectedLanguage') || 'vi';
 
-// --- TỪ ĐIỂN ĐA NGÔN NGỮ (Giữ nguyên) ---
+// --- TỪ ĐIỂN ĐA NGÔN NGỮ ---
 const translations = {
     vi: {
         'main-title': 'Hệ sinh thái<br>Wifi & eSIM',
@@ -85,7 +85,7 @@ const translations = {
     }
 };
 
-// --- LOGIC ĐỔI TAB ---
+// --- LOGIC ĐỔI TAB GIAO DIỆN ---
 function switchRole(role) {
     currentRole = role;
     const trans = translations[currentLanguage];
@@ -183,11 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitBtn = document.getElementById('submit-btn');
         const trans = translations[currentLanguage];
 
-        // 1. LUỒNG ĐỐI TÁC
+        // 1. LUỒNG DOANH NGHIỆP (Chuyển vào ./Corporate/Index.html)
+        if (currentRole === 'corp') {
+            if (!/^[\d\-\.\s]+$/.test(inputValue)) {
+                return Swal.fire('Lỗi', trans['error-tax'], 'warning');
+            }
+            sessionStorage.setItem('corpTaxCode', inputValue);
+            Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
+                .then(() => window.location.href = './Corporate/Index.html'); 
+            return;
+        }
+
+        // Kiểm tra thông tin nhập cho Đối Tác & Nhân Viên
+        if (!inputValue || !passValue) return Swal.fire(trans['missing-info'], trans['missing-desc'], 'warning');
+
+        submitBtn.disabled = true;
+        Swal.fire({ title: trans['auth-title'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        // 2. LUỒNG ĐỐI TÁC (GỌI APPS SCRIPT 1 - WIFI)
         if (currentRole === 'partner') {
-            if (!inputValue || !passValue) return Swal.fire(trans['missing-info'], trans['missing-desc'], 'warning');
-            submitBtn.disabled = true;
-            Swal.fire({ title: trans['auth-title'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             try {
                 const params = new URLSearchParams({ action: 'login', username: inputValue.toUpperCase(), password: passValue });
                 const response = await fetch(SCRIPT_URL_PARTNER, {
@@ -210,26 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } 
         
-        // 2. LUỒNG DOANH NGHIỆP (Chuyển vào ./Corporate/Index.html)
-        else if (currentRole === 'corp') {
-            if (!/^[\d\-\.\s]+$/.test(inputValue)) {
-                return Swal.fire('Lỗi', trans['error-tax'], 'warning');
-            }
-            sessionStorage.setItem('corpTaxCode', inputValue);
-            Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-tax'], timer: 1500, showConfirmButton: false })
-                .then(() => window.location.href = './Corporate/Index.html'); 
-        }
-
-        // 3. LUỒNG NHÂN VIÊN - eSIM (Chuyển vào thư mục ./eSim/)
+        // 3. LUỒNG NHÂN VIÊN (GỌI APPS SCRIPT 2 - eSIM)
         else if (currentRole === 'staff') {
-            if (!inputValue || !passValue) return Swal.fire(trans['missing-info'], trans['missing-desc'], 'warning');
-            submitBtn.disabled = true;
-            Swal.fire({ title: trans['auth-title'], allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            
             try {
-                // TẠM THỜI BỎ QUA GỌI APPS SCRIPT ĐỂ TEST ĐIỀU HƯỚNG VÀO THƯ MỤC
-                // Khi nào có Apps Script 2, bạn bỏ dấu comment phần fetch này nhé
-                /*
                 const params = new URLSearchParams({ action: 'login', username: inputValue.toUpperCase(), password: passValue });
                 const response = await fetch(SCRIPT_URL_STAFF, {
                     method: 'POST',
@@ -237,15 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: params
                 });
                 const result = await response.json();
-                if (result.status !== 'OK') throw new Error(result.message);
-                */
 
-                // ĐIỀU HƯỚNG VÀO THƯ MỤC eSIM BẠN VỪA TẠO
-                Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-desc'], timer: 1500, showConfirmButton: false })
-                    .then(() => window.location.href = './eSim/index.html');
-
+                if (result.status === 'OK') {
+                    Swal.fire({ icon: 'success', title: trans['success'], text: trans['success-desc'], timer: 1500, showConfirmButton: false })
+                        .then(() => window.location.href = './eSim/index.html'); // Chuyển vào thư mục eSim
+                } else {
+                    Swal.fire('Lỗi', result.message || trans['error-auth'], 'error');
+                }
             } catch (error) {
-                Swal.fire('Lỗi', error.message || trans['error-conn'], 'error');
+                Swal.fire('Lỗi', trans['error-conn'], 'error');
             } finally {
                 submitBtn.disabled = false;
             }
