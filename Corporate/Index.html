@@ -79,12 +79,11 @@
             
             <form id="wifi-form">
                 <div class="mb-8">
-                    <div class="section-title"><div class="section-icon">👤</div><div id="sectionSender" data-trans="sectionSender">Thông tin người gửi</div></div>
+                    <div class="section-title"><div class="section-icon">👤</div><div id="sectionSender" data-trans="sectionSender">Thông tin doanh nghiệp</div></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div class="form-group"><label data-trans="labelName">Họ và tên</label><input type="text" id="sender-name" required></div>
-                        <div class="form-group"><label data-trans="labelEmail">Email</label><input type="email" id="sender-email" required></div>
-                        <div class="form-group"><label data-trans="labelPhone">Số điện thoại</label><input type="tel" id="sender-phone" required></div>
+                        <!-- Đã ẩn Họ Tên và SĐT ở đây cho gọn -->
                         <div class="form-group"><label data-trans="labelTaxCode">Mã số thuế</label><input type="text" id="sender-taxcode" required></div>
+                        <div class="form-group"><label data-trans="labelEmail">Email nhận xác nhận đơn</label><input type="email" id="sender-email" required></div>
                         <div class="form-group sm:col-span-2"><label data-trans="labelCompany">Công ty (Tự động điền nếu MST hợp lệ)</label><input type="text" id="sender-company" required></div>
                         <div class="form-group">
                             <label data-trans="labelRegion">Khu vực</label>
@@ -101,20 +100,20 @@
                 </div>
 
                 <div class="mb-8">
-                    <div class="section-title"><div class="section-icon">🚚</div><div id="sectionShipping" data-trans="sectionShipping">Thông tin vận chuyển</div></div>
+                    <div class="section-title"><div class="section-icon">🚚</div><div id="sectionShipping" data-trans="sectionShipping">Thông tin vận chuyển & Người nhận</div></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="form-group"><label data-trans="labelShippingName">Tên người nhận</label><input type="text" id="shipping-name" required></div>
                         <div class="form-group"><label data-trans="labelShippingPhone">SĐT người nhận</label><input type="tel" id="shipping-phone" required></div>
                         <div class="form-group sm:col-span-2"><label data-trans="labelShippingAddress">Địa chỉ giao hàng</label><textarea id="shipping-address" required></textarea></div>
-                        <div class="form-group"><label data-trans="labelShippingDate">Ngày giao hàng</label><input type="date" id="shipping-date" required></div>
+                        <div class="form-group"><label data-trans="labelShippingDate">Ngày giao hàng mong muốn</label><input type="date" id="shipping-date" required></div>
                         <div class="form-group">
                             <label data-trans="labelShippingMethod">Phương thức vận chuyển</label>
                             <select id="shipping-method" required>
                                 <option value="" data-trans="selectShipping">-- Chọn phương thức --</option>
-                                <option value="Tiêu chuẩn" data-trans="shipStandard">Tiêu chuẩn (3-5 ngày)</option>
-                                <option value="Chuyển phát nhanh" data-trans="shipExpress">Chuyển phát nhanh (1-2 ngày)</option>
-                                <option value="Hỏa tốc" data-trans="shipUrgent">Hỏa tốc</option>
-                                <option value="Tự lấy" data-trans="shipPickup">Tự lấy</option>
+                                <option value="Tiêu chuẩn" data-trans="shipStandard">Tiêu chuẩn (Miễn phí)</option>
+                                <option value="Chuyển phát nhanh" data-trans="shipExpress">Chuyển phát nhanh (50.000 ₫)</option>
+                                <option value="Hỏa tốc" data-trans="shipUrgent">Hỏa tốc (Theo giá Grab/GreenSM)</option>
+                                <option value="Tự lấy" data-trans="shipPickup">Tự lấy (Miễn phí)</option>
                             </select>
                         </div>
                     </div>
@@ -134,7 +133,7 @@
 
     <script>
         // ==========================================
-        // DÁN ĐƯỜNG LINK WEB APP MỚI CỦA BẠN VÀO ĐÂY SAU KHI DEPLOY
+        // 👉 ĐIỀN ĐƯỜNG LINK WEB APP MỚI NHẤT CỦA BẠN VÀO ĐÂY LÀ CHẠY NGAY
         // ==========================================
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhCHWTVS1NLP564Df13klBJU2_KvBR3CziW_Hw7_OKuD_rwZdcOk8dX3sqYZM584SWsw/exec"; 
         
@@ -154,20 +153,28 @@
 
         const translations = {
             vi: {
-                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)", sectionSender: "Thông tin người gửi", sectionRental: "Chi tiết đơn thuê", sectionShipping: "Thông tin vận chuyển",
-                labelName: "Họ và tên", labelEmail: "Email", labelPhone: "Số điện thoại", labelCompany: "Công ty", labelRegion: "Khu vực", labelTaxCode: "Mã số thuế",
-                labelShippingName: "Tên người nhận", labelShippingPhone: "SĐT người nhận", labelShippingAddress: "Địa chỉ", labelShippingDate: "Ngày nhận", labelShippingMethod: "Cách giao hàng",
-                selectRegion: "-- Chọn --", selectShipping: "-- Chọn --", shipStandard: "Tiêu chuẩn (3-5 ngày)", shipExpress: "Chuyển phát nhanh (1-2 ngày)", shipUrgent: "Hỏa tốc", shipPickup: "Tự lấy",
+                mainTitle: "Đơn Đăng Ký Thuê Thiết Bị WIFI (Chiết Khấu Doanh Nghiệp)", sectionSender: "Thông tin doanh nghiệp", sectionRental: "Chi tiết đơn thuê", sectionShipping: "Thông tin vận chuyển & Người nhận",
+                labelEmail: "Email nhận xác nhận đơn", labelCompany: "Công ty", labelRegion: "Khu vực", labelTaxCode: "Mã số thuế",
+                labelShippingName: "Tên người nhận", labelShippingPhone: "SĐT người nhận", labelShippingAddress: "Địa chỉ", labelShippingDate: "Ngày giao hàng mong muốn", labelShippingMethod: "Cách giao hàng",
+                selectRegion: "-- Chọn --", selectShipping: "-- Chọn --", 
+                shipStandard: "Tiêu chuẩn (Miễn phí)", 
+                shipExpress: "Chuyển phát nhanh (50.000 ₫)", 
+                shipUrgent: "Hỏa tốc (Theo giá Grab/GreenSM)", 
+                shipPickup: "Tự lấy (Miễn phí)",
                 addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ", successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
                 footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa", pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ", discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
                 footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội", footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
             en: {
-                mainTitle: "WIFI Device Rental (Corporate Discount)", sectionSender: "Sender Info", sectionRental: "Rental Details", sectionShipping: "Shipping Info",
-                labelName: "Full Name", labelEmail: "Email", labelPhone: "Phone", labelCompany: "Company", labelRegion: "Region", labelTaxCode: "Tax Code",
-                labelShippingName: "Recipient Name", labelShippingPhone: "Recipient Phone", labelShippingAddress: "Address", labelShippingDate: "Delivery Date", labelShippingMethod: "Shipping Method",
-                selectRegion: "-- Select --", selectShipping: "-- Select --", shipStandard: "Standard (3-5 days)", shipExpress: "Express (1-2 days)", shipUrgent: "Urgent", shipPickup: "Pick Up",
+                mainTitle: "WIFI Device Rental (Corporate Discount)", sectionSender: "Enterprise Info", sectionRental: "Rental Details", sectionShipping: "Shipping & Recipient Info",
+                labelEmail: "Confirmation Email", labelCompany: "Company", labelRegion: "Region", labelTaxCode: "Tax Code",
+                labelShippingName: "Recipient Name", labelShippingPhone: "Recipient Phone", labelShippingAddress: "Address", labelShippingDate: "Expected Delivery Date", labelShippingMethod: "Shipping Method",
+                selectRegion: "-- Select --", selectShipping: "-- Select --", 
+                shipStandard: "Standard (Free)", 
+                shipExpress: "Express (50,000 VND)", 
+                shipUrgent: "Urgent (Grab/GreenSM rates)", 
+                shipPickup: "Pick Up (Free)",
                 addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait", successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
                 footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
                 selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove", pricePreview: "Est. Total (Inc. Discount & VAT): ", discountApplied: "Corporate discount applied",
@@ -373,9 +380,12 @@
             document.getElementById('wifi-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const senderInfo = {
-                    name: document.getElementById('sender-name').value, email: document.getElementById('sender-email').value,
-                    phone: document.getElementById('sender-phone').value, company: document.getElementById('sender-company').value,
-                    region: document.getElementById('sender-region').value, taxCode: document.getElementById('sender-taxcode').value
+                    name: document.getElementById('shipping-name').value, 
+                    email: document.getElementById('sender-email').value,
+                    phone: document.getElementById('shipping-phone').value, 
+                    company: document.getElementById('sender-company').value,
+                    region: document.getElementById('sender-region').value, 
+                    taxCode: document.getElementById('sender-taxcode').value
                 };
 
                 const requests = [];
