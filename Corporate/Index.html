@@ -162,6 +162,7 @@
                 shipPickup: "Tự lấy (Miễn phí)",
                 addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ", successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
                 footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
+                labelImei: "IMEI máy (Nếu có giữ máy)", phImei: "Nhập số IMEI (Tùy chọn)",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa", pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ", discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
                 footerAddressHTML: "<strong>Địa chỉ:</strong> Phòng 1630, Tầng 16, DAEHA BUSINESS CENTER, 360 Kim Mã, Giảng Võ, Hà Nội", footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Tiếng Việt) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Tiếng Nhật)"
             },
@@ -176,6 +177,7 @@
                 shipPickup: "Pick Up (Free)",
                 addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait", successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
                 footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
+                labelImei: "Device IMEI (If kept)", phImei: "Enter IMEI (Optional)",
                 selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove", pricePreview: "Est. Total (Inc. Discount & VAT): ", discountApplied: "Corporate discount applied",
                 footerAddressHTML: "<strong>Address:</strong> Room 1630, 16th Fl, DAEHA BUSINESS CENTER, Hanoi", footerHotlineHTML: "<strong>Hotline:</strong> <span style='color:#1a365d; font-weight:bold;'>0962 000 650</span> (Vietnamese) | <span style='color:#ed8936; font-weight:bold;'>0365 399 288</span> (Japanese)"
             }
@@ -301,7 +303,8 @@
                     <div class="form-group"><label>${t.quantity}</label><input type="number" class="quantity-input" value="1" min="1" required></div>
                     <div class="form-group"><label>${t.country}</label><select class="choices-country" required><option value="">${t.selectCountry}</option></select></div>
                     <div class="form-group"><label>${t.package}</label><select class="package-select" required><option value="">${t.selectPackage}</option><option value="500MB/ngày">500MB/ngày</option><option value="1GB/ngày">1GB/ngày</option><option value="5GB/ngày">5GB/ngày</option></select></div>
-                    <div class="md:col-span-2 form-group"><label>${t.budgetCode}</label><input type="text" class="budget-code-input"></div>
+                    <div class="md:col-span-1 form-group"><label>${t.budgetCode}</label><input type="text" class="budget-code-input"></div>
+                    <div class="md:col-span-1 form-group"><label data-trans="labelImei">${t.labelImei}</label><input type="text" class="imei-input" placeholder="${t.phImei}"></div>
                 </div>
                 <div class="price-preview-box"><span class="preview-label">${t.pricePreview}</span><span class="price-amount">0 đ</span></div>`;
             container.appendChild(div);
@@ -320,6 +323,9 @@
             loadCountriesIntoSelect(div.querySelector('.choices-country'));
             div.querySelector('.choices-country').addEventListener('change', calculateParams);
             div.querySelector('.package-select').addEventListener('change', calculateParams);
+            
+            // Dịch lại placeholder cho input IMEI vừa tạo mới
+            div.querySelector('.imei-input').placeholder = t.phImei;
         }
 
         function updateRequestNumbers() {
@@ -351,6 +357,10 @@
                     else el.textContent = t[key];
                 }
             });
+            
+            // Dịch placeholder thủ công cho các input IMEI
+            document.querySelectorAll('.imei-input').forEach(el => el.placeholder = t.phImei);
+
             document.getElementById('footerAddress').innerHTML = t.footerAddressHTML;
             document.getElementById('footerHotline').innerHTML = t.footerHotlineHTML;
             updateRequestNumbers();
@@ -394,6 +404,7 @@
                         fromDate: req.querySelector('.date-from').value, toDate: req.querySelector('.date-to').value,
                         days: parseInt(req.querySelector('.days-input').value) || 0, quantity: parseInt(req.querySelector('.quantity-input').value) || 1,
                         country: country, dataPackage: pkg, budgetCode: req.querySelector('.budget-code-input').value,
+                        imei: req.querySelector('.imei-input').value, // <-- Gửi IMEI lên Google Sheet
                         unitPrice: getPriceForUnit("Corporate", country, pkg),
                     });
                 });
