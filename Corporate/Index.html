@@ -60,8 +60,8 @@
             <h2 id="successTitle" data-trans="successTitle" style="font-size: 1.5rem; color: #10b981; font-weight: bold;">Thành Công!</h2>
             <p id="successMessage" data-trans="successMessage" style="margin: 1rem 0; color: #4a5568;">Yêu cầu của bạn đã được gửi thành công.</p>
             <div style="background: #f0fdf4; border: 2px solid #d1fae5; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.85rem;">
-                <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 0.5rem;" data-trans="codeLabel">Mã Tham Chiếu:</div>
-                <div id="codeValue" style="font-weight: 700; color: #059669; font-family: 'Courier New', monospace; font-size: 1rem;"></div>
+                <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 0.5rem;" data-trans="codeLabel">Mã Vận Đơn:</div>
+                <div id="codeValue" style="font-weight: 700; color: #059669; font-family: 'Courier New', monospace; font-size: 1.1rem;"></div>
             </div>
             <button id="successBtn" data-trans="successBtnText" onclick="location.reload()" style="background: #3182ce; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Tạo Đơn Mới</button>
         </div>
@@ -81,7 +81,6 @@
                 <div class="mb-8">
                     <div class="section-title"><div class="section-icon">👤</div><div id="sectionSender" data-trans="sectionSender">Thông tin doanh nghiệp</div></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <!-- Đã ẩn Họ Tên và SĐT ở đây cho gọn -->
                         <div class="form-group"><label data-trans="labelTaxCode">Mã số thuế</label><input type="text" id="sender-taxcode" required></div>
                         <div class="form-group"><label data-trans="labelEmail">Email nhận xác nhận đơn</label><input type="email" id="sender-email" required></div>
                         <div class="form-group sm:col-span-2"><label data-trans="labelCompany">Công ty (Tự động điền nếu MST hợp lệ)</label><input type="text" id="sender-company" required></div>
@@ -160,7 +159,7 @@
                 shipExpress: "Chuyển phát nhanh (50.000 ₫)", 
                 shipUrgent: "Hỏa tốc (Theo giá Grab/GreenSM)", 
                 shipPickup: "Tự lấy (Miễn phí)",
-                addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ", successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Tham Chiếu:", successBtnText: "Tạo Đơn Mới",
+                addRequest: "➕ Thêm đơn mới", submit: "🚀 Gửi Yêu Cầu", loadingText: "Đang xử lý...", loadingSubtext: "Vui lòng chờ", successTitle: "Thành Công!", successMessage: "Đã gửi thành công.", codeLabel: "Mã Vận Đơn:", successBtnText: "Tạo Đơn Mới",
                 footerTitle: "Công Ty TNHH Maya Vietnam", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Đơn", fromDate: "Từ ngày", toDate: "Đến ngày", days: "Số ngày", quantity: "Số lượng máy", country: "Quốc gia", package: "Gói dữ liệu", budgetCode: "Budget Code",
                 labelImei: "IMEI máy (Nếu có giữ máy)", phImei: "Nhập số IMEI (Tùy chọn)",
                 selectCountry: "-- Chọn quốc gia --", selectPackage: "-- Chọn gói --", removeBtn: "Xóa", pricePreview: "Tạm tính (Đã áp dụng giảm giá & VAT): ", discountApplied: "Chiết khấu doanh nghiệp được áp dụng",
@@ -175,7 +174,7 @@
                 shipExpress: "Express (50,000 VND)", 
                 shipUrgent: "Urgent (Grab/GreenSM rates)", 
                 shipPickup: "Pick Up (Free)",
-                addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait", successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Ref Code:", successBtnText: "New Request",
+                addRequest: "➕ Add Request", submit: "🚀 Submit", loadingText: "Processing...", loadingSubtext: "Please wait", successTitle: "Success!", successMessage: "Sent successfully.", codeLabel: "Tracking Code:", successBtnText: "New Request",
                 footerTitle: "MAYA VIETNAM CO., LTD", footerSubtitle: "MAYA VIETNAM CO., LTD", reqTitle: "Request", fromDate: "From", toDate: "To", days: "Days", quantity: "Quantity", country: "Country", package: "Package", budgetCode: "Budget Code",
                 labelImei: "Device IMEI (If kept)", phImei: "Enter IMEI (Optional)",
                 selectCountry: "-- Select --", selectPackage: "-- Select --", removeBtn: "Remove", pricePreview: "Est. Total (Inc. Discount & VAT): ", discountApplied: "Corporate discount applied",
@@ -367,6 +366,16 @@
             checkDiscount();
         }
 
+        // Hàm tạo mã vận đơn tự động (Format: MYVN-YYMMDD-XXXX)
+        function generateTrackingCode() {
+            const date = new Date();
+            const y = String(date.getFullYear()).slice(-2);
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const randomString = Math.random().toString(36).substring(2, 6).toUpperCase();
+            return `MYVN-${y}${m}${d}-${randomString}`;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedTaxCode = sessionStorage.getItem('corpTaxCode');
             if (savedTaxCode) document.getElementById('sender-taxcode').value = savedTaxCode;
@@ -388,6 +397,10 @@
 
             document.getElementById('wifi-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+
+                // 1. Tạo mã vận đơn
+                const trackingCode = generateTrackingCode();
+
                 const senderInfo = {
                     name: document.getElementById('shipping-name').value, 
                     email: document.getElementById('sender-email').value,
@@ -404,7 +417,7 @@
                         fromDate: req.querySelector('.date-from').value, toDate: req.querySelector('.date-to').value,
                         days: parseInt(req.querySelector('.days-input').value) || 0, quantity: parseInt(req.querySelector('.quantity-input').value) || 1,
                         country: country, dataPackage: pkg, budgetCode: req.querySelector('.budget-code-input').value,
-                        imei: req.querySelector('.imei-input').value, // <-- Gửi IMEI lên Google Sheet
+                        imei: req.querySelector('.imei-input').value,
                         unitPrice: getPriceForUnit("Corporate", country, pkg),
                     });
                 });
@@ -414,7 +427,16 @@
                     address: document.getElementById('shipping-address').value, date: document.getElementById('shipping-date').value, method: document.getElementById('shipping-method').value
                 };
 
-                const payload = { unit: UNIT_NAME, submissionTime: new Date().toISOString(), globalSenderInfo: senderInfo, rentalRequests: requests, shippingInfo: shippingInfo };
+                // 2. Thêm trackingCode vào payload
+                const payload = { 
+                    unit: UNIT_NAME, 
+                    trackingCode: trackingCode, // <--- Mã vận đơn được gửi về App Script
+                    submissionTime: new Date().toISOString(), 
+                    globalSenderInfo: senderInfo, 
+                    rentalRequests: requests, 
+                    shippingInfo: shippingInfo 
+                };
+                
                 document.getElementById('loadingOverlay').classList.add('active');
 
                 try {
@@ -422,7 +444,8 @@
                     const result = await response.json();
                     document.getElementById('loadingOverlay').classList.remove('active');
                     if (result.status === 'OK') {
-                        document.getElementById('codeValue').textContent = '#REQ' + new Date().getTime().toString().slice(-10);
+                        // 3. Hiển thị mã vận đơn trên màn hình Thành Công
+                        document.getElementById('codeValue').textContent = trackingCode;
                         document.getElementById('successScreen').classList.add('active');
                     } else alert("Lỗi máy chủ: " + result.message);
                 } catch (error) {
